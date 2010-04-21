@@ -40,9 +40,9 @@
 
             *  $('a').embedly({maxWidth:600});  // with maxWidth option set to 600px
 
-            *  $('a').embedly({maxWidth:600,'method':'after'});  // with maxWidth option set to 600px and method option set to 'after'
+            *  $('a').embedly({maxWidth:600, method:'after'});  // with maxWidth option set to 600px and method option set to 'after'
 
-            *  $('a').embedly({maxWidth:600,'urlRe': /http:\/\/(www\.hulu\.com\/watch.*)/i,'method':'after'});  // with maxWidth option set to 600px and method option set to 'after'
+            *  $('a').embedly({maxWidth:600, urlRe: /http:\/\/(www\.hulu\.com\/watch.*)/i, method:'after'});  // with maxWidth option set to 600px and method option set to 'after' and urlRe option set for only hulu.com videos
 
     * Valid Options
          
