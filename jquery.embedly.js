@@ -19,19 +19,22 @@
  * 
  * {maxWidth : null,
  *  maxHeight: null,
+ *  urlRe : null,
  *  method : 'replace',
- *  wrapElement : null, 
+ *  wrapElement : 'div', 
  *  className : 'embed',
  *  addImageStyles : true} //after
+ * 
+ * http://api.embed.ly/tools/generator - generate your own regex for only sources you want
  * 
  */
 (function($) {
 	$.embedly = function(url, options, callback){
-
+		
 		options = $.extend(true, $.fn.embedly.defaults, options);
 
-		if (url != null && url.match(options.urlRe) != null)
-    		embed(url, options, callback);
+		if (url != null && urlValid(url, options))
+			embed(url, options, callback);
     	else
     		callback(null)
 
@@ -53,7 +56,7 @@
         			callback(oembed, elem, options);
         		}
         		// Make sure the URL pass the regex.
-        		if (url != null && url.match(options.urlRe) != null){
+        		if (url != null && urlValid(url, options)){
         			embed(url, options, wrap);
         		//Nope so pass a null to the callback
         		} else {
@@ -69,7 +72,7 @@
 	        			callback(oembed, elem, options);
 	        		}
 	        		// Make sure the URL pass the regex.
-	        		if (url != null && url.match(options.urlRe) != null){
+	        		if (url != null && urlValid(url, options)){
 	        			embed(url, options, wrap);
 	        		//Nope so pass a null to the callback
 	        		} else {
@@ -87,8 +90,8 @@
 		addImageStyles : true,
 		wrapElement : 'div',
 		className : 'embed',
-		urlRe : /(http:\/\/.*\.youtube\.com\/watch.*|http:\/\/youtu\.be\/.*|http:\/\/www\.veoh\.com\/.*\/watch\/.*|http:\/\/www\.justin\.tv\/clip\/.*|http:\/\/www\.justin\.tv\/.*|http:\/\/www\.ustream\.tv\/recorded\/.*|http:\/\/www\.ustream\.tv\/channel\/.*|http:\/\/qik\.com\/video\/.*|http:\/\/qik\.com\/.*|http:\/\/.*revision3\.com\/.*|http:\/\/.*\.dailymotion\.com\/video\/.*|http:\/\/www\.collegehumor\.com\/video:.*|http:\/\/www\.twitvid\.com\/.*|http:\/\/www\.break\.com\/.*\/.*|http:\/\/vids\.myspace\.com\/index\.cfm\?fuseaction=vids\.individual&videoid.*|http:\/\/www\.myspace\.com\/index\.cfm\?fuseaction=.*&videoid.*|http:\/\/www\.metacafe\.com\/watch\/.*|http:\/\/blip\.tv\/file\/.*|http:\/\/video\.google\.com\/videoplay\?.*|http:\/\/revver\.com\/video\/.*|http:\/\/video\.yahoo\.com\/watch\/.*\/.*|http:\/\/video\.yahoo\.com\/network\/.*|http:\/\/.*viddler\.com\/explore\/.*\/videos\/.*|http:\/\/yfrog\..*\/.*|http:\/\/tweetphoto\.com\/.*|http:\/\/www\.flickr\.com\/photos\/.*|http:\/\/twitpic\.com\/.*|http:\/\/.*imgur\.com\/.*|http:\/\/.*\.posterous\.com\/.*|http:\/\/twitgoo\.com\/.*|http:\/\/i.*\.photobucket\.com\/albums\/.*|http:\/\/gi.*\.photobucket\.com\/groups\/.*|http:\/\/phodroid\.com\/.*\/.*\/.*|http:\/\/xkcd\.com\/.*|http:\/\/www\.asofterworld\.com\/index\.php\?id=.*|http:\/\/www\.qwantz\.com\/index\.php\?comic=.*|http:\/\/23hq\.com\/.*\/photo\/.*|http:\/\/www\.23hq\.com\/.*\/photo\/.*|http:\/\/www\.hulu\.com\/watch\/.*|http:\/\/.*\.movieclips\.com\/watch\/.*|http:\/\/.*crackle\.com\/c\/.*|http:\/\/www\.fancast\.com\/.*\/videos|http:\/\/www\.funnyordie\.com\/videos\/.*|http:\/\/www\.vimeo\.com\/groups\/.*\/videos\/.*|http:\/\/www\.vimeo\.com\/.*|http:\/\/www\.ted\.com\/.*|http:\/\/www\.omnisio\.com\/.*|http:\/\/.*nfb\.ca\/film\/.*|http:\/\/www\.thedailyshow\.com\/watch\/.*|http:\/\/www\.thedailyshow\.com\/full-episodes\/.*|http:\/\/www\.thedailyshow\.com\/collection\/.*\/.*\/.*|http:\/\/movies\.yahoo\.com\/movie\/.*\/video\/.*|http:\/\/movies\.yahoo\.com\/movie\/.*\/info|http:\/\/movies\.yahoo\.com\/movie\/.*\/trailer|http:\/\/www\.colbertnation\.com\/the-colbert-report-collections\/.*|http:\/\/www\.colbertnation\.com\/full-episodes\/.*|http:\/\/www\.colbertnation\.com\/the-colbert-report-videos\/.*|http:\/\/wordpress\.tv\/.*\/.*\/.*\/.*\/|http:\/\/www\.traileraddict\.com\/trailer\/.*|http:\/\/www\.traileraddict\.com\/clip\/.*|http:\/\/www\.traileraddict\.com\/poster\/.*|http:\/\/.*amazon\..*\/gp\/product\/.*|http:\/\/.*amazon\..*\/.*\/dp\/.*|http:\/\/.*amazon\..*\/dp\/.*|http:\/\/.*amazon\..*\/o\/ASIN\/.*|http:\/\/.*amazon\..*\/gp\/offer-listing\/.*|http:\/\/www\.slideshare\.net\/.*\/.*|http:\/\/.*\.scribd\.com\/doc\/.*|http:\/\/screenr\.com\/.*|http:\/\/www\.5min\.com\/Video\/.*|http:\/\/www\.howcast\.com\/videos\/.*|http:\/\/www\.clearspring\.com\/widgets\/.*|http:\/\/my\.opera\.com\/.*\/albums\/show\.dml\?id=.*|http:\/\/my\.opera\.com\/.*\/albums\/showpic\.dml\?album=.*&picture=.*)/i
-	};
+		urlRe : null
+		};
 
     function defaultCallback(oembed, elem, options){
  			if (oembed == null)
@@ -102,6 +105,9 @@
  				case "after":
  					elem.after(oembed.code);			
  					break;
+ 				case "afterParent":
+ 					elem.parent().after(oembed.code);			
+ 					break;
  			}
     };
 
@@ -112,7 +118,12 @@
         }
         return true;
     };
-
+    
+    function urlValid(url, options) {
+		var urlRe = /http:\/\/(.*youtube\.com\/watch.*|.*\.youtube\.com\/v\/.*|youtu\.be\/.*|www\.veoh\.com\/.*\/watch\/.*|.*justin\.tv\/.*|www\.ustream\.tv\/recorded\/.*|www\.ustream\.tv\/channel\/.*|qik\.com\/video\/.*|qik\.com\/.*|.*revision3\.com\/.*|.*\.dailymotion\.com\/video\/.*|.*\.dailymotion\.com\/.*\/video\/.*|www\.collegehumor\.com\/video:.*|www\.twitvid\.com\/.*|www\.break\.com\/.*\/.*|vids\.myspace\.com\/index\.cfm\?fuseaction=vids\.individual&videoid.*|www\.myspace\.com\/index\.cfm\?fuseaction=.*&videoid.*|www\.metacafe\.com\/watch\/.*|blip\.tv\/file\/.*|.*\.blip\.tv\/file\/.*|video\.google\.com\/videoplay\?.*|.*revver\.com\/video\/.*|video\.yahoo\.com\/watch\/.*\/.*|video\.yahoo\.com\/network\/.*|.*viddler\.com\/explore\/.*\/videos\/.*|liveleak\.com\/view\?.*|www\.liveleak\.com\/view\?.*|animoto\.com\/play\/.*|dotsub\.com\/view\/.*|.*yfrog\..*\/.*|tweetphoto\.com\/.*|www\.flickr\.com\/photos\/.*|.*twitpic\.com\/.*|.*imgur\.com\/.*|.*\.posterous\.com\/.*|post\.ly\/.*|twitgoo\.com\/.*|i.*\.photobucket\.com\/albums\/.*|gi.*\.photobucket\.com\/groups\/.*|phodroid\.com\/.*\/.*\/.*|xkcd\.com\/.*|www\.asofterworld\.com\/index\.php\?id=.*|www\.qwantz\.com\/index\.php\?comic=.*|23hq\.com\/.*\/photo\/.*|www\.23hq\.com\/.*\/photo\/.*|www\.whitehouse\.gov\/photos-and-video\/video\/.*|www\.whitehouse\.gov\/video\/.*|wh\.gov\/photos-and-video\/video\/.*|wh\.gov\/video\/.*|www\.hulu\.com\/watch.*|movieclips\.com\/watch\/.*\/.*\/|movieclips\.com\/watch\/.*\/.*\/.*\/.*|.*crackle\.com\/c\/.*|www\.fancast\.com\/.*\/videos|www\.funnyordie\.com\/videos\/.*|www\.vimeo\.com\/groups\/.*\/videos\/.*|www\.vimeo\.com\/.*|vimeo\.com\/groups\/.*\/videos\/.*|vimeo\.com\/.*|www\.ted\.com\/talks\/.*\.html.*|www\.ted\.com\/talks\/lang\/.*\/.*\.html.*|www\.ted\.com\/index\.php\/talks\/.*\.html.*|www\.ted\.com\/index\.php\/talks\/lang\/.*\/.*\.html.*|.*omnisio\.com\/.*|.*nfb\.ca\/film\/.*|www\.thedailyshow\.com\/watch\/.*|www\.thedailyshow\.com\/full-episodes\/.*|www\.thedailyshow\.com\/collection\/.*\/.*\/.*|movies\.yahoo\.com\/movie\/.*\/video\/.*|movies\.yahoo\.com\/movie\/.*\/info|movies\.yahoo\.com\/movie\/.*\/trailer|www\.colbertnation\.com\/the-colbert-report-collections\/.*|www\.colbertnation\.com\/full-episodes\/.*|www\.colbertnation\.com\/the-colbert-report-videos\/.*|www\.comedycentral\.com\/videos\/index\.jhtml\?.*|www\.theonion\.com\/video\/.*|theonion\.com\/video\/.*|wordpress\.tv\/.*\/.*\/.*\/.*\/|www\.traileraddict\.com\/trailer\/.*|www\.traileraddict\.com\/clip\/.*|www\.traileraddict\.com\/poster\/.*|www\.escapistmagazine\.com\/videos\/.*|soundcloud\.com\/.*|soundcloud\.com\/.*\/.*|soundcloud\.com\/.*\/sets\/.*|soundcloud\.com\/groups\/.*|www\.lala\.com\/#album\/.*|www\.lala\.com\/album\/.*|www\.lala\.com\/#song\/.*|www\.lala\.com\/song\/.*|.*amazon\..*\/gp\/product\/.*|.*amazon\..*\/.*\/dp\/.*|.*amazon\..*\/dp\/.*|.*amazon\..*\/o\/ASIN\/.*|.*amazon\..*\/gp\/offer-listing\/.*|.*amazon\..*\/.*\/ASIN\/.*|.*amazon\..*\/gp\/product\/images\/.*|www\.slideshare\.net\/.*\/.*|.*\.scribd\.com\/doc\/.*|screenr\.com\/.*|www\.5min\.com\/Video\/.*|www\.howcast\.com\/videos\/.*|www\.screencast\.com\/.*\/media\/.*|screencast\.com\/.*\/media\/.*|www\.screencast\.com\/t\/.*|screencast\.com\/t\/.*|www\.clearspring\.com\/widgets\/.*|my\.opera\.com\/.*\/albums\/show\.dml\?id=.*|my\.opera\.com\/.*\/albums\/showpic\.dml\?album=.*&picture=.*)/i
+		return (url.match(urlRe) != null && (options.urlRe == null || url.match(options.urlRe) != null))
+    }
+    
     function embed(url, options, callback){
 
     	//Build The URL
@@ -149,12 +160,12 @@
 	                    
 	        				//Because of photos like twitpic and tweetphoto we need to let the browser do some of the work
 	                    	var style = '';
-	        				if (options.addImageStyles)
+	        				if (options.addImageStyles) {
 	                        	if (options.maxWidth != null)
-	                        		style += 'max-width:'+options.maxWidth+'px; '
+	                        		style += 'max-width:'+options.maxWidth+'px; ';
 	                        	if (options.maxHeight != null)
-	    	                    	style += 'max-height:'+options.maxHeight+'px; '
-
+	    	                    	style += 'max-height:'+options.maxHeight+'px; ';
+	        				}
 	                    	code += '<a href="' + url + '" target="_blank"><img style="'+style+'" src="' + data.url + '" alt="' + title + '"/></a>';
 	                        break;
 	                    case "video":
