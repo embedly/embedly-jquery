@@ -16,9 +16,9 @@ The most up-to-date documentation can be found on the `README
 Requirements
 ============
 
-Requires JQuery 1.4.1 or greater::
+Requires JQuery 1.3.1 or greater::
 
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
 
 Using Embedly-JQuery
@@ -103,8 +103,8 @@ BSD
 Embedly URLS
 ------------
 
-Git location:       http://github.com/embedly/embedly-jquery/
-Home Page:          http://embed.ly
-API Page:           http://api.embed.ly
-Support:            http://support.embed.ly
+   * Git location:       http://github.com/embedly/embedly-jquery/
+   * Home Page:          http://embed.ly
+   * API Page:           http://api.embed.ly
+   * Support:            http://support.embed.ly
 
