@@ -188,7 +188,8 @@
 	                    	code += data.html;
 	                        break;
 	                    default :
-	                    	code += '<a href="' + url + '">' + (data.title != null) ? data.title : url + '</a>';
+                            var title = data.title ? data.title : url; 
+                            code += '<a href="' + url + '">' + title + '</a>';
 	                    	break;
 	                }
     				
