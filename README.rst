@@ -91,6 +91,15 @@ Valid Options
    * `addImageStyles` - a boolean value representing whether or not Embedly 
      should use the style element to resize images based on the maxWidth and
      maxHeight parameters (Default : true)
+   
+   * `embedly_wmode` - A string value either "window", "opaque" or "transparent" representing 
+      the flash WMODE parameter which allows layering of Flash content with DHTML layers. 
+      (Default: '') e.g. 'transparent'
+     * `window` - movie plays in its own rectangular window on a web page.
+     * `opaque` - the movie hides everything on the page behind it.
+     * `transparent` - the background of the HTML page shows through all transparent portions
+        of the movie, this may slow animation performance.
+                       
 
 Examples
 -----------------------------------------
