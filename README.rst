@@ -76,8 +76,7 @@ Valid Options
      Use : http://api.embed.ly/tools/generator to generate regular expressions
      for a specific set of sources.
    
-   * `method` - a string value either "replace" or "after" to tell Embedly how
-     to place the content in your page. (Default : 'replace')
+   * `method` - a string value either "replace" or "after" to tell Embedly how to place the content in your page. (Default : 'replace')
       * `replace` - replaces the link with the content.
       * `after` - inserts the content after the link.
       * `afterParent` - inserts the content after the parent element.
@@ -92,13 +91,13 @@ Valid Options
      should use the style element to resize images based on the maxWidth and
      maxHeight parameters (Default : true)
    
-   * `embedly_wmode` - A string value either "window", "opaque" or "transparent" representing 
-      the flash WMODE parameter which allows layering of Flash content with DHTML layers. 
-      (Default: '') e.g. 'transparent'
-     * `window` - movie plays in its own rectangular window on a web page.
-     * `opaque` - the movie hides everything on the page behind it.
-     * `transparent` - the background of the HTML page shows through all transparent portions
-        of the movie, this may slow animation performance.
+   * `embedly_wmode` - A string value either "window", "opaque" or "transparent" 
+      representing the flash WMODE parameter which allows layering of Flash content 
+      with DHTML layers. (Default: '') e.g. 'transparent'
+      * `window` - movie plays in its own rectangular window on a web page.
+      * `opaque` - the movie hides everything on the page behind it.
+      * `transparent` - the background of the HTML page shows through all transparent 
+      portions of the movie, this may slow animation performance.
                        
 
 Examples
