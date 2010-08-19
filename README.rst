@@ -29,25 +29,25 @@ or use CSS Selectors to replace links
 
 Call Directly
 -------------
-Will Return a JSON object representing an oembed or null.
+Will Return a JSON object representing an oembed or null, and a dictionary object representing the original url and DOM node.
 ::
 	
 	#Alert the tile of a video
-	$.embedly('http://www.youtube.com/watch?v=LfamTmY5REw', {}, function(oembed){ 
+	$.embedly('http://www.youtube.com/watch?v=LfamTmY5REw', {}, function(oembed, dict){ 
 	    alert(oembed.title);
 	});
 	
 	# Call with maxWidth option set to 600px and maxHeight option set to 400px
 	$.embedly('http://www.youtube.com/watch?v=LfamTmY5REw', 
 	          {maxWidth:600, maxHeight:400}, 
-	          function(oembed){ 
+	          function(oembed, dict){ 
 	             alert(oembed.title);
 	          });
 
     # Pass in an array of urls to load simultaneously
     $.embedly(['http://www.youtube.com/watch?v=LfamTmY5REw', 'http://www.youtube.com/watch?v=lOC_JjNFkVw', 'http://www.youtube.com/watch?v=cTl3U6aSd2w'], 
               {maxWidth:600}, 
-              function(oembed){
+              function(oembed, dict){
                  alert(oembed.title);
               });
     

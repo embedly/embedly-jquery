@@ -39,6 +39,8 @@
   
   $.embedly = function(url, options, callback){
     options = extendOptions(options);
+    
+    // maintain a dictionary for each of the embeds with the original url, and a reference to the DOM node
     $.fn.embedly.embedArray = [];
     if (typeof url == "object") {
       for(var i in url) {
@@ -60,7 +62,7 @@
 
     options = extendOptions(options);
     callback = (callback != null) ? callback : defaultCallback;
-    $.fn.embedly.embedArray = new Array();
+    $.fn.embedly.embedArray = [];
     
     var nodes = this.each(function() {
       // Handles A tags 
@@ -120,7 +122,8 @@
     return options;
   };
   
-  function defaultCallback(oembed, elem, options){
+  function defaultCallback(oembed, dict, options){
+    var elem = dict.node;
     if(typeof options == "undefined") options = oembed.options;
     if (oembed == null)
       return;
@@ -188,11 +191,12 @@
     }
     for (i in data){
       var node = $.fn.embedly.embedArray[i];
+      // pass in the dictionary for the embed with the original url and node reference
       handleEmbed(node, data[i], options, callback )
     }
   };
 
-  function handleEmbed(elem, data, options, callback){
+  function handleEmbed(dict, data, options, callback){
     //Wrap The Element
     var code = '';
     if (options.wrapElement !=null)
@@ -209,7 +213,7 @@
           if (options.maxHeight != null)
             style += 'max-height:'+options.maxHeight+'px; ';
         }
-        code += '<a href="' + elem.url + '" target="_blank"><img style="'+style+'" src="' + data.url + '" alt="' + title + '"/></a>';
+        code += '<a href="' + dict.url + '" target="_blank"><img style="'+style+'" src="' + data.url + '" alt="' + title + '"/></a>';
         break;
       case "video":
         code += data.html;
@@ -218,8 +222,8 @@
         code += data.html;
         break;
       default :
-        var title = data.title ? data.title : elem.url; 
-        code += '<a href="' + elem.url + '">' + title + '</a>';
+        var title = data.title ? data.title : dict.url; 
+        code += '<a href="' + dict.url + '">' + title + '</a>';
         break;
     }
     
@@ -227,6 +231,6 @@
       code += '</'+options.wrapElement+'>';
 
     data.code = code;
-    callback(data, elem.node, options);
+    callback(data, dict, options);
   };
 })(jQuery);
