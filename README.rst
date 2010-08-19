@@ -78,12 +78,13 @@ maxWidth [`Number:null`]
 maxHeight [`Number:null`]
   A number representing the "max height" in pixels a piece of content can be displayed in your page.
  
-urlRe [`RegEx:(see http://api.embed.ly)`]
+urlRe [`RegEx:`]
   A regular expression representing what links to show content for.  
   Use : http://api.embed.ly/tools/generator to generate regular expressions for a specific set of sources.
 
 method [`String:'replace'`]
   A string value either "replace" or "after" to tell Embedly how to place the content in your page.
+
   * `replace` - replaces the link with the content.
   * `after` - inserts the content after the link.
   * `afterParent` - inserts the content after the parent element.
@@ -99,6 +100,7 @@ addImageStyles [`Boolean:true`]
    
 embedly_wmode [`Default:''`]
   A string value either `window`, `opaque` or `transparent` representing the flash WMODE parameter which allows layering of Flash content with DHTML layers.
+
   * `window` - movie plays in its own rectangular window on a web page.
   * `opaque` - the movie hides everything on the page behind it.
   * `transparent` - the background of the HTML page shows through all transparent portions of the movie, this may slow animation performance.
