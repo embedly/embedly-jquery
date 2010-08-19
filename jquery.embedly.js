@@ -1,5 +1,5 @@
 ﻿/*
- * Embedly JQuery
+ * Embedly JQuery v1.4.2
  * ==============
  * This library allows you to easily embed objects on any page.
  * 
@@ -156,31 +156,41 @@
   };
     
   function embed(urlArray, options, callback){
-    var urls = '';
-    for (var i=0; i< urlArray.length; i++){
-      urls += escape(urlArray[i]["url"]);
-      if( i < (urlArray.length -1 ) ) urls += ",";
+    BATCH_SIZE = 20 // we want to limit our batch size to 20 links at a time
+    var total = urlArray.length;
+    var batches = Math.ceil(total / BATCH_SIZE);    
+    
+    for (var b=1; b <= batches; b++){
+      var urls = '';
+      var start = (b * BATCH_SIZE) - BATCH_SIZE;
+      var end = start + (BATCH_SIZE-1);
+      if (b >= (batches - 1) ) end = start + total;
+      for (var i=start; i<end; i++){
+        urls += escape(urlArray[i]["url"]);
+        if( i < (end - 1 ) ) urls += ",";
+      }
+      //Build The URL
+      var fetchUrl = 'http://api.embed.ly/v1/api/oembed?';
+      fetchUrl += "format=json&urls=" + urls;
+
+      //Deal with maxwidth and max height
+      if (options.maxWidth != null)
+        fetchUrl += "&maxwidth=" + options.maxWidth;	
+      if (options.maxHeight != null)
+        fetchUrl += "&maxheight=" + options.maxHeight;
+      if (options.wmode != null)
+        fetchUrl += "&wmode=" + options.wmode;
+      fetchUrl += "&callback=?";
+
+      //Make the call to Embedly
+      $.ajax( {
+        url: fetchUrl,
+        dataType: 'json',
+        success: function(data){ ajaxSuccess(data, options, callback) },
+        error : function(){ callback(null); }
+      });
+      total = Math.max((total - BATCH_SIZE), 0);
     }
-    //Build The URL
-    var fetchUrl = 'http://api.embed.ly/v1/api/oembed?';
-    fetchUrl += "format=json&urls=" + urls;
-
-    //Deal with maxwidth and max height
-    if (options.maxWidth != null)
-      fetchUrl += "&maxwidth=" + options.maxWidth;	
-    if (options.maxHeight != null)
-      fetchUrl += "&maxheight=" + options.maxHeight;
-    if (options.wmode != null)
-      fetchUrl += "&wmode=" + options.wmode;
-    fetchUrl += "&callback=?";
-
-    //Make the call to Embedly
-    $.ajax( {
-      url: fetchUrl,
-      dataType: 'json',
-      success: function(data){ ajaxSuccess(data, options, callback) },
-      error : function(){ callback(null); }
-    });
   };
 
   function ajaxSuccess(data, options, callback){
