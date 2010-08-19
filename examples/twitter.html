@@ -37,15 +37,17 @@ li {list-style:none; margin:20px; }
 
 function search_twitter(q){
 	$.getJSON("http://search.twitter.com/search.json?q="+escape(q)+"&rpp=20&callback=?", function(data){
+		var arr = new Array();
 		$.each(data.results, function(index, obj){
 			$("#stuff LI").remove();
 			var e=/http:\/\/.*?\s/ig;
 			var p = obj.text.match(e);
 			if (p != null){
 				var u = p[0].replace(' ', '');
-				$.embedly(u, {maxWidth:500},  function(oembed){ if (oembed != null) $("#stuff").append('<li>'+oembed.code+'</li>');});
+				arr.push(u);
 			}
 		});
+		$.embedly(arr, {maxWidth:500},  function(oembed){ if (oembed != null) $("#stuff").append('<li>'+oembed.code+'</li>');});
 	});
 }
 

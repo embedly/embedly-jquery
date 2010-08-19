@@ -35,12 +35,21 @@
  */
 (function($) {
 	$.embedly = function(url, options, callback){
-
 		options = extendOptions(options);
-
-		if (url != null && urlValid(url, options))
-			embed(url, options, callback);
-    	else
+		$.fn.embedly.embedArray = new Array();
+		if (typeof url == "object"){
+			for( i in url){
+				if (urlValid(url[i], options)){
+					$.fn.embedly.embedArray.push({"url":url[i]});
+				} else
+					callback(null);
+			}
+			embed($.fn.embedly.embedArray, options, callback);
+		} else if (url != null && urlValid(url, options)){
+			$.fn.embedly.embedArray.push({"url":url});
+			embed($.fn.embedly.embedArray, options, callback);
+		}
+		else
     		callback(null);
 
 	}
@@ -49,8 +58,8 @@
     	options = extendOptions(options);
 
     	callback = (callback != null) ? callback : defaultCallback;
-
-        return this.each(function() {
+			$.fn.embedly.embedArray = new Array();
+      var nodes = this.each(function() {
         	// Handles A tags 
         	if ($(this).attr('href')){
         		//Get the URL
@@ -62,13 +71,15 @@
         		}
         		// Make sure the URL pass the regex.
         		if (url != null && urlValid(url, options)){
-        			embed(url, options, wrap);
+							$.fn.embedly.embedArray.push({"url":url, "node":$(this)});
+        			//embed(url, options, wrap);
         		//Nope so pass a null to the callback
         		} else {
         			wrap(null);
         		}
         	} else {
         		// If it's not an a tag find all the urls in the elem
+						
         		$(this).find('A').each(function(index, elem){
 	        		elem = $(elem);
 	        		var url = elem.attr('href');
@@ -78,36 +89,42 @@
 	        		}
 	        		// Make sure the URL pass the regex.
 	        		if (url != null && urlValid(url, options)){
-	        			embed(url, options, wrap);
+								$.fn.embedly.embedArray.push({"url":url, "node":$(this)});
+								//embed(url, options, wrap);
 	        		//Nope so pass a null to the callback
 	        		} else {
 	        			wrap(null);
 	        		}
+							
 	        	});
+						//embedList($.fn.embedly.embedArray);
         	}
         });
+				embed($.fn.embedly.embedArray, options, callback);
+				return nodes;
     };
 
     $.fn.embedly.defaults = {
         maxWidth: null,
         maxHeight: null,
-		method: "replace", // 'after'
-		addImageStyles : true,
-		wrapElement : 'div',
-		className : 'embed',
-		urlRe : null
+				method: "replace", // 'after'
+				addImageStyles : true,
+				wrapElement : 'div',
+				className : 'embed',
+				urlRe : null
 		};
 
     function extendOptions(options){
 		// JQuery 1.3 will destroy the urlRe in the $extend. 
 		// We have to do a little hack so it doesn't.
-		var overrideUrlRe = (typeof options.urlRe == 'undefined')?$.fn.embedly.defaults.urlRe:options.urlRe;
-		options = $.extend(true, $.fn.embedly.defaults, options);
-		options.urlRe = overrideUrlRe;
-		return options;
+			var overrideUrlRe = (typeof options.urlRe == 'undefined')?$.fn.embedly.defaults.urlRe:options.urlRe;
+			options = $.extend(true, $.fn.embedly.defaults, options);
+			options.urlRe = overrideUrlRe;
+			return options;
     }
     function defaultCallback(oembed, elem, options){
- 			if (oembed == null)
+			if(typeof options == "undefined") options = oembed.options;
+			if (oembed == null)
  				return;
  
  			switch(options.method)
@@ -137,12 +154,16 @@
 		return (url.match(urlRe) != null && (options.urlRe == null || url.match(options.urlRe) != null));
     }
     
-    function embed(url, options, callback){
-
+    function embed(urlArray, options, callback){
+			var urls = '';
+			for (var i=0; i< urlArray.length; i++){
+				urls += escape(urlArray[i]["url"]);
+				if( i < (urlArray.length -1 ) ) urls += ",";
+			}
     	//Build The URL
     	var fetchUrl = 'http://api.embed.ly/v1/api/oembed?';
 
-    	fetchUrl += "format=json&url=" + escape(url);
+    	fetchUrl += "format=json&urls=" + urls;
 
     	//Deal with maxwidth and max height
 		if (options.maxWidth != null)
@@ -157,56 +178,62 @@
 		fetchUrl += "&callback=?";
 
 		//Make the call to Embedly
-    	$.ajax( {url: fetchUrl,
+    	$.ajax( {
+					url: fetchUrl,
 			  	dataType: 'json',
-			  	success: function(data) {
-    				//Make sure the response isn't empty
-    				if (isEmpty(data) || data.hasOwnProperty('error_code')){
-    					callback(null);
-    					return;
-    				}
-
-    				//Wrap The Element
-    				var code = '';
-    				if (options.wrapElement !=null)
-    					code += '<'+options.wrapElement+' class="'+options.className+'">';
-
-	                switch (data.type) {
-	                    case "photo":
-	                    	var title = data.title ? data.title : '';
-	                    
-	        				//Because of photos like twitpic and tweetphoto we need to let the browser do some of the work
-	                    	var style = '';
-	        				if (options.addImageStyles) {
-	                        	if (options.maxWidth != null)
-	                        		style += 'max-width:'+options.maxWidth+'px; ';
-	                        	if (options.maxHeight != null)
-	    	                    	style += 'max-height:'+options.maxHeight+'px; ';
-	        				}
-	                    	code += '<a href="' + url + '" target="_blank"><img style="'+style+'" src="' + data.url + '" alt="' + title + '"/></a>';
-	                        break;
-	                    case "video":
-	                    	code += data.html;
-	                        break;
-	                    case "rich":
-	                    	code += data.html;
-	                        break;
-	                    default :
-                            var title = data.title ? data.title : url; 
-                            code += '<a href="' + url + '">' + title + '</a>';
-	                    	break;
-	                }
-    				
-    				if (options.wrapElement !=null)
-    					code += '</'+options.wrapElement+'>';
- 
-    				data.code = code;
- 
-    				callback(data);
-    			},
-    			error : function(){
-    				callback(null);
-    			}
+			  	success: function(data){ ajaxSuccess(data, options, callback) },
+    			error : function(){ callback(null); }
     	});
     };
+
+		function ajaxSuccess(data, options, callback){
+				//Make sure the response isn't empty
+				if (isEmpty(data) || data.hasOwnProperty('error_code')){
+					callback(null);
+					return;
+				}
+				for (i in data){
+					var node = $.fn.embedly.embedArray[i];
+					handleEmbed(node, data[i], options, callback )
+				}
+		};
+		
+		function handleEmbed(elem, data, options, callback){
+				//Wrap The Element
+				var code = '';
+				if (options.wrapElement !=null)
+					code += '<'+options.wrapElement+' class="'+options.className+'">';
+
+              switch (data.type) {
+                  case "photo":
+                  	var title = data.title ? data.title : '';
+                  
+      				//Because of photos like twitpic and tweetphoto we need to let the browser do some of the work
+                  	var style = '';
+      				if (options.addImageStyles) {
+                      	if (options.maxWidth != null)
+                      		style += 'max-width:'+options.maxWidth+'px; ';
+                      	if (options.maxHeight != null)
+  	                    	style += 'max-height:'+options.maxHeight+'px; ';
+      				}
+                  	code += '<a href="' + elem.url + '" target="_blank"><img style="'+style+'" src="' + data.url + '" alt="' + title + '"/></a>';
+                      break;
+                  case "video":
+                  	code += data.html;
+                      break;
+                  case "rich":
+                  	code += data.html;
+                      break;
+                  default :
+                        var title = data.title ? data.title : elem.url; 
+                        code += '<a href="' + elem.url + '">' + title + '</a>';
+                  	break;
+              }
+				
+				if (options.wrapElement !=null)
+					code += '</'+options.wrapElement+'>';
+
+				data.code = code;
+				callback(data, elem.node, options);
+		}
 })(jQuery);
