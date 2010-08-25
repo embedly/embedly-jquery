@@ -36,12 +36,13 @@ h4 { font-size:18px; margin:0 0 1em; color:#808080; font-family: "Helvetica Neue
           <li><a href="http://www.youtube.com/watch?v=wCF3ywukQYA">Video</a></li>
         </ul>
       </div>
+      <div style="max-width:100px;"><span><a href="http://leoville.posterous.com/after-the-studio-upgrade" title="After the studio upgrade" style="text-align:center; display:block"><img src="http://files.posterous.com/user_profile_pics/379/leo-april.gif" style="margin-bottom:5px; border:1px solid #dadada" alt="Leo Laporte"/></a><a href="http://leoville.posterous.com/after-the-studio-upgrade" title="After the studio upgrade">After the studio upgrade</a></span><p style="font-size:0.8em; color:#666; margin:0px; padding:0; ">from Leo Laporte</p></div>
     </div>
   </div>
 <script type="text/javascript">
 
 $(document).ready(function() {
-  $("a").embedly({}, function(oembed, dict){
+  /*$("a").embedly({}, function(oembed, dict){
     if ( oembed == null)
       return;
     var output = "<a class='embedly' href='#'><img src='"+oembed.thumbnail_url+"' /></a><span>"+oembed.title+"</span>";
@@ -51,7 +52,7 @@ $(document).ready(function() {
   $('a.embedly').live("click", function(e){
     e.preventDefault();
     $(this).parents('li').find('.embed').toggle();
-  });
+  });*/
 });
 </script>
 

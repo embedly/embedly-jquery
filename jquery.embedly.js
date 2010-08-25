@@ -156,7 +156,7 @@
   }
     
   function embed(urlArray, options, callback){
-    BATCH_SIZE = 20;         // we want to limit our batch size to 20 links at a time
+    var BATCH_SIZE = 20;         // we want to limit our batch size to 20 links at a time
     var total = urlArray.length;
     var batches = Math.ceil(total / BATCH_SIZE);    
     
@@ -170,13 +170,15 @@
         if( i < (end - 1 ) ) {urls += ","; }
       }
       //Build The URL
-      var dimensions = { "width": urlArray[0].node.parent().width(), "height": urlArray[0].node.parent().height()};
+			if(typeof urlArray[0].node == "object"){
+      	var dimensions = { "width": urlArray[0].node.parent().width(), "height": urlArray[0].node.parent().height()};
+			}
       var fetchUrl = 'http://api.embed.ly/v1/api/oembed?';
       fetchUrl += "format=json&urls=" + urls;
 
       //Deal with maxwidth and max height
       if (options.maxWidth !== null) { fetchUrl += "&maxwidth=" + options.maxWidth; }
-      else { fetchUrl += "&maxwidth=" + dimensions.width; }                            // we really only need to limit the width. 
+      else if(typeof dimensions != "undefined" ){ fetchUrl += "&maxwidth=" + dimensions.width; }                            // we really only need to limit the width. 
       if (options.maxHeight !== null) { fetchUrl += "&maxheight=" + options.maxHeight; }  // Most containers have variable height
       if (options.wmode !== null) { fetchUrl += "&wmode=" + options.wmode; } // If you're concerned about height, set a maxheight
       fetchUrl += "&callback=?";
