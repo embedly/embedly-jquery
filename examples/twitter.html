@@ -47,7 +47,11 @@ function search_twitter(q){
 				arr.push(u);
 			}
 		});
-		$.embedly(arr, {maxWidth:500},  function(oembed){ if (oembed != null) $("#stuff").append('<li>'+oembed.code+'</li>');});
+		$.embedly(arr, {maxWidth:500},  function(oembed){ 
+		  if (oembed != null) {
+		    $("#stuff").append('<li>'+(oembed.code)+'</li>');
+		  }
+		});
 	});
 }
 
