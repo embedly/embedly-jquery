@@ -228,7 +228,7 @@
                 success: function(data) {
                     return $.each(data,
                     function(index, elem) {
-                        return !elem.error_code ? embed(elem, batch[index]) : null;
+                        return elem.title && !elem.error_code ? embed(elem, batch[index]) : settings.success(null, batch[index]);
                     });
                 }
             });
