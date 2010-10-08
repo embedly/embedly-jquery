@@ -41,6 +41,7 @@
         settings = $.extend({
           maxWidth: null,
           maxHeight: null,
+          wmode: null,
           method: "replace",
           addImageStyles: true,
           wrapElement: 'div',
@@ -140,6 +141,7 @@
         settings = $.extend({
             maxWidth: null,
             maxHeight: null,
+            wmode: null,
             method: "replace",
             addImageStyles: true,
             wrapElement: 'div',
@@ -182,16 +184,13 @@
                         "height": e.node.parent().height()
                     };
                 }
-                return e.url;
+                return encodeURIComponent(e.url);
             }).join(',');
-            data = {
-                format: 'json',
-                urls: urls
-            };
-            if (settings.maxWidth !== null) {data.maxwidth = settings.maxWidth;}
-            else if (typeof dimensions != "undefined") { data.maxwidth = dimensions.width;} // we really only need to limit the width.
-            if (settings.maxHeight !== null) {data.maxheight = settings.maxHeight;}         // Most containers have variable height
-            if (settings.wmode !== null) { data.wmode = settings.wmode;}                    // If you're concerned about height, set a maxheight
+            data = 'urls='+urls;
+            if (settings.maxWidth !== null) {data += '&maxwidth='+ settings.maxWidth;}
+            else if (typeof dimensions != "undefined") { data += '&maxwidth='+ dimensions.width;} // we really only need to limit the width.
+            if (settings.maxHeight !== null) {data += '&maxheight=' +settings.maxHeight;}         // Most containers have variable height
+            if (settings.wmode !== null) { data += '&wmode='+ settings.wmode;}                    // If you're concerned about height, set a maxheight
             embed = function(oembed, dict) {
                 var _a, code, style, title;
                 if ((_a = oembed.type) === 'photo') {
