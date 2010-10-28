@@ -92,10 +92,12 @@
                     style = [];
                     if (settings.addImageStyles) {
                         if (settings.maxWidth) {
-                            style.push("max-width: " + (settings.maxWidth));
+                          units = typeof settings.maxHeight == "number" ? 'px' : '';
+                            style.push("max-width: " + (settings.maxWidth)+units);
                         }
                         if (settings.maxHeight) {
-                            style.push("max-height: " + (settings.maxHeight));
+                          units = typeof settings.maxHeight == "number" ? 'px' : '';
+                            style.push("max-height: " + (settings.maxHeight)+units);
                         }
                     }
                     style = style.join(';');

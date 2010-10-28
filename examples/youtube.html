@@ -41,7 +41,8 @@ h4 { font-size:18px; margin:0 0 1em; color:#808080; font-family: "Helvetica Neue
 <script type="text/javascript">
 
 $(document).ready(function() {
-  $("a").embedly({}, function(oembed, dict){
+  $("a").embedly({maxWidth: 400, wrapElement: 'div', method : "after" });
+  /*$("a").embedly({}, function(oembed, dict){
     if ( oembed == null)
       return;
     var output = "<a class='embedly' href='#'><img src='"+oembed.thumbnail_url+"' /></a><span>"+oembed.title+"</span>";
@@ -51,7 +52,7 @@ $(document).ready(function() {
   $('a.embedly').live("click", function(e){
     e.preventDefault();
     $(this).parents('li').find('.embed').toggle();
-  });
+  });*/
 });
 </script>
 
