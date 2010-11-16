@@ -17,7 +17,7 @@ li {list-style:none; margin:20px; }
 </style>
 </head>
 <body>
-<div id="header"><a href="http://api.embed.ly"><img src="http://api.embed.ly/static/img/header_orange.png"/></a></div>
+<div id="header"><a href="http://api.embed.ly"><img src="http://static.embed.ly/images/logo.png"/></a></div>
 <div id="content" class="main">
 
 <ul>
@@ -35,7 +35,11 @@ li {list-style:none; margin:20px; }
 <script type="text/javascript">
 
 $(document).ready(function() {
-	$("a").embedly({maxWidth: 400, wrapElement: 'div', method : "after" });
+	$('ul a').bind('oembed', function(e){
+	  $(this).after('<h2>'+$(this).data('oembed').title+'</h2>');
+  });
+  $("ul a").embedly({maxWidth: 400, wrapElement: 'div', method : "after" }).css({color:"#ff0033",fontWeight:"bold",display:"block",padding:"2em"}).animate({left: '+=50', opacity:0.25}, 2000, function(){ $(this).css({color:"#4444ee"}).animate({opacity:0.8},1000, function(){ }); });
+  
 });
 </script>
 
