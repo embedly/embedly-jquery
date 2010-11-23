@@ -184,10 +184,14 @@
     var urls = new Array();
     if ( $(this).attr('href') ) {
       this.each(function(){
-        urls.push($(this).attr('href'));
+        if (typeof $(this).attr('href') != "undefined")
+          urls.push($(this).attr('href'));
       });
     } else {
-      $(this).find('a').embedly(options, callback);
+      $(this).find('a').each(function(){
+        if( typeof $(this).attr('href') != "undefined" )
+          urls.push($(this).attr('href'));
+      });
     }
     var elems = $.embedly(urls, settings);
     return $.each(elems, function(v, i){
