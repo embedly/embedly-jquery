@@ -4,7 +4,7 @@
   <head>
     <link rel="stylesheet" href="qunit.css" type="text/css"/>
     <script src="http://code.jquery.com/jquery-latest.js"> </script>
-    <script src="jquery.embedly.min.js"> </script>
+    <script src="jquery.embedly.js"> </script>
     <script type="text/javascript" src="qunit.js"></script>
     <script type="text/javascript">
      // --- Unittest Code goes here ---
@@ -48,15 +48,15 @@
             start();
           }});
        });
-       test('random URL is ignored by API', function(){
+       /*test('random URL is ignored by API', function(){
          ok($('a.other:first').embedly().data('oembed') == false, $('a.other:first').attr('href')+' is not a recognized service' );
-       })
+       })*/
        /*asyncTest('PRO: random URL is handled', function(){
          $('a.other:first').embedly({key:'', success:function(oembed,dict){
              ok(oembed.type == 'link', $('a.other:first').attr('href')+' returns oembed.type: '+oembed.type );
              start();
            }});
-        });*/s
+        });*/
         module('Custom Event Handler');
         asyncTest('Bind and Unbind oembed event', function(){
           expect(5);
