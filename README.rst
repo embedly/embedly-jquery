@@ -163,7 +163,7 @@ continue to use our default callback function for writing embeds to the page and
   });
 
   # version 2
-  $('a').embedly({maxWidth:500}).bind('embedly-oembed, function(e, oembed){
+  $('a').embedly({maxWidth:500}).bind('embedly-oembed', function(e, oembed){
     alert(oembed.title);
   });
 
