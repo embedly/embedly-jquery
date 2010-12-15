@@ -3,7 +3,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Embedly - Embed - Example</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>  
-<script type="text/javascript" src="../jquery.embedly.js"></script>
+<script type="text/javascript" src="../embedly.js"></script>
+<script type="text/javascript">
+
+	// set custom embedly defaults
+	// More customizations at http://api.embed.ly/tools/script
+	var embedly_maxWidth = 400;
+</script>
 <style>
 BODY {background-color:#333333;}
 #content{background-color:#FFFFFF;margin:100px auto;width:800px;}
@@ -22,6 +28,7 @@ li {list-style:none; margin:20px; }
 <div id="content" class="main">
 
 <ul>
+<li><a href="http://twitpic.com/2wgb36" target="_blank">photo</a></li>
 <li><a href="http://twitpic.com/1c4t5h">Photo</a></li>
 <li><a href="http://twitpic.com/1c4t4s">Photo</a></li>
 <li><a href="http://twitpic.com/1c4s7c">Photo</a></li>
@@ -36,9 +43,10 @@ li {list-style:none; margin:20px; }
 </div>
 <script type="text/javascript">
 
-$(document).ready(function() {
+/*$(document).ready(function() {
 	$("a").embedly({maxWidth: 300, wrapElement: 'div', method : "after" });
-});
+});*/
+
 </script>
 
 </body>
