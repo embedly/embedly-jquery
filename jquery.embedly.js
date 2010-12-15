@@ -101,7 +101,7 @@
                style = [];
                if (settings.addImageStyles) {
                    if (settings.maxWidth) {
-                     units = typeof settings.maxHeight == "number" ? 'px' : '';
+                     units = typeof settings.maxWidth == "number" ? 'px' : '';
                        style.push("max-width: " + (settings.maxWidth)+units);
                    }
                    if (settings.maxHeight) {
