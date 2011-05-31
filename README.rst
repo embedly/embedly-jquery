@@ -104,11 +104,12 @@ urlRe [`RegEx:`]
   Use : http://api.embed.ly/tools/generator to generate regular expressions for a specific set of sources.
 
 method [`String:'replace'`]
-  A string value either "replace" or "after" to tell Embedly how to place the content in your page.
+  A string value to tell Embedly how to place the content in your page.
 
-  * `replace` - replaces the link with the content.
-  * `after` - inserts the content after the link.
-  * `afterParent` - inserts the content after the parent element.
+  * `replace` - replaces the link with the content
+  * `after` - inserts the content after the link
+  * `afterParent` - inserts the content after the parent element
+  * `replaceParent` - replaces parent element with the embed content
 
 wrapElement [`String:'div'`]
   A string value representing the valid html element to wrap the content in.
