@@ -79,6 +79,7 @@
            if ((_a = settings.method) === 'replace') { return elem.replaceWith(oembed.code); } 
            else if (_a === 'after') { return elem.after(oembed.code); } 
            else if (_a === 'afterParent') { return elem.parent().after(oembed.code); }
+           else if (_a === 'replaceParent') { return elem.parent().replaceWith(oembed.code); }
          }
        }
        var urlValid = function(url){
