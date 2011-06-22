@@ -13,13 +13,10 @@ The most up-to-date documentation can be found on the `README
 <http://github.com/embedly/embedly-jquery/blob/master/README.rst>`_. If you've discovered the recursive nature of that statement, good on you. 
 You can continue to read the most up-to-date documentation below.
 
-Updates in Rev 2.0.0
+Updates in Rev 2.1.0
 ====================
-* added support for jQuery chainability
-* new usage of jQuery.data() for saving oEmbed data to the DOM
-* added a custom event for handling oEmbed returns
-* added support for pro.embed.ly
-* added qUnit testing suite and tests
+* added an Error handling function
+* updated Pro to point to API
 
 Requirements
 ============
@@ -92,7 +89,10 @@ Use a CSS selector to replace every valid link with an embed on the page.
   
 Valid Options
 -------------
-
+endpoint [`String:oembed`]
+  A string value mapping to one of three Embedly endpoints. A key is required for preview and ojectify
+  
+  * `oembed` - `http://embed
 maxWidth [`Number:null`]
   A number representing the "max width" in pixels a piece of content can be displayed in your page.
  
@@ -126,9 +126,10 @@ embedly_wmode [`String:'opaque'`]
   * `window` - movie plays in its own rectangular window on a web page.
   * `opaque` - the movie hides everything on the page behind it.
   * `transparent` - the background of the HTML page shows through all transparent portions of the movie, this may slow animation performance.
+  
 key [`string:''`]
-  If you are an Embedly Pro user, you should have a Pro Key assigned. Log in at `http://pro.embed.ly/login <http://pro.embed.ly/login>`_ to find your API Key. This will unlock all the features of
-  pro.embed.ly for your site
+  Sign up for a key at `http://embed.ly/pricing <http://embed.ly/pricing>`_. Existing users can log in at `http://app.embed.ly/login <http://app.embed.ly/login>`_ to
+  get your Embedly key. Embedly keys will unlock advanced features like embedding any URL and Safe Browse support.
   
 success [`Function:default function`]
   If you would like to replace our default callback action, which takes ['replace','after','afterParent'] as a parameter and writes the oEmbed.code to your DOM element,
@@ -136,11 +137,21 @@ success [`Function:default function`]
   of this optional parameter.  If you want to access the oEmbed data, but still keep the default callback function, we have introduced a new custom event handler that fires
   when the oEmbed object is returned. Read below for more information on that
 
-Pro
-===
-Starting in revision 2.0.0 we are supporting Embedly Pro. While API requests are limited to the 150+ services we currently support and maintain, Pro users get the added
-benefit of being able to preview any URL. We will return a title, a description, and any relevant information we can scrape from the URL. If you would like to learn more,
-visit `http://pro.embed.ly <http://pro.embed.ly>`_ If you have your Pro Key, be sure to include it in your optional parameters.
+error [`Function:default function`]
+  Developers can write a function to handle URLs that Embedly does not. For accounts without an Embedly key, this will include URLs from services not in
+  our 218 supported providers. The error function has two parameters:
+  
+  * 'node' - this is a jQuery reference for the original <a> tag with the erroneous URL
+  * 'dict' - an object containing error information. More information on what the dict includes can be found in 
+             our `Documentation <http://embed.ly/docs/endpoints/1/oembed#error-codes>`_.
+             
+Endpoints
+=========
+Embedly had three endpoints to choose from: 'oembed', 'preview', and 'objectify'. Preview and Objectify are only available for developers with valid
+Embedly keys. Users can sign up for a key `here <http://embed.ly/pricing>`_. Each of the endpoints offer different perspectives of a URL. You can
+read about the major differences in our `Endpoint Documentation <http://embed.ly/docs/endpoints>`_. Developers intending to use Preview or Objectify
+will have to include their own callback function for handling the embeds. Our default success callback is designed to work with 'oembed' only.
+
 
 Custom Event
 ============
