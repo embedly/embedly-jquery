@@ -1,5 +1,5 @@
 /*
- * Embedly JQuery v2.1.0
+ * Embedly JQuery v2.1.1
  * ==============
  * This library allows you to easily embed objects on any page.
  * 
@@ -44,7 +44,7 @@
    $.embedly = $.embedly || {}
    if ( $.embedly.version ) { return; }
 
-   $.embedly.version = "2.1.0";
+   $.embedly.version = "2.1.1";
    
    $.extend({
      embedly: function(urls, options, callback){
@@ -120,9 +120,6 @@
        var processEmbed = function(oembed, dict) {
            // bypass any embed processing for preview, objectify endpoints
            // for advanced users only
-           if(oembed.type == 'error'){
-             return settings.error(dict.node, oembed);
-           }
            if(settings.endpoint != 'oembed'){
              return settings.success(oembed, dict);
            }
@@ -188,7 +185,7 @@
              success: function(data) {
                  return $.each(data,
                  function(index, elem) {
-                     return elem.type != 'error' ? processEmbed(elem, batch[index]) : null;
+                     return elem.type != 'error' ? processEmbed(elem, batch[index]) : settings.error(batch[index].node, elem);
                  });
              }
          });

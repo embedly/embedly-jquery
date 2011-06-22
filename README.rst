@@ -13,7 +13,7 @@ The most up-to-date documentation can be found on the `README
 <http://github.com/embedly/embedly-jquery/blob/master/README.rst>`_. If you've discovered the recursive nature of that statement, good on you. 
 You can continue to read the most up-to-date documentation below.
 
-Updates in Rev 2.1.0
+Updates in Rev 2.1.1
 ====================
 * added an Error handling function
 * updated Pro to point to API
