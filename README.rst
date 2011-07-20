@@ -4,7 +4,8 @@ Embedly - JQuery - An OEmbed Library to Replace Links with Content
 
 Embedly - JQuery is a JQuery Library for Embedly that will replace links with
 content. It follows the oEmbed spec (http://oembed.com) for content retrieval,
-while utilizing http://api.embed.ly as a single endpoint.
+while utilizing http://api.embed.ly as a single endpoint. 
+`Note`: We recommended signing up and adding the `key <http://embed.ly/pricing>`_ parameter to your calls for higher usage.
 
 Documentation
 =============
@@ -50,6 +51,15 @@ Will Return a JSON object representing an oembed or null, and a dictionary objec
                            alert(oembed.title);
                          });
 
+    # Call with key set to <your embedly key>, maxWidth option set to 600px and maxHeight option set to 400px
+    $.embedly('http://www.youtube.com/watch?v=LfamTmY5REw', 
+             { maxWidth: 600, 
+              maxHeight: 400,
+              key: 'insert your embedly key', 
+                success: function(oembed, dict){ 
+                           alert(oembed.title);
+                         });
+
     # Pass in an array of urls to load simultaneously
     $.embedly(['http://www.youtube.com/watch?v=LfamTmY5REw', 
                'http://www.youtube.com/watch?v=lOC_JjNFkVw', 
@@ -90,9 +100,16 @@ Use a CSS selector to replace every valid link with an embed on the page.
 Valid Options
 -------------
 endpoint [`String:oembed`]
-  A string value mapping to one of three Embedly endpoints. A key is required for preview and ojectify
+  A string value mapping to one of three Embedly endpoints. A `paid plan <http://embed.ly/pricing>`_  is required for preview and ojectify.
   
-  * `oembed` - `http://embed
+  * `oembed <http://embed.ly/docs/endpoints/1/oembed>`_ - a standard in 3rd party embedding, contains a finite set of attributes.
+  * `preview <http://embed.ly/docs/endpoints/1/preview>`_ - returns a larger set of attributes (multiple images, RSS content, and embeds in page) for customizing your embed.
+  * `objectify <http://embed.ly/docs/endpoints/2/objectify>`_ - returns all of the meta and api data Embedly has for a link. Advanced users.
+  
+key [`string:''`]
+  You can `sign up <http://embed.ly/pricing>`_ or `log in <http://app.embed.ly/login>`_ as an existing user to retrieve your Embedly key. 
+  A key will allow higher usage levels and extra features, see `breakdown <http://embed.ly/pricing>`_.
+
 maxWidth [`Number:null`]
   A number representing the "max width" in pixels a piece of content can be displayed in your page.
  
@@ -126,11 +143,7 @@ embedly_wmode [`String:'opaque'`]
   * `window` - movie plays in its own rectangular window on a web page.
   * `opaque` - the movie hides everything on the page behind it.
   * `transparent` - the background of the HTML page shows through all transparent portions of the movie, this may slow animation performance.
-  
-key [`string:''`]
-  Sign up for a key at `http://embed.ly/pricing <http://embed.ly/pricing>`_. Existing users can log in at `http://app.embed.ly/login <http://app.embed.ly/login>`_ to
-  get your Embedly key. Embedly keys will unlock advanced features like embedding any URL and Safe Browse support.
-  
+
 success [`Function:default function`]
   If you would like to replace our default callback action, which takes ['replace','after','afterParent'] as a parameter and writes the oEmbed.code to your DOM element,
   You may do so with this function. Alternatively you can use the optional function parameter in the embedly({}, function(){}) call, but we're deprecating that in favor
