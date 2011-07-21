@@ -72,7 +72,7 @@
          settings = $.extend(defaults, options);
        else
          settings = defaults;
-       if (settings.urlRe == null) settings.urlRe = window.embedlyURLre
+       if (!settings.urlRe) {settings.urlRe = window.embedlyURLre; }
        if (typeof urls == "string") urls = new Array(urls);
        if (typeof callback != "undefined"){ settings.success = callback; }
        if (settings.success == null) {
@@ -93,7 +93,8 @@
          }
        }
        var urlValid = function(url){
-         return (url.match(settings.urlRe) !== null);
+         console.log(settings.urlRe.test(url));
+         return settings.urlRe.test(url);
        }
 
        var getParams = function(urls){
@@ -192,11 +193,11 @@
        }
        $.each(urls, function(i, v){
          node = typeof settings.elems !== "undefined" ? settings.elems[i] : null;
-         if(typeof node != "undefined" && !(urlValid(v) || settings.key)){ 
+         if(typeof node != "undefined" && !urlValid(v)){ 
            $(node).data('oembed', false); 
          }
          var err = {url: v, error_code:400, error_message:'HTTP 400: Bad Request', type:'error'};
-         return v && (urlValid(v) || settings.key) ? elems.push({'url':v, 'node':node }) : settings.error(node, err);
+         return (v && urlValid(v)) ? elems.push({'url':v, 'node':node }) : settings.error(node, err);
        });
        var _a = [];
        var _b = elems.length;
