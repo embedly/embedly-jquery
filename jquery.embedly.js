@@ -1,5 +1,5 @@
 /*
- * Embedly JQuery v2.1.2
+ * Embedly JQuery v2.1.3
  * ==============
  * This library allows you to easily embed objects on any page.
  * 
