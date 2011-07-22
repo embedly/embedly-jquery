@@ -93,7 +93,6 @@
          }
        }
        var urlValid = function(url){
-         console.log(settings.urlRe.test(url));
          return settings.urlRe.test(url);
        }
 
