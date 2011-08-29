@@ -206,6 +206,5 @@ Embedly URLs
 
    * Git location:       http://github.com/embedly/embedly-jquery/
    * Home Page:          http://embed.ly
-   * API Page:           http://api.embed.ly
    * Support:            http://support.embed.ly
 
