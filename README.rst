@@ -14,9 +14,9 @@ The most up-to-date documentation can be found on the `README
 <http://github.com/embedly/embedly-jquery/blob/master/README.rst>`_. If you've discovered the recursive nature of that statement, good on you. 
 You can continue to read the most up-to-date documentation below.
 
-Updates in Rev 2.1.3
+Updates in Rev 2.1.5
 ====================
-* fixed urlRe not being respected
+* added secure flag for https requests
 
 Requirements
 ============
@@ -115,6 +115,9 @@ maxWidth [`Number:null`]
 maxHeight [`Number:null`]
   A number representing the "max height" in pixels a piece of content can be displayed in your page.
  
+secure [`Boolean:false`]
+  Set to true if you want your requests to be HTTPS
+  
 urlRe [`RegEx:`]
   A regular expression representing what links to show content for.  
   Use : http://api.embed.ly/tools/generator to generate regular expressions for a specific set of sources.

@@ -1,5 +1,5 @@
 /*
- * Embedly JQuery v2.1.4
+ * Embedly JQuery v2.1.5
  * ==============
  * This library allows you to easily embed objects on any page.
  * 
@@ -54,6 +54,7 @@
          endpoint:         'oembed',        // default endpoint is oembed (preview and objectify available too)
          maxWidth:         null,             // force a maxWidth on all returned media
          maxHeight:        null,             // force a maxHeight on all returned media
+         secure:           false,            // use https endpoint vs http
          wmode:            'opaque',         // for flash elements set a wmode
          autoplay:         null,             // tell videos to autoplay
          width:            null,             // force a width on all video/rich media
@@ -75,6 +76,7 @@
        if (!settings.urlRe) {settings.urlRe = window.embedlyURLre; }
        if (typeof urls == "string") urls = new Array(urls);
        if (typeof callback != "undefined"){ settings.success = callback; }
+       if (settings.secure) path='https://api.embed.ly/';
        if (settings.success == null) {
          settings.success = function(oembed, dict){
            var _a, elem = $(dict.node);
