@@ -2,7 +2,7 @@
  * Embedly JQuery v2.1.5
  * ==============
  * This library allows you to easily embed objects on any page.
- * 
+ *
  * Requirements:
  * -------------
  * jquery-1.3 or higher
@@ -12,40 +12,40 @@
  * There are two ways to interact with this lib. One exposes a simple method to call embedly directly
  *
  * >>> $.embedly('http://www.youtube.com/watch?v=LfamTmY5REw', {}, function(oembed){ alert(oembed.title);});
- * 
+ *
  * The oembed is either a json object or null
- * 
+ *
  * You can also reference it this way, which will try and replace every link on the page with an embed
- * 
+ *
  * Documentation is availiable at http://github.com/embedly/embedly-jquery
  *
  * $('a').embedly();
- * 
+ *
  * The Options Are as Follows
- * 
+ *
  *  maxWidth : null,
  *  maxHeight: null,
  *  autoplay: null,
  *  width: null,
  *  urlRe : null,
  *  method : 'replace',
- *  wrapElement : 'div', 
+ *  wrapElement : 'div',
  *  className : 'embed',
  *  addImageStyles : true,
  *  wmode : null} //after
- * 
+ *
  * http://api.embed.ly/tools/generator - generate your own regex for only sources you want
- * 
+ *
  */
 
  (function($){
    window.embedlyURLre = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-   
+
    $.embedly = $.embedly || {}
    if ( $.embedly.version ) { return; }
 
    $.embedly.version = "2.1.1";
-   
+
    $.extend({
      embedly: function(urls, options, callback){
        var elems = [];
@@ -81,8 +81,8 @@
          settings.success = function(oembed, dict){
            var _a, elem = $(dict.node);
            if (! (oembed) ) { return null; }
-           if ((_a = settings.method) === 'replace') { return elem.replaceWith(oembed.code); } 
-           else if (_a === 'after') { return elem.after(oembed.code); } 
+           if ((_a = settings.method) === 'replace') { return elem.replaceWith(oembed.code); }
+           else if (_a === 'after') { return elem.after(oembed.code); }
            else if (_a === 'afterParent') { return elem.parent().after(oembed.code); }
            else if (_a === 'replaceParent') { return elem.parent().replaceWith(oembed.code); }
          }
@@ -105,7 +105,7 @@
          if (settings.maxHeight != null) {_p += '&maxheight=' +settings.maxHeight;}
          _p += '&wmode='+ settings.wmode;
          if (typeof settings.key == "string") _p += "&key="+settings.key;
-         if (typeof settings.autoplay == "string") _p += "&autoplay="+settings.autoplay;
+         if (typeof settings.autoplay == "string" || typeof settings.autoplay == "boolean") _p += "&autoplay="+settings.autoplay;
          if (settings.width) _p += "&width="+settings.width;
          return _p;
        }
@@ -125,7 +125,7 @@
            if(settings.endpoint != 'oembed'){
              return settings.success(oembed, dict);
            }
-           
+
            var _a, code, style, title;
            if ((_a = oembed.type) === 'photo') {
                title = oembed.title || '';
@@ -196,8 +196,8 @@
        }
        $.each(urls, function(i, v){
          node = typeof settings.elems !== "undefined" ? settings.elems[i] : null;
-         if(typeof node != "undefined" && !urlValid(v)){ 
-           $(node).data('oembed', false); 
+         if(typeof node != "undefined" && !urlValid(v)){
+           $(node).data('oembed', false);
          }
          var err = {url: v, error_code:400, error_message:'HTTP 400: Bad Request', type:'error'};
          return (v && urlValid(v)) ? elems.push({'url':v, 'node':node }) : settings.error(node, err);
