@@ -26,6 +26,7 @@
  *  maxWidth : null,
  *  maxHeight: null,
  *  autoplay: null,
+ *  chars: null,
  *  width: null,
  *  urlRe : null,
  *  method : 'replace',
@@ -52,6 +53,7 @@
        var path = "http://api.embed.ly/";
        var defaults = {
          endpoint:         'oembed',        // default endpoint is oembed (preview and objectify available too)
+         chars:            null,             // Default number of characters in description
          maxWidth:         null,             // force a maxWidth on all returned media
          maxHeight:        null,             // force a maxHeight on all returned media
          secure:           false,            // use https endpoint vs http
@@ -103,6 +105,7 @@
          if (settings.maxWidth != null) {_p += '&maxwidth='+ settings.maxWidth;}
          else if (typeof dimensions != "undefined") { _p += '&maxwidth='+ dimensions.width;}
          if (settings.maxHeight != null) {_p += '&maxheight=' +settings.maxHeight;}
+         if (settings.chars != null) {_p += '&chars='+ settings.chars;}
          _p += '&wmode='+ settings.wmode;
          if (typeof settings.key == "string") _p += "&key="+settings.key;
          if (typeof settings.autoplay == "string" || typeof settings.autoplay == "boolean") _p += "&autoplay="+settings.autoplay;
@@ -149,8 +152,8 @@
            } else {
                title = oembed.title || dict.url;
                thumb = oembed.thumbnail_url ? '<img src="'+oembed.thumbnail_url+'" class="thumb" />' : '';
-               description = oembed.description;
-               provider = oembed.provider_name ? '<a href="'+oembed.provider_url+'" class="provider">'+oembed.provider_name+'</a> - ' : '';
+               description = oembed.description ? '<div class="description">'+oembed.description+'</div>' : '';
+               provider = oembed.provider_name ? '<a href="'+oembed.provider_url+'" class="provider">'+oembed.provider_name+'</a>' : '';
                code = thumb+"<a href='" + dict.url + "'>" + title + "</a>";
                code += provider;
                code += description;
