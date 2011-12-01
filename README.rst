@@ -263,9 +263,9 @@ BSD License can be found at - http://github.com/embedly/embedly-jquery/tree/mast
 Embedly URLs
 ------------
 
-   * Git location:       http://github.com/embedly/embedly-jquery/
-   * Home Page:          http://embed.ly
-   * Support:            http://support.embed.ly
+* Git location:       http://github.com/embedly/embedly-jquery/
+* Home Page:          http://embed.ly
+* Support:            http://support.embed.ly
 
 Changelog
 ---------
