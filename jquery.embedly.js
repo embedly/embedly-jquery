@@ -1,5 +1,5 @@
 /*
- * Embedly JQuery v2.1.5
+ * Embedly JQuery v2.1.6
  * ==============
  * This library allows you to easily embed objects on any page.
  *
@@ -45,36 +45,16 @@
    $.embedly = $.embedly || {}
    if ( $.embedly.version ) { return; }
 
-   $.embedly.version = "2.1.1";
-
    $.extend({
      embedly: function(urls, options, callback){
        var elems = [];
        var path = "http://api.embed.ly/";
-       var defaults = {
-         endpoint:         'oembed',        // default endpoint is oembed (preview and objectify available too)
-         chars:            null,             // Default number of characters in description
-         maxWidth:         null,             // force a maxWidth on all returned media
-         maxHeight:        null,             // force a maxHeight on all returned media
-         secure:           false,            // use https endpoint vs http
-         wmode:            'opaque',         // for flash elements set a wmode
-         autoplay:         null,             // tell videos to autoplay
-         width:            null,             // force a width on all video/rich media
-         method:           'replace',        // embed handling option for standard callback
-         addImageStyles:   true,             // add style="" attribute to images for maxWidth and maxHeight
-         wrapElement:      'div',            // standard wrapper around all returned embeds
-         className:        'embed',          // class on the wrapper element
-         urlRe:            null,             // custom regex function
-         key:              null,             // an embed.ly key
-         elems:            [],               // array to hold nodes
-         success:          null,             // default callback
-         error:            null              // error-handling function
-       };
+
        var settings;
        if (typeof options != "undefined")
-         settings = $.extend(defaults, options);
+         settings = $.extend($.embedly.defaults, options);
        else
-         settings = defaults;
+         settings = $.embedly.defaults;
        if (!settings.urlRe) {settings.urlRe = window.embedlyURLre; }
        if (typeof urls == "string") urls = new Array(urls);
        if (typeof callback != "undefined"){ settings.success = callback; }
@@ -106,6 +86,7 @@
          else if (typeof dimensions != "undefined") { _p += '&maxwidth='+ dimensions.width;}
          if (settings.maxHeight != null) {_p += '&maxheight=' +settings.maxHeight;}
          if (settings.chars != null) {_p += '&chars='+ settings.chars;}
+         if (settings.words != null) {_p += '&words='+ settings.words;}
          _p += '&wmode='+ settings.wmode;
          if (typeof settings.key == "string") _p += "&key="+settings.key;
          if (typeof settings.autoplay == "string" || typeof settings.autoplay == "boolean") _p += "&autoplay="+settings.autoplay;
@@ -216,6 +197,32 @@
          return this;
      }
    });
+
+   // Versions
+   $.embedly.version = "2.1.6";
+
+   // Once the function is we can add defaults as an attribute
+   $.embedly.defaults = {
+       endpoint:         'oembed',         // default endpoint is oembed (preview and objectify available too)
+       chars:            null,             // Default number of characters in description
+       words,            null,             // Default number of words in description
+       maxWidth:         null,             // force a maxWidth on all returned media
+       maxHeight:        null,             // force a maxHeight on all returned media
+       secure:           false,            // use https endpoint vs http
+       frame:            false,            // serves all embeds within an iframe to avoid XSS issues
+       wmode:            'opaque',         // for flash elements set a wmode
+       autoplay:         null,             // tell videos to autoplay
+       width:            null,             // force a width on all video/rich media
+       method:           'replace',        // embed handling option for standard callback
+       addImageStyles:   true,             // add style="" attribute to images for maxWidth and maxHeight
+       wrapElement:      'div',            // standard wrapper around all returned embeds
+       className:        'embed',          // class on the wrapper element
+       urlRe:            null,             // custom regex function
+       key:              null,             // an embed.ly key
+       elems:            [],               // array to hold nodes
+       success:          null,             // default callback
+       error:            null              // error-handling function
+    };
 
    $.fn.embedly = function(options, callback){
      var settings = typeof options != "undefined" ? options : {};
