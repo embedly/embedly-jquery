@@ -40,9 +40,9 @@
  */
 
  (function($){
-   window.embedlyURLre = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+   window.embedlyURLre = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 
-   $.embedly = $.embedly || {}
+   $.embedly = $.embedly || {};
    if ( $.embedly.version ) { return; }
 
    $.extend({
@@ -51,15 +51,17 @@
        var path = "http://api.embed.ly/";
 
        var settings;
-       if (typeof options != "undefined")
+       if (typeof options !== "undefined"){
          settings = $.extend($.embedly.defaults, options);
-       else
+       }
+       else {
          settings = $.embedly.defaults;
+       }
        if (!settings.urlRe) {settings.urlRe = window.embedlyURLre; }
-       if (typeof urls == "string") urls = new Array(urls);
-       if (typeof callback != "undefined"){ settings.success = callback; }
-       if (settings.secure) path='https://api.embed.ly/';
-       if (settings.success == null) {
+       if (typeof urls === "string"){ urls = new Array(urls); }
+       if (typeof callback !== "undefined"){ settings.success = callback; }
+       if (settings.secure){ path = 'https://api.embed.ly/';}
+       if (settings.success === null) {
          settings.success = function(oembed, dict){
            var _a, elem = $(dict.node);
            if (! (oembed) ) { return null; }
@@ -67,60 +69,62 @@
            else if (_a === 'after') { return elem.after(oembed.code); }
            else if (_a === 'afterParent') { return elem.parent().after(oembed.code); }
            else if (_a === 'replaceParent') { return elem.parent().replaceWith(oembed.code); }
-         }
+         };
        }
-       if (settings.error == null) {
+       if (settings.error === null) {
          settings.error = function(node, dict){
            // we don't by default handle error cases
            // node is the jQuery representation of the <a> tag
            // dict contains error information
-         }
+         };
        }
        var urlValid = function(url){
          return settings.urlRe.test(url);
-       }
+       };
 
        var getParams = function(urls){
          var _p = "urls="+urls;
-         if (settings.maxWidth != null) {_p += '&maxwidth='+ settings.maxWidth;}
-         else if (typeof dimensions != "undefined") { _p += '&maxwidth='+ dimensions.width;}
-         if (settings.maxHeight != null) {_p += '&maxheight=' +settings.maxHeight;}
-         if (settings.chars != null) {_p += '&chars='+ settings.chars;}
-         if (settings.words != null) {_p += '&words='+ settings.words;}
+         if (settings.maxWidth !== null) {_p += '&maxwidth='+ settings.maxWidth;}
+         else if (typeof dimensions !== "undefined") { _p += '&maxwidth='+ dimensions.width;}
+         if (settings.maxHeight !== null) {_p += '&maxheight=' +settings.maxHeight;}
+         if (settings.chars !== null) {_p += '&chars='+ settings.chars;}
+         if (settings.words !== null) {_p += '&words='+ settings.words;}
          _p += '&wmode='+ settings.wmode;
-         if (typeof settings.key == "string") _p += "&key="+settings.key;
-         if (typeof settings.autoplay == "string" || typeof settings.autoplay == "boolean") _p += "&autoplay="+settings.autoplay;
-         if (settings.width) _p += "&width="+settings.width;
+         if (typeof settings.key === "string"){ _p += "&key="+settings.key;}
+         if (typeof settings.autoplay === "string" || typeof settings.autoplay === "boolean"){ _p += "&autoplay="+settings.autoplay;}
+         if (settings.width){_p += "&width="+settings.width;}
          return _p;
-       }
+       };
        var getUrl = function(){
-         if (typeof settings.key == "string"){
-           if (settings.endpoint.search(/objectify/i) >= 0)
+         if (typeof settings.key === "string"){
+           if (settings.endpoint.search(/objectify/i) >= 0){
              return path + '2/objectify';
-           else if (settings.endpoint.search(/preview/i) >= 0)
+           }
+           else if (settings.endpoint.search(/preview/i) >= 0){
              return path + '1/preview';
+           }
          }
          return path + "1/oembed";
-       }
+       };
 
        var processEmbed = function(oembed, dict) {
            // bypass any embed processing for preview, objectify endpoints
            // for advanced users only
-           if(settings.endpoint != 'oembed'){
+           if(settings.endpoint !== 'oembed'){
              return settings.success(oembed, dict);
            }
 
-           var _a, code, style, title;
+           var _a, code, style, title, units, thumb, provider, description;
            if ((_a = oembed.type) === 'photo') {
                title = oembed.title || '';
                style = [];
                if (settings.addImageStyles) {
                    if (settings.maxWidth) {
-                     units = isNaN(parseInt(settings.maxWidth)) ? '' : 'px';
+                     units = isNaN(parseInt(settings.maxWidth, 10)) ? '' : 'px';
                        style.push("max-width: " + (settings.maxWidth)+units);
                    }
                    if (settings.maxHeight) {
-                     units = isNaN(parseInt(settings.maxHeight)) ? '' : 'px';
+                     units = isNaN(parseInt(settings.maxHeight,10)) ? '' : 'px';
                        style.push("max-height: " + (settings.maxHeight)+units);
                    }
                }
@@ -139,23 +143,24 @@
                code += provider;
                code += description;
            }
-           if (settings.wrapElement && settings.wrapElement == 'div' && $.browser.msie && $.browser.version < 9)
+           if (settings.wrapElement && settings.wrapElement === 'div' && $.browser.msie && $.browser.version < 9){
                settings.wrapElement = 'span';
+           }
            if (settings.wrapElement) {
                code = '<' + settings.wrapElement+ ' class="'+settings.className+'">' + code + '</'+settings.wrapElement+'>';
            }
            oembed.code = code;
            // for DOM elements we add the oembed object as a data field to that element and trigger a custom event called oembed
            // with the custom event, developers can do any number of custom interactions with the data that is returned.
-           if (typeof dict.node != "undefined") { $(dict.node).data('oembed', oembed).trigger('embedly-oembed', [oembed]);  }
+           if (typeof dict.node !== "undefined") { $(dict.node).data('oembed', oembed).trigger('embedly-oembed', [oembed]);  }
            return settings.success(oembed, dict);
-       }
+       };
 
        var processBatch = function(batch){
-         var data, embed, urls, dimensions;
+         var data, embed, urls, dimensions, node;
          urls = $.map(batch,
          function(e, i) {
-             if (i == 0) {
+             if (i === 0) {
                  if ( e.node !== null){
                    node = $(e.node);
                    dimensions = {
@@ -173,14 +178,14 @@
              success: function(data) {
                  return $.each(data,
                  function(index, elem) {
-                     return elem.type != 'error' ? processEmbed(elem, batch[index]) : settings.error(batch[index].node, elem);
+                     return elem.type !== 'error' ? processEmbed(elem, batch[index]) : settings.error(batch[index].node, elem);
                  });
              }
          });
-       }
+       };
        $.each(urls, function(i, v){
-         node = typeof settings.elems !== "undefined" ? settings.elems[i] : null;
-         if(typeof node != "undefined" && !urlValid(v)){
+         var node = typeof settings.elems !== "undefined" ? settings.elems[i] : null;
+         if(typeof node !== "undefined" && !urlValid(v)){
            $(node).data('oembed', false);
          }
          var err = {url: v, error_code:400, error_message:'HTTP 400: Bad Request', type:'error'};
@@ -193,8 +198,9 @@
        }
        if(settings.elems){
          return settings.elems;
-       } else
+       } else {
          return this;
+       }
      }
    });
 
@@ -225,14 +231,14 @@
     };
 
    $.fn.embedly = function(options, callback){
-     var settings = typeof options != "undefined" ? options : {};
+     var settings = typeof options !== "undefined" ? options : {};
      // callback is a legacy option, we should be moving towards including a success method in the options
-     if (typeof callback != "undefined") {options.success = callback; }
+     if (typeof callback !== "undefined") {options.success = callback; }
      //settings.elems = this;
      var urls = new Array();
      var nodes = new Array();
      this.each(function(){
-         if (typeof $(this).attr('href') != "undefined"){
+         if (typeof $(this).attr('href') !== "undefined"){
            urls.push($(this).attr('href'));
            nodes.push($(this));
          } else {
