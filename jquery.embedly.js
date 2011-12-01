@@ -205,7 +205,7 @@
    $.embedly.defaults = {
        endpoint:         'oembed',         // default endpoint is oembed (preview and objectify available too)
        chars:            null,             // Default number of characters in description
-       words,            null,             // Default number of words in description
+       words:            null,             // Default number of words in description
        maxWidth:         null,             // force a maxWidth on all returned media
        maxHeight:        null,             // force a maxHeight on all returned media
        secure:           false,            // use https endpoint vs http

@@ -51,6 +51,12 @@ Requires JQuery 1.3.1 or greater::
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 
+And Embedly-jQuery. You can either download the file `here
+<https://raw.github.com/embedly/embedly-jquery/master/jquery.embedly.min.js>`
+or use Embedly's CDN like so::
+
+  <script type="text/javascript" src="http://scripts.embed.ly/jquery.embedly-2.1.6.js"></script>
+
 Using Embedly-JQuery
 --------------------
 There are two ways to interact with this library. You can call Embedly directly
@@ -251,6 +257,19 @@ and still have access to the ``oembed`` data for customization.
 
 The event handler gets the oembed object passed in as a parameter as well if
 you don't want to use jQuery.data(); The two are equivalent.
+
+CDN
+---
+To get you going even faster, Embedly hosts all the files you need on
+scripts.embed.ly. The latest version is available here::
+
+    http://scripts.embed.ly/jquery.embedly-2.1.6.js
+    http://scripts.embed.ly/jquery.embedly-2.1.6.min.js
+
+The most current version of jQuery Preview will be available here::
+
+    http://scripts.embed.ly/jquery.embedly.js
+    http://scripts.embed.ly/jquery.embedly.min.js
 
 Examples
 --------
