@@ -2,29 +2,30 @@
       "http://www.w3.org/TR/html4/loose.dtd">
 <html>
   <head>
-    <link rel="stylesheet" href="qunit.css" type="text/css"/>
+    <link rel="stylesheet" href="lib/qunit.css" type="text/css"/>
     <script src="http://code.jquery.com/jquery-latest.js"> </script>
     <script src="jquery.embedly.js"> </script>
-    <script type="text/javascript" src="qunit.js"></script>
+    <script type="text/javascript" src="lib/qunit.js"></script>
     <script type="text/javascript">
      // --- Unittest Code goes here ---
      $(document).ready(function(){
+       $.embedly.defaults['key'] = 'internal';
        QUnit.log = function(result, message)
        {
         if (window.console && window.console.log)
             {
                window.console.log(result +' :: '+ message);
-            } 
+            }
        }
        module("Embedly");
        test("Chainability", function()
        {
           expect(4);
           var urls = $.map($('a.photo'), function(v, i){ return $(v).attr('href'); });
-          
+
           same($('a.photo'), $('a.photo').embedly({success:function(){}}), '$(a).embedly() returns the same set of links as $(a)' );
-          same($('a.photo').embedly({method:'after', success:function(oembed,dict){}}), 
-               $.embedly(urls,{elems:$('a.photo'), success:function(oembed,dict){}}), 
+          same($('a.photo').embedly({method:'after', success:function(oembed,dict){}}),
+               $.embedly(urls,{elems:$('a.photo'), success:function(oembed,dict){}}),
                '$(a).embedly() is the same as $.embedly(urls,{elems:$(a)})' );
           same($.embedly(urls,{elems:$('a.photo'), success:function(oembed,dict){}}), $('a.photo'), 'passing urls and a set of elements returns those elements for chaining functions');
           ok($.embedly(urls,{success:function(oembed,dict){ return oembed}}), 'Calling the embed function directly should return results');
@@ -110,31 +111,31 @@
       <li><a class="video" href="http://www.youtube.com/watch?v=Q5im0Ssyyus">Video</a></li>
       <li><a class="video" href="http://www.youtube.com/watch?v=wCF3ywukQYA">Video</a></li>
       <li><a class="photo" href="http://www.bestbuypricelowest.com/Fallen-Angel-Elite-Adult-Collection-Adult-Halloween-Costume-Small">other</a></li>
-      <li><a class="rich" href="http://www.amazon.com/gp/product/B002KJ3AJC/ref=s9_simh_gw_p193_d2_i4?pf_rd_m=ATVPDKIKX0DER&pf_rd_s=center-3&pf_rd_r=1ET2B493GPXE4RB0FCTM&pf_rd_t=101&pf_rd_p=470938811&pf_rd_i=507846">other</a></li> 
-      <li><a class="photo" href="http://twitpic.com/2xbqjo">photo</a></li> 
-      <li><a class="video" href="http://tumblr.com/x3hlwzmah">video</a></li> 
-      <li><a class="other" href="http://www.examiner.com/pop-culture-in-cleveland/michelle-obama-catwoman-photos-obama-s-halloween-costume-at-the-white-house-presidential">other</a></li> 
+      <li><a class="rich" href="http://www.amazon.com/gp/product/B002KJ3AJC/ref=s9_simh_gw_p193_d2_i4?pf_rd_m=ATVPDKIKX0DER&pf_rd_s=center-3&pf_rd_r=1ET2B493GPXE4RB0FCTM&pf_rd_t=101&pf_rd_p=470938811&pf_rd_i=507846">other</a></li>
+      <li><a class="photo" href="http://twitpic.com/2xbqjo">photo</a></li>
+      <li><a class="video" href="http://tumblr.com/x3hlwzmah">video</a></li>
+      <li><a class="other" href="http://www.examiner.com/pop-culture-in-cleveland/michelle-obama-catwoman-photos-obama-s-halloween-costume-at-the-white-house-presidential">other</a></li>
       <li><a class="other" href="http://www.amazon.com/Adults-Deluxe-Gorilla-Costume-Size/dp/B000JKO7NC">other</a></li>
       <li><a class="other" href="http://mydisguises.com/2008/07/28/how-to-make-a-dr-horrible-costume/ ">other</a></li>
       <li><a class="other" href="http://blog.makezine.com/archive/2007/10/realistic_werewolf_costum.html">other</a></li>
-      <li><a class="video" href="http://www.metacafe.com/watch/84226/octopus_costume/">Video</a></li> 
-      <li><a class="video" href="http://www.colbertnation.com/the-colbert-report-videos/362254/october-15-2010/recap---week-of-10-11-10">Video</a></li> 
-      <li><a class="other" href="http://www.costumesupercenter.com/group+costumes-lady+gaga/R889959-lady-gaga-blue-swimsuit-adult-costume.html">other</a></li> 
+      <li><a class="video" href="http://www.metacafe.com/watch/84226/octopus_costume/">Video</a></li>
+      <li><a class="video" href="http://www.colbertnation.com/the-colbert-report-videos/362254/october-15-2010/recap---week-of-10-11-10">Video</a></li>
+      <li><a class="other" href="http://www.costumesupercenter.com/group+costumes-lady+gaga/R889959-lady-gaga-blue-swimsuit-adult-costume.html">other</a></li>
       <li><a class="other" href="http://www.huffingtonpost.com/2010/10/05/inappropriate-halloween-costumes_n_750503.html">other</a></li>
       <li><a class="other" href="http://www.halloweencostumes.net/50s-class-nerd-costume.html">other</a></li>
-      <li><a class="other" href="http://www.costumecraze.com/SA593.html">other</a></li> 
-      <li><a class="other" href="http://www.coolest-homemade-costumes.com/coolest-boat-from-the-deadliest-catch-costume.html">other</a></li> 
+      <li><a class="other" href="http://www.costumecraze.com/SA593.html">other</a></li>
+      <li><a class="other" href="http://www.coolest-homemade-costumes.com/coolest-boat-from-the-deadliest-catch-costume.html">other</a></li>
       <li><a class="video" href="http://www.twitvid.com/G8CGV">Video</a></li>
-      <li><a class="other" href="http://becauseimaddicted.net/2010/10/halloween-inspiration-from-vogue-paris.html">other</a></li> 
-      <li><a class="other" href="http://girlsofdos.tumblr.com/post/1311697680/lctrguns">other</a></li> 
-      <li><a class="other" href="http://www.etsy.com/listing/41794582/cute-pirate-wench-maid-costume-dress-and?ref=cat2_gallery_13">other</a></li> 
-      <li><a class="other" href="http://www.sexycostumes.com/miss-mafia-costume.html">other</a></li> 
-      <li><a class="other" href="http://blog.makezine.com/archive/2008/10/spy_vs_spy_halloween_cost.html">other</a></li> 
+      <li><a class="other" href="http://becauseimaddicted.net/2010/10/halloween-inspiration-from-vogue-paris.html">other</a></li>
+      <li><a class="other" href="http://girlsofdos.tumblr.com/post/1311697680/lctrguns">other</a></li>
+      <li><a class="other" href="http://www.etsy.com/listing/41794582/cute-pirate-wench-maid-costume-dress-and?ref=cat2_gallery_13">other</a></li>
+      <li><a class="other" href="http://www.sexycostumes.com/miss-mafia-costume.html">other</a></li>
+      <li><a class="other" href="http://blog.makezine.com/archive/2008/10/spy_vs_spy_halloween_cost.html">other</a></li>
       <li><a class="video" href="http://vimeo.com/399507">Video</a></li>
-      <li><a class="other" href="http://www.costumesupercenter.com/group+costumes-toy+story/DI5233-buzz-lightyear-deluxe-child-costume.html">other</a></li> 
+      <li><a class="other" href="http://www.costumesupercenter.com/group+costumes-toy+story/DI5233-buzz-lightyear-deluxe-child-costume.html">other</a></li>
       <li><a class="other" href="http://mrcostumes.wordpress.com/2009/09/22/couples-costumes-best-and-worst/">other</a></li>
       <li><a class="video" href="http://www.whitehouse.gov/photos-and-video/video/2010/10/16/weekly-address-gop-rewarding-corporations-create-jobs-overseas">other</a></li>
-      <li><a class="video" href="http://www.funnyordie.com/videos/d84660f7dd/bobby-bottleservice-jersey-shore-audition-tape">Video</a></li> 
+      <li><a class="video" href="http://www.funnyordie.com/videos/d84660f7dd/bobby-bottleservice-jersey-shore-audition-tape">Video</a></li>
       <li><a class="video" href="http://www.theonion.com/video/how-to-find-a-masculine-halloween-costume-for-your,14378/">Video</a></li>
       <li><a class="other" href="http://www.candyapplecostumes.com/fp559205.html">other</a></li>
       <li><a class="other" href="http://www.SugarChicCouture.com/Giraffe_Dog_Costume_p/gdc-19.htm">other</a></li>

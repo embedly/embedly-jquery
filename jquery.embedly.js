@@ -89,6 +89,8 @@
          if (settings.maxHeight !== null) {_p += '&maxheight=' +settings.maxHeight;}
          if (settings.chars !== null) {_p += '&chars='+ settings.chars;}
          if (settings.words !== null) {_p += '&words='+ settings.words;}
+         if (settings.secure) {_p += '&secure=true';}
+         if (settings.frame) {_p += '&frame=true';}
          _p += '&wmode='+ settings.wmode;
          if (typeof settings.key === "string"){ _p += "&key="+settings.key;}
          if (typeof settings.autoplay === "string" || typeof settings.autoplay === "boolean"){ _p += "&autoplay="+settings.autoplay;}
