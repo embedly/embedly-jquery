@@ -55,7 +55,7 @@ And Embedly-jQuery. You can either download the file `here
 <https://raw.github.com/embedly/embedly-jquery/master/jquery.embedly.min.js>`
 or use Embedly's CDN like so::
 
-  <script type="text/javascript" src="http://scripts.embed.ly/jquery.embedly-2.1.6.js"></script>
+  <script type="text/javascript" src="http://scripts.embed.ly/jquery.embedly-2.1.7.js"></script>
 
 Using Embedly-JQuery
 --------------------
@@ -263,8 +263,8 @@ CDN
 To get you going even faster, Embedly hosts all the files you need on
 scripts.embed.ly. The latest version is available here::
 
-    http://scripts.embed.ly/jquery.embedly-2.1.6.js
-    http://scripts.embed.ly/jquery.embedly-2.1.6.min.js
+    http://scripts.embed.ly/jquery.embedly-2.1.7.js
+    http://scripts.embed.ly/jquery.embedly-2.1.7.min.js
 
 The most current version of jQuery Preview will be available here::
 
@@ -288,6 +288,12 @@ Embedly URLs
 
 Changelog
 ---------
+
+2.1.7
+"""""
+* Added secure and frame as a query param
+* Move qunit to lib
+* Removed jQuery as we weren't using it.
 
 2.1.6
 """""
