@@ -42,7 +42,7 @@ h4 { font-size:18px; margin:0 0 1em; color:#808080; font-family: "Helvetica Neue
 <script type="text/javascript">
 
 $(document).ready(function() {
-  $("ul a").embedly({}, function(oembed, dict){
+  $("ul a").embedly({key : '4d1f889c20ed11e1abb14040d3dc5c07' }, function(oembed, dict){
     if ( oembed == null)
       return;
     var output = "<a class='embedly' href='#'><img src='"+oembed.thumbnail_url+"' /></a><span>"+oembed.title+"</span>";

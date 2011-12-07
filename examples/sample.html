@@ -47,9 +47,9 @@ a.googlenl { background-color:#ff00fa; padding-left:20px}
 <script type="text/javascript">
 
 $(document).ready(function() {
-  $("a").embedly({}, function(oembed, dict){
+  $("a").embedly({key : '4d1f889c20ed11e1abb14040d3dc5c07'}, function(oembed, dict){
     if ( oembed == null)
-      alert("no embedly content found");    
+      alert("no embedly content found");
     var output = "<a class='embedly' href='#'><img src='"+oembed.thumbnail_url+"' /></a><span>"+oembed.title+"</span>";
     output += oembed['code'];
     $(dict["node"]).parent().html( output );

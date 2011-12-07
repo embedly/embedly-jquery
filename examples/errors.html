@@ -2,7 +2,7 @@
 <html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Embedly - Embed - Example</title>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>  
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
 <script type="text/javascript" src="../jquery.embedly.js"></script>
 <style>
 BODY {background-color:#333333;}
@@ -35,16 +35,17 @@ $(document).ready(function() {
 	$('ul a').bind('oembed', function(e){
 	  $(this).after('<h2>'+$(this).data('oembed').title+'</h2>');
   });
-  $("ul a").embedly({maxWidth: 400, 
-                  wrapElement: 'div', 
+  $("ul a").embedly({maxWidth: 400,
+                  wrapElement: 'div',
                        method: "after",
                      endpoint: 'oembed',
+                     key : '4d1f889c20ed11e1abb14040d3dc5c07',
                         error: function(node, dict){
-                          
+
                           $(node).append(dict.error_message);
                         }})
-           
-  
+
+
 });
 </script>
 
