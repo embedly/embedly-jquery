@@ -39,7 +39,7 @@ $(document).ready(function() {
 		if (q == '')
 			return false;
 
-		$.embedly(q, {maxWidth: 600, wrapElement: 'div' }, function(oembed, dict){
+		$.embedly(q, {maxWidth: 600, wrapElement: 'div', key : '4d1f889c20ed11e1abb14040d3dc5c07'}, function(oembed, dict){
 			console.log('hi');
 			if (oembed == null)
 				$("#embed").html('<p class="text"> Not A Valid URL </p>');
