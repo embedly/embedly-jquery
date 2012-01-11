@@ -289,6 +289,10 @@ Embedly URLs
 Changelog
 ---------
 
+2.1.8
+"""""
+* Fixed how default values/settings are handled
+
 2.1.7
 """""
 * Added secure and frame as a query param
