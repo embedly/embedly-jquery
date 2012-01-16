@@ -1,5 +1,5 @@
 /*
- * Embedly JQuery v2.1.8
+ * Embedly JQuery v2.1.9
  * ==============
  * This library allows you to easily embed objects on any page.
  *
@@ -218,7 +218,7 @@
    });
 
    // Versions
-   $.embedly.version = "2.1.8";
+   $.embedly.version = "2.1.9";
 
    // Once the function is we can add defaults as an attribute
    $.embedly.defaults = {
