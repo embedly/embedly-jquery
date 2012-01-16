@@ -218,7 +218,7 @@
    });
 
    // Versions
-   $.embedly.version = "2.1.7";
+   $.embedly.version = "2.1.8";
 
    // Once the function is we can add defaults as an attribute
    $.embedly.defaults = {
