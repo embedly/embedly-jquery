@@ -1,6 +1,6 @@
-Embedly - JQuery - An OEmbed Library to Replace Links with Content
+Embedly - jQuery - An oEmbed Library to Replace Links with Content
 ==================================================================
-Embedly - JQuery is a JQuery Library for Embedly that will replace links with
+Embedly - jQuery is a jQuery Library for Embedly that will replace links with
 content. It follows the oEmbed spec (`oembed.com <http://oembed.com>`_) for
 content retrieval, while utilizing http://api.embed.ly as a single endpoint.
 
@@ -20,14 +20,14 @@ You can continue to read the most up-to-date documentation below.
 
 Key
 ---
-Embedly requires that you pass a key with every requests. To signup for a key
+Embedly requires that you pass a key with every request. To signup for a key
 please visit `embed.ly/signup <http://embed.ly/signup>`_. To avoid adding your
 key to every ``$.embedly`` call you can add it to the ``defaults`` like so::
 
   $.embedly.defaults['key'] = 'Your Embedly Key';
 
   # Directly
-  $.embedly('http://embed.ly', {}, funciton(data){alert(data.title)});
+  $.embedly('http://embed.ly', {}, function(data){alert(data.title)});
 
   # CSS Selector
   $('a').embedly();
@@ -47,7 +47,7 @@ or passing the ``key`` directly into the call.
 
 Requirements
 ------------
-Requires JQuery 1.3.1 or greater::
+Requires jQuery 1.3.1 or greater::
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 
@@ -57,15 +57,14 @@ or use Embedly's CDN like so::
 
   <script type="text/javascript" src="http://scripts.embed.ly/jquery.embedly-2.1.7.js"></script>
 
-Using Embedly-JQuery
+Using Embedly-jQuery
 --------------------
-There are two ways to interact with this library. You can call Embedly directly
-or use CSS Selectors to replace links
+There are two ways to interact with this library. You can call Embedly directly or use CSS Selectors to replace links
 
 Call Directly
 """""""""""""
 Will Return a JSON object representing an oembed or null, and a dictionary
-object representing the original url and DOM node.
+object representing the original URL and DOM node.
 ::
 
     #Alert the tile of a video
@@ -81,7 +80,7 @@ object representing the original url and DOM node.
                            alert(oembed.title);
                          });
 
-    # Pass in an array of urls to load simultaneously.
+    # Pass in an array of URLs to load simultaneously.
     $.embedly(['http://www.youtube.com/watch?v=LfamTmY5REw',
                'http://www.youtube.com/watch?v=lOC_JjNFkVw',
                'http://www.youtube.com/watch?v=cTl3U6aSd2w'],
@@ -116,7 +115,7 @@ Use a CSS selector to replace every valid link with an embed on the page.
     $('a').embedly({maxWidth:600,'method':'after'});
 
     # Replace only Hulu links
-    $('a').embedly({maxWidth:600,'urlRe': /http:\/\/(www\.hulu\.com\/watch.*)/i,'method':'after'});
+    $('a').embedly({maxWidth:600,'URLRe': /http:\/\/(www\.hulu\.com\/watch.*)/i,'method':'after'});
 
     # Embedly now supports chaining, so you can modify your original jQuery set
     # after triggering Embedly
@@ -125,7 +124,7 @@ Use a CSS selector to replace every valid link with an embed on the page.
 Valid Options
 -------------
 ``endpoint`` [`String:oembed`]
-  A string value mapping to one of three Embedly endpoints. A `paid plan
+  A string value that maps to one of three Embedly endpoints. A `paid plan
   <http://embed.ly/pricing>`_ is required for Preview and Objectify.
 
   * `oembed <http://embed.ly/docs/endpoints/1/oembed>`_ - a standard in 3rd
@@ -154,7 +153,7 @@ Valid Options
   A number representing the "max height" in pixels a piece of content can be
   displayed in your page.
 
-``urlRe`` [`RegEx:`]
+``URLRe`` [`RegEx:`]
   A regular expression representing what links to show content for. Use our
   `generator <http://embed.ly/tools/generator>`_ to generate a regular
   expression for a specific set of sources.
@@ -168,7 +167,7 @@ Valid Options
   * `replaceParent` - replaces parent element with the embed content
 
 ``wrapElement`` [`String:'div'`]
-  A string value representing the valid html element to wrap the content in.
+  A string value representing the valid HTML element to wrap the content in.
 
 ``className`` [`String:'embed'`]
   A string value representing a CSS class you would like to assign to the
@@ -288,6 +287,11 @@ Embedly URLs
 
 Changelog
 ---------
+
+2.1.9
+"""""
+* Updated Image styles to work on all images, including thumbnails
+* hide empty descriptions
 
 2.1.8
 """""
