@@ -1,5 +1,5 @@
 /*
- * Embedly JQuery v2.1.8
+ * Embedly JQuery v2.1.9
  * ==============
  * This library allows you to easily embed objects on any page.
  *
@@ -117,6 +117,21 @@
          return path + "1/oembed";
        };
 
+       var createImageStyle = function() {
+           var style = [];
+           if (settings.addImageStyles) {
+               if (settings.maxWidth) {
+                 units = isNaN(parseInt(settings.maxWidth, 10)) ? '' : 'px';
+                   style.push("max-width: " + (settings.maxWidth)+units);
+               }
+               if (settings.maxHeight) {
+                 units = isNaN(parseInt(settings.maxHeight,10)) ? '' : 'px';
+                   style.push("max-height: " + (settings.maxHeight)+units);
+               }
+           }
+           return style.join(';');
+       }
+
        var processEmbed = function(oembed, dict) {
            // bypass any embed processing for preview, objectify endpoints
            // for advanced users only
@@ -127,29 +142,17 @@
            var _a, code, style, title, units, thumb, provider, description;
            if ((_a = oembed.type) === 'photo') {
                title = oembed.title || '';
-               style = [];
-               if (settings.addImageStyles) {
-                   if (settings.maxWidth) {
-                     units = isNaN(parseInt(settings.maxWidth, 10)) ? '' : 'px';
-                       style.push("max-width: " + (settings.maxWidth)+units);
-                   }
-                   if (settings.maxHeight) {
-                     units = isNaN(parseInt(settings.maxHeight,10)) ? '' : 'px';
-                       style.push("max-height: " + (settings.maxHeight)+units);
-                   }
-               }
-               style = style.join(';');
-               code = "<a href='" + dict.url + "' target='_blank'><img style='" + style + "' src='" + oembed.url + "' alt='" + title + "' /></a>";
+               code = "<a href='" + dict.url + "' target='_blank'><img style='" + createImageStyle() + "' src='" + oembed.url + "' alt='" + title + "' /></a>";
            } else if (_a === 'video') {
                code = oembed.html;
            } else if (_a === 'rich') {
                code = oembed.html;
            } else {
                title = oembed.title || dict.url;
-               thumb = oembed.thumbnail_url ? '<img src="'+oembed.thumbnail_url+'" class="thumb" />' : '';
+               thumb = oembed.thumbnail_url ? "<img src='"+oembed.thumbnail_url+"' class='thumb' style='" + createImageStyle() + "'/>" : "";
                description = oembed.description ? '<div class="description">'+oembed.description+'</div>' : '';
-               provider = oembed.provider_name ? '<a href="'+oembed.provider_url+'" class="provider">'+oembed.provider_name+'</a>' : '';
-               code = thumb+"<a href='" + dict.url + "'>" + title + "</a>";
+               provider = oembed.provider_name ? "<a href='" + oembed.provider_url + "' class='provider'>" + oembed.provider_name + "</a>" : "";
+               code = thumb + "<a href='" + dict.url + "'>" + title + "</a>";
                code += provider;
                code += description;
            }
@@ -215,7 +218,7 @@
    });
 
    // Versions
-   $.embedly.version = "2.1.7";
+   $.embedly.version = "2.1.9";
 
    // Once the function is we can add defaults as an attribute
    $.embedly.defaults = {
