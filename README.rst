@@ -67,7 +67,7 @@ Will Return a JSON object representing an oembed or null, and a dictionary
 object representing the original URL and DOM node.
 ::
 
-    #Alert the tile of a video
+    #Alert the title of a video
     $.embedly('http://www.youtube.com/watch?v=LfamTmY5REw', {}, function(oembed, dict){
        alert(oembed.title);
     });
