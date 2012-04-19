@@ -115,7 +115,7 @@ Use a CSS selector to replace every valid link with an embed on the page.
     $('a').embedly({maxWidth:600,'method':'after'});
 
     # Replace only Hulu links
-    $('a').embedly({maxWidth:600,'URLRe': /http:\/\/(www\.hulu\.com\/watch.*)/i,'method':'after'});
+    $('a').embedly({maxWidth:600,'urlRe': /http:\/\/(www\.hulu\.com\/watch.*)/i,'method':'after'});
 
     # Embedly now supports chaining, so you can modify your original jQuery set
     # after triggering Embedly
@@ -153,7 +153,7 @@ Valid Options
   A number representing the "max height" in pixels a piece of content can be
   displayed in your page.
 
-``URLRe`` [`RegEx:`]
+``urlRe`` [`RegEx:`]
   A regular expression representing what links to show content for. Use our
   `generator <http://embed.ly/tools/generator>`_ to generate a regular
   expression for a specific set of sources.
