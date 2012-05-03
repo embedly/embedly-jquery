@@ -87,18 +87,18 @@
        };
 
        var getParams = function(urls){
-         var _p = "urls="+urls;
-         if (settings.maxWidth) {_p += '&maxwidth='+ settings.maxWidth;}
-         else if (typeof dimensions !== "undefined") { _p += '&maxwidth='+ dimensions.width;}
+         var _p = "urls=" + urls;
+         if (settings.maxWidth) {_p += '&maxwidth=' + settings.maxWidth;}
+         else if (typeof dimensions !== "undefined") { _p += '&maxwidth=' + dimensions.width;}
          if (settings.maxHeight) {_p += '&maxheight=' +settings.maxHeight;}
-         if (settings.chars) {_p += '&chars='+ settings.chars;}
-         if (settings.words) {_p += '&words='+ settings.words;}
+         if (settings.chars) {_p += '&chars=' + settings.chars;}
+         if (settings.words) {_p += '&words=' + settings.words;}
          if (settings.secure) {_p += '&secure=true';}
          if (settings.frame) {_p += '&frame=true';}
-         _p += '&wmode='+ settings.wmode;
-         if (typeof settings.key === "string"){ _p += "&key="+settings.key;}
-         if (typeof settings.autoplay === "string" || typeof settings.autoplay === "boolean"){ _p += "&autoplay="+settings.autoplay;}
-         if (settings.width){_p += "&width="+settings.width;}
+         _p += '&wmode=' + settings.wmode;
+         if (typeof settings.key === "string"){ _p += "&key=" + settings.key;}
+         if (typeof settings.autoplay === "string" || typeof settings.autoplay === "boolean"){ _p += "&autoplay=" + settings.autoplay;}
+         if (settings.width){_p += "&width=" + settings.width;}
          return _p;
        };
        var getUrl = function(){
@@ -145,8 +145,8 @@
                code = oembed.html;
            } else {
                title = oembed.title || dict.url;
-               thumb = oembed.thumbnail_url ? "<img src='"+oembed.thumbnail_url+"' class='thumb' style='" + createImageStyle() + "'/>" : "";
-               description = oembed.description ? '<div class="description">'+oembed.description+'</div>' : '';
+               thumb = oembed.thumbnail_url ? "<img src='" + oembed.thumbnail_url + "' class='thumb' style='" + createImageStyle() + "'/>" : "";
+               description = oembed.description ? '<div class="description">' + oembed.description + '</div>' : '';
                provider = oembed.provider_name ? "<a href='" + oembed.provider_url + "' class='provider'>" + oembed.provider_name + "</a>" : "";
                code = thumb + "<a href='" + dict.url + "'>" + title + "</a>";
                code += provider;
@@ -156,7 +156,7 @@
                settings.wrapElement = 'span';
            }
            if (settings.wrapElement) {
-               code = '<' + settings.wrapElement+ ' class="'+settings.className+'">' + code + '</'+settings.wrapElement+'>';
+               code = '<' + settings.wrapElement+ ' class="' + settings.className + '">' + code + '</' + settings.wrapElement + '>';
            }
            oembed.code = code;
            // for DOM elements we add the oembed object as a data field to that element and trigger a custom event called oembed
