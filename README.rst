@@ -288,6 +288,10 @@ Embedly URLs
 Changelog
 ---------
 
+2.2.0
+"""""
+* Fixing bug that was causing callbacks to be overwritten (#23)
+
 2.1.9
 """""
 * Updated Image styles to work on all images, including thumbnails
