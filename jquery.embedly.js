@@ -59,12 +59,8 @@
        var path = "http://api.embed.ly/";
 
        var settings;
-       if (typeof options !== "undefined"){
-         settings = $.extend($.embedly.defaults, options);
-       }
-       else {
-         settings = $.embedly.defaults;
-       }
+       options = options ? options : {};
+       settings = $.extend({}, $.embedly.defaults, options);
        if (!settings.urlRe) {settings.urlRe = window.embedlyURLre; }
        if (typeof urls === "string"){ urls = new Array(urls); }
        if (typeof callback !== "undefined"){ settings.success = callback; }
