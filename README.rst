@@ -119,7 +119,7 @@ Use a CSS selector to replace every valid link with an embed on the page.
 
     # Embedly now supports chaining, so you can modify your original jQuery set
     # after triggering Embedly
-    $('a).embedly({maxWidth:450}).css('backgroundColor','#dadada');
+    $('a').embedly({maxWidth:450}).css('backgroundColor','#dadada');
 
 Valid Options
 -------------
