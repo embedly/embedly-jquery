@@ -1,0 +1,29 @@
+{
+  "name": "embedly-jquery",
+  "title": "Embedly jQuery",
+  "description": "This library allows you to easily embed objects on any page.",
+  "version": "3.0.0",
+  "homepage": "https://github.com/embedly/embedly-jquery",
+  "author": {
+    "name": "Sean Creeley",
+    "email": "sean@embed.ly",
+    "url": "http://embed.ly"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/embedly/embedly-jquery"
+  },
+  "bugs": {
+    "url": "https://github.com/embedly/embedly-jquery/issues"
+  },
+  "licenses": [
+    {
+      "type": "BSD",
+      "url": "https://github.com/embedly/embedly-jquery/blob/master/LICENSE-BSD"
+    }
+  ],
+  "dependencies": {
+    "jquery": "*"
+  },
+  "keywords": []
+}

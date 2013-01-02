@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="shortcut icon" href="http://embed.ly/static/favicon.ico">
+    <script type="text/javascript" src="../libs/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="../src/embedly-jquery.js"></script>
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <link rel="stylesheet" href="css/prettify.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/demo.css" />
+    <title>Embedly jQuery | Tooltip</title>
+  </head>
+  <body onload="prettyPrint()">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="index.html">Embedly jQuery</a>
+          <ul class="nav">
+            <li><a href="inline.html">Inline</a></li>
+            <li><a href="modal.html">Modal</a></li>
+            <li class="active"><a href="tooltip.html">Tooltip</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="content" class="container">
+      <div id="content" class="container">
+        <div class="row intro">
+          <div class="span12">
+            <h1>Tooltips</h1>
+            <p>
+              Tooltips don't give you a ton of real estate, but you can do some pretty
+              interesting things by alerting the user about the title, or the type of the
+              link before they click it.
+            </p>
+          </div>
+        </div>
+        <div class="row example example-1">
+          <div class="span12">
+            <h2>Example 1: Display Type and Title</h2>
+            <p>
+              It's generally pretty hard for users to decide what to click on, as they
+              never really know where you are going. Simple tooltips can make it easier
+              on the user, hover over the links below to see.
+            </p>
+            <div class="example-inline example-paragraph">
+              <p>
+                One a brisk winter morning I went out to play with my
+                <a href="http://instagram.com/p/P0ess/">dog</a>. It was the dead of
+                winter and an <a href="http://www.nytimes.com/projects/2012/snow-fall/">adventure</a>
+                began. I wished I was in a better <a href="http://vimeo.com/55945051">place</a>,
+                but Northern Maine is the worst. So here ends our short story, I hope that you
+                enjoyed everything about it, now hover over those links. <a href="https://soundcloud.com/keatonhensondear/to-your-health">Cheers</a>.
+              </p>
+            </div>
+            <pre class="prettyprint linenums">
+$('.example-1 a').tooltip().embedly({
+  // Overwrite the display function to set the data-original-title;
+  display: function(elem, data){
+    // Remove the http:// and everything after the '/';
+    var provider_display = data.provider_url.replace(/https?\:\/\//, '').split('/')[0];
+
+    // Set the data-original-title attribute that the bootstrap.js uses for the tool tip.
+    $(elem).attr('data-original-title',
+      data.type.toUpperCase() +': '+ data.title + ' ['+provider_display+']');
+  }
+});
+            </pre>
+          </div>
+        </div>
+        <div class="row example example-2">
+          <div class="span12">
+            <h2>Example 2: Safe Browse</h2>
+            <p>
+              One of the other things one can do is warn users of malicious links before
+              they click on them. Using the 'preview' endpoint we can check if the link is
+              safe before letting the user click on this.
+            </p>
+            <p>
+              The following is an example of a comment that we have all seen. The link is
+              off <a href="www.stopbadware.org">stopbadware.org</a> and will trigger an
+              unsafe response from Embedly.
+            </p>
+            <p>
+              Hover over the link will trigger a tooltip and clicking on the link will
+              bring up a modal. Try it, I promise you won't actually go to that site.
+            </p>
+            <div class="example-inline example-paragraph">
+              <p>
+                Hi all, I like your blog post, it was super interesting. I really
+                hope that you find the time to check out my site.
+                <br/><br/>
+                <a href="http://asubuv.wordpress.com/">Get More Twitter Followers</a>
+                <br/><br/>
+                Muahahahaha.
+              </p>
+            </div>
+            <pre class="prettyprint linenums">
+$('.example-2 a').embedly({
+  key: '',
+  endpoint: 'preview', // Specify the "preview" endpoint.
+  // Overwrite the display function to test for malicious links.
+  display: function(elem, data){
+    // See if the link is safe or not.
+    if (data.safe === false){
+
+      // Create a tooltip on the element.
+      $(elem).tooltip({
+        html: true,
+        title: '<span class="malware">'+data.safe_type.toUpperCase()+' Detected</span>'
+      });
+
+      // When the user clicks on the click warn them before hand.
+      $(elem).on('click', function(){
+        // Open a Modal with the Correct Messaging.
+        $('#malware-modal').modal();
+        $('#malware-modal .modal-header h3').html(data.safe_type.toUpperCase()+' Detected');
+        $('#malware-modal .modal-body p').html(data.safe_message);
+        $('#malware-modal .proceed').attr('href', data.url);
+        return false;
+      })
+    }
+  }
+});
+            </pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div id="malware-modal" class="modal hide " tabindex="-1" role="dialog">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+        <h3></h3>
+      </div>
+      <div class="modal-body">
+        <p></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn proceed" data-dismiss="modal" aria-hidden="true">Proceed</button>
+        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+      </div>
+    </div>
+    <script>
+      // set up the defaults.
+      $.embedly.defaults = {
+        key:'4d1f889c20ed11e1abb14040d3dc5c07',
+        query: {
+          maxwidth:530,
+        }
+      }
+
+      $('.example-1 a').tooltip().embedly({
+        // Overwrite the display function to set the data-original-title;
+        display: function(data){
+          // Remove the http:// and everything after the '/';
+          var provider_display = data.provider_url.replace(/https?\:\/\//, '').split('/')[0];
+
+          // Set the data-original-title attribute that the bootstrap.js uses for the tool tip.
+          $(this).attr('data-original-title',
+            data.type.toUpperCase() +': '+ data.title + ' ['+provider_display+']');
+        }
+      });
+
+      $('.example-2 a').embedly({
+        endpoint: 'preview', // Specify the "preview" endpoint.
+        // Overwrite the display function to test for malicious links.
+        display: function(data){
+          // See if the link is safe or not.
+          if (data.safe === false){
+
+            // Create a tooltip on the element.
+            $(this).tooltip({
+              html: true,
+              title: '<span class="malware">'+data.safe_type.toUpperCase()+' Detected</span>'
+            });
+
+            // When the user clicks on the click warn them before hand.
+            $(this).on('click', function(){
+              // Open a Modal with the Correct Messaging.
+              $('#malware-modal').modal();
+              $('#malware-modal .modal-header h3').html(data.safe_type.toUpperCase()+' Detected');
+              $('#malware-modal .modal-body p').html(data.safe_message);
+              $('#malware-modal .proceed').attr('href', data.url);
+              return false;
+            })
+          }
+        }
+      });
+
+    </script>
+  </body>
+</html>

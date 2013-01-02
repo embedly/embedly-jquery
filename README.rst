@@ -1,22 +1,30 @@
-Embedly - jQuery - An oEmbed Library to Replace Links with Content
-==================================================================
-Embedly - jQuery is a jQuery Library for Embedly that will replace links with
-content. It follows the oEmbed spec (`oembed.com <http://oembed.com>`_) for
-content retrieval, while utilizing http://api.embed.ly as a single endpoint.
+Embedly jQuery
+==============
+Embedly jQuery is a jQuery Library for interacting with the Embedly API.
 
-Documentation
--------------
-The most up-to-date documentation for Embedly-jQuery can be found on the
-`README <http://github.com/embedly/embedly-jquery/blob/master/README.rst>`_.
-If you've discovered the recursive nature of that statement, we applaud you.
+Basic Setup
+-----------
+Embedly jQuery requires jQuery 1.5 or greater as it uses promises. For older
+versions of jQuery see version 2.2.2.
+::
 
-The Embedly API documentation is at 'embed.ly/docs <http://embed.ly/docs>'_. We
-suggest reading:
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+    <script src="http://scripts.embed.ly/j/3.0.0/jquery.embedly.min.js" type="text/javascript"></script>
+  </head>
 
-* `oEmbed Documentation <http://embed.ly/docs/endpoints/1/oembed>`_
-* `Query Arguments <http://embed.ly/docs/endpoints/arguments>`_
 
-You can continue to read the most up-to-date documentation below.
+You can now use jQuery selectors to replace links with embedded content::
+
+  $('#content a').embedly({key: 'Your Embedly Key'});
+
+
+or can now use the client directly::
+
+  $.embedly.preview('http://embed.ly', {key: 'Your Embedly Key'}).progress(function(data){
+    alert(data.title);
+  });
+
 
 Key
 ---
@@ -24,10 +32,10 @@ Embedly requires that you pass a key with every request. To signup for a key
 please visit `embed.ly/signup <http://embed.ly/signup>`_. To avoid adding your
 key to every ``$.embedly`` call you can add it to the ``defaults`` like so::
 
-  $.embedly.defaults['key'] = 'Your Embedly Key';
+  $.embedly.defaults.key = 'Your Embedly Key';
 
   # Directly
-  $.embedly('http://embed.ly', {}, function(data){alert(data.title)});
+  $.embedly.preview('http://embed.ly').progress(function(data){alert(data.title)});
 
   # CSS Selector
   $('a').embedly();
@@ -35,9 +43,8 @@ key to every ``$.embedly`` call you can add it to the ``defaults`` like so::
 Otherwise you must add it to every request like so::
 
   # Directly
-  $.embedly('http://embed.ly', {key:'Your Embedly Key'}, function(oembed, dict){
-     alert(oembed.title);
-  });
+  $.embedly.preview('http://embed.ly', {key:'Your Embedly Key'})
+    .progress(function(data){alert(data.title)});
 
   # CSS Selector
   $('a').embedly({key:'Your Embedly Key'});
@@ -45,121 +52,167 @@ Otherwise you must add it to every request like so::
 For the rest of the documentation we will assume that you set up the defaults
 or passing the ``key`` directly into the call.
 
-Requirements
-------------
-Requires jQuery 1.3.1 or greater::
 
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-
-And Embedly-jQuery. You can either download the file `here
-<https://raw.github.com/embedly/embedly-jquery/master/jquery.embedly.min.js>`
-or use Embedly's CDN like so::
-
-  <script type="text/javascript" src="http://scripts.embed.ly/jquery.embedly-2.1.7.js"></script>
-
-Using Embedly-jQuery
---------------------
-There are two ways to interact with this library. You can call Embedly directly or use CSS Selectors to replace links
-
-Call Directly
-"""""""""""""
-Will Return a JSON object representing an oembed or null, and a dictionary
-object representing the original URL and DOM node.
-::
-
-    #Alert the title of a video
-    $.embedly('http://www.youtube.com/watch?v=LfamTmY5REw', {}, function(oembed, dict){
-       alert(oembed.title);
-    });
-
-    # Call with maxWidth option set to 600px and maxHeight option set to 400px.
-    $.embedly('http://www.youtube.com/watch?v=LfamTmY5REw',
-             { maxWidth: 600,
-              maxHeight: 400,
-                success: function(oembed, dict){
-                           alert(oembed.title);
-                         });
-
-    # Pass in an array of URLs to load simultaneously.
-    $.embedly(['http://www.youtube.com/watch?v=LfamTmY5REw',
-               'http://www.youtube.com/watch?v=lOC_JjNFkVw',
-               'http://www.youtube.com/watch?v=cTl3U6aSd2w'],
-              {maxWidth: 600,
-                success: function(oembed, dict){
-                           alert(oembed.title);
-                         });
-
-     # Include a jQuery set of DOM elements so it behaves more like the CSS
-     # Selector form below this form returns the jQuery set, so you can chain
-     # jQuery functions after it.
-     $.embedly('http://www.youtube.com/watch?v=LfamTmY5REw',
-               {maxWidth: 600,
-                   elems: $('#element'),
-                 success: function(oembed, dict){
-                            alert(oembed.title);
-                          });
-
-CSS Selector
-""""""""""""
+Selector
+--------
 Use a CSS selector to replace every valid link with an embed on the page.
 ::
 
-    # Replace all valid links
-    $('a').embedly();
+  $('a').embedly( options );
 
-    # Replace a subset of links
-    $('a.oembed').embedly();
+  # Replace all valid links
+  $('a').embedly();
 
-    # Replace with maxWidth option set to 600px and method option set
-    # to 'after'
-    $('a').embedly({maxWidth:600,'method':'after'});
+  # Replace a subset of links
+  $('a.oembed').embedly();
 
-    # Replace only Hulu links
-    $('a').embedly({maxWidth:600,'urlRe': /http:\/\/(www\.hulu\.com\/watch.*)/i,'method':'after'});
+  # Replace with maxWidth option set to 600px and method option set
+  # to 'after'
+  $('a').embedly({maxWidth:600,'method':'after'});
 
-    # Embedly now supports chaining, so you can modify your original jQuery set
-    # after triggering Embedly
-    $('a').embedly({maxWidth:450}).css('backgroundColor','#dadada');
+  # Replace only Hulu links
+  $('a').embedly({maxWidth:600,'urlRe': /http:\/\/(www\.hulu\.com\/watch.*)/i,'method':'after'});
 
-Valid Options
--------------
-``endpoint`` [`String:oembed`]
-  A string value that maps to one of three Embedly endpoints. A `paid plan
-  <http://embed.ly/pricing>`_ is required for Preview and Objectify.
+  # Embedly now supports chaining, so you can modify your original jQuery set
+  # after triggering Embedly
+  $('a').embedly({maxWidth:450}).css('backgroundColor','#dadada');
 
-  * `oembed <http://embed.ly/docs/endpoints/1/oembed>`_ - a standard in 3rd
-    party embedding, contains a finite set of attributes.
-  * `preview <http://embed.ly/docs/endpoints/1/preview>`_ - returns a larger
-    set of attributes (multiple images, RSS content, and embeds in page) for
-    customizing your embeds.
-  * `objectify <http://embed.ly/docs/endpoints/2/objectify>`_ - returns all of
-    the meta and API data Embedly has for a link. Advanced users.
 
-  Developers intending to use Preview or Objectify will have to include their
-  own ``success`` callback function for handling the embeds. Our default
-  success callback is designed to work with ``oembed`` only.
+Client
+------
+The Selector is excellent for inserting Embedly data into the DOM, but if you
+would like even more control on how you use Embedly data, then use the Client
+directly.
 
+The client follows jQuery's Promise pattern. You should be familiar with the
+concept of Deferred objects before using the Client, but we will explain in a
+simple example here.
+::
+
+  var deferred = $.embedly.preview(['http://embed.ly', 'http://google.com'], {
+    key: 'internal',
+    query: {
+      words: 20,
+    }
+  }).progress(function(data){
+    // Called after each URL has been returned from the Embedly server. Order
+    // is not preserved for this method, so for long lists where URLs need to
+    // be batched the data results will likely be out of order.
+    console.log(data.url, data.title);
+  }).done(function(results){
+    // Called after the call has been completed with every data result in a
+    // list. Order is preserved in this method regardless of batching.
+    $.each(results, function(i, data){
+      console.log(data.original_url)
+    });
+  });
+
+  // Deferred objs retain information, so you can register callbacks even after
+  // the ajax call was completed.
+  deferred.done(function(results){
+    // This will execute immediately if the ajax call is complete
+    console.log('done', results.length);
+  })
+
+  deferred.progress(function(data){
+    // If the call has been completed, the deferred object will only pass back
+    // the last object that was sent to the notify function. You should
+    // register a progess function immediately after the embedly client call to
+    // catch all notify events.
+    alert('last object', data.url);
+  })
+
+You can also pass a single URL to the client, but the ``done`` method will
+always be passed a list of results.
+::
+
+  $.embedly.oembed('http://embed.ly').progress(function(data){
+    // Will only be called once in this case.
+    console.log(data.url, data.title);
+  }).done(function(results){
+    // Even though there was only one url, this will still be a list of
+    // results.
+    var data = results[0];
+  });
+
+Methods
+"""""""
+The client only has 3 methods
+
+``oembed``
+  Corresponds to the Embedly's `oembed` API Endpoint.
+
+``preview``
+  Corresponds to the Embedly's `preview` API Endpoint.
+
+``objectify``
+  Corresponds to the Embedly's `objectify` API Endpoint.
+
+Batching
+""""""""
+Embedly's API only accepts a maximum of 20 URLs per API request, because of
+this the ``ajax`` method automatically batches URLs into groups of 20. The
+``progress`` method will still return when the data of a URL is ready and the
+``done`` method will retain order. If you would like a smaller batch size you
+can specify ``batch`` in the options like so::
+
+  $.embedly.oembed(['http://embed.ly', ....], {batch:10}).done(function(results){
+    console.log(results.length);
+  });
+
+Data
+""""
+The data passed back by the client is a JSON Object of the data return by the
+Embedly API. For more information on responses see the Response documentation.
+
+The only difference is that the ``oEmbed`` data object contains an
+``original_url`` attribute that is used for book keeping purposes.
+
+
+Options
+-------
 ``key`` [`string:''`]
   You can `sign up <http://embed.ly/signup>`_ or `log in
   <http://app.embed.ly/login>`_ as an existing user to retrieve your Embedly
   key. A key will allow higher usage levels and extra features, see `breakdown
   <http://embed.ly/pricing>`_.
 
-``maxWidth`` [`Number:null`]
-  A number representing the "max width" in pixels a piece of content can be
-  displayed in your page.
+``query`` [`Object:default object`]
+  A direct pass though to all the Query Arguments that the Embedly API accepts.
+  These will be combined with the ``key``, ``endpoint`` and the ``urls`` to
+  form the request to Embedly.::
 
-``maxHeight`` [`Number:null`]
-  A number representing the "max height" in pixels a piece of content can be
-  displayed in your page.
+    query: {
+      maxwidth: 400,
+      maxheight: 400,
+      chars: 200,
+      autoplay: true
+      ...
+    }
 
-``urlRe`` [`RegEx:`]
-  A regular expression representing what links to show content for. Use our
-  `generator <http://embed.ly/tools/generator>`_ to generate a regular
-  expression for a specific set of sources.
+  For more information, read the `Query Arguments
+  <http://embed.ly/docs/endpoints/arguments>`_ documentation.
+
+``display`` [`Function:default function`]
+
+  This method will embed the content on the page. As a convenience Embedly has
+  a simple display function built in if you are using the ``oembed`` endpoint.
+  It will create an image for ``photo`` types, a simple title and description
+  embed for ``link`` types and directly embed the html for ``rich`` and
+  ``video`` types.
+
+  Generally you will want to overwrite this function for a more customized look
+  and feel.
+
+  ``display`` should accept a data object::
+
+    $('a').embedly({display:function(data){
+      $(this).text(data.title);
+    });
 
 ``method`` [`String:'replace'`]
-  A string value to tell Embedly how to place the content in your page.
+  A string value to tell Embedly how to place the content in your page when
+  using the default display function.
 
   * `replace` - replaces the link with the content
   * `after` - inserts the content after the link
@@ -177,84 +230,110 @@ Valid Options
   A boolean value representing whether or not Embedly should use the style
   element to resize images based on the maxWidth and maxHeight parameters.
 
-``success`` [`Function:default function`]
-  If you would like to replace our default callback action, which takes
-  ``['replace','after','afterParent']`` as a parameter and writes the
-  oEmbed.code to your DOM element, you may do so with this function.
+``endpoint`` [`String:oembed`]
+  A string value that maps to one of three Embedly endpoints. A `paid plan
+  <http://embed.ly/pricing>`_ is required for Preview and Objectify.
 
-  Alternatively you can use the optional function parameter in the
-  ``embedly({}, function(){})`` call, but we're deprecating that in favor of
-  this optional parameter.  If you want to access the oEmbed data, but still
-  keep the default callback function, we have introduced a new custom event
-  handler that fires when the oEmbed object is returned. Read below for more
-  information on that.
+  * `oembed <http://embed.ly/docs/endpoints/1/oembed>`_ - a standard in 3rd
+    party embedding, contains a finite set of attributes.
+  * `preview <http://embed.ly/docs/endpoints/1/preview>`_ - returns a larger
+    set of attributes (multiple images, RSS content, and embeds in page) for
+    customizing your embeds.
+  * `objectify <http://embed.ly/docs/endpoints/2/objectify>`_ - returns all of
+    the meta and API data Embedly has for a link. Advanced users.
 
-``error`` [`Function:default function`]
-  Developers can write a function to handle URLs that Embedly does not. The
-  error function has two parameters:
+  Developers intending to use Preview or Objectify will have to include their
+  own ``success`` callback function for handling the embeds. Our default
+  success callback is designed to work with ``oembed`` only.
 
-  * 'node' - this is a jQuery reference for the original <a> tag with the
-     erroneous URL
-  * 'dict' - an object containing error information. More information on what
-    the dict includes can be found in our `Documentation
-    <http://embed.ly/docs/endpoints/1/oembed#error-codes>`_.
-
-``wmode`` [`String:'opaque'`]
-  A string value either `window`, `opaque` or `transparent` representing the
-  flash WMODE parameter which allows layering of Flash content with DHTML
-  layers.
-
-  * `window` - movie plays in its own rectangular window on a web page.
-  * `opaque` - the movie hides everything on the page behind it.
-  * `transparent` - the background of the HTML page shows through all
-    transparent portions of the movie, this may slow animation performance.
-
-``chars``
-  Embedly will truncate the description to the number of characters you specify
-  adding ... at the end when needed.
-
-``words``
-  Embedly will truncate the description while trying to split the it at the
-  closest sentence to that word count.
+``urlRe`` [`RegEx:`]
+  A regular expression representing what links to show content for. Use our
+  `generator <http://embed.ly/tools/generator>`_ to generate a regular
+  expression for a specific set of sources.
 
 ``secure`` [`Boolean:false`]
   Set to true if you want your requests to be made to the HTTPS endpoint.
 
-``autoplay`` [`Boolean:false`]
-  Set to true if you want videos to autoplay when loaded
+``batch`` [`Integer:20`]
+  Embedly's API only accepts a maximum of 20 URLs per request, so the Client
+  batches these up into groups of 20. If you would like to set a custom size,
+  you can do so with this argument.
 
-Custom Event
-============
-Starting in revision 2.0.0 we have started writing the oEmbed data to the DOM
+``progress`` [`Function:null`]
+
+  Added directly to the Deferred object and will be called when the API returns
+  JSON data for this URL. ``progress`` should accept a single data object.
+  ::
+
+    $('a').embedly({progress:function(data){
+      console.log(data.type)
+    });
+
+``done`` [`Function:null`]
+
+  Added directly to the Deferred object and will be called when every URL has
+  been processed by the Embedly API. ``done`` should accept a list of data
+  objects.
+  ::
+
+    $('a').embedly({progress:function(data){
+      console.log(data.type)
+    });
+
+
+Errors and Invalid URLs
+-----------------------
+It's more than likely with user generated content that there will be a number
+of invalid URLs passed to the client. If you also use a specific URLRe, you
+will receive even more invalid URLs. The Client and the Selector treat these
+the came and they are still passed to the ``progress``, ``done`` and
+``display`` functions. It's very easy to handle these::
+
+  $.embedly.objectify('notaurl').progress(function(data){
+    if (data.invalid === true){
+      // The URL that you passed in was not a good one.
+      console.log(data.error, data.error_message);
+    } else if (data.type === 'error'){
+      // The API passed back an error.
+      console.log(data.type, data.error_message);
+    } else {
+      // Everything is good to go. Proceed Captain.
+    }
+  })
+
+
+Data / Custom Events
+--------------------
+Starting in revision 2.0.0 we have started writing the Embedly data to the DOM
 elements using jQuery.data(). You can read more about the data function `here
-<http://api.jquery.com/jQuery.data/>`_, but basically saves the oEmbed data on
+<http://api.jquery.com/jQuery.data/>`_, but basically saves the Embedly data on
 the element for retrieval later.  For example::
 
   # $('a').embedly()
   # ... after the AJAX returns an oembed ...
-  $('a').data('oembed')
+  $('a').data('embedly')
 
-This call returns the ``oembed`` object for each a tag, so you can access the
+This call returns the ``embedly`` object for each a tag, so you can access the
 data later on. Because this data is not written to the DOM until the AJAX
 requests are complete we have added a custom event listener called
-``embedly-oembed.`` This event fires for each node when the oEmbed object is
+``displayed.`` This event fires for each node when the oEmbed object is
 written to the node using jQuery.data(). We did this so that developers could
 continue to use our default callback function for writing embeds to the page
-and still have access to the ``oembed`` data for customization.
+and still have access to the ``embedly`` data for customization.
 ::
 
   # version 1
-  $('a').embedly({maxWidth:500}).bind('embedly-oembed', function(e){
+  $('a').embedly({maxWidth:500}).bind('displayed', function(e){
     var oembed = $(this).data('oembed');
     alert(oembed.title);
   });
 
   # version 2
-  $('a').embedly({maxWidth:500}).bind('embedly-oembed', function(e, oembed){
-    alert(oembed.title);
+  $('a').embedly({maxWidth:500}).bind('displayed', function(e, data){
+    alert(data.title);
   });
 
-The event handler gets the oembed object passed in as a parameter as well if
+The event handler gets the embedly object passed in as a parameter as well if
 you don't want to use jQuery.data(); The two are equivalent.
 
 CDN
@@ -262,17 +341,9 @@ CDN
 To get you going even faster, Embedly hosts all the files you need on
 scripts.embed.ly. The latest version is available here::
 
-    http://scripts.embed.ly/jquery.embedly-2.1.7.js
-    http://scripts.embed.ly/jquery.embedly-2.1.7.min.js
+    http://scripts.embed.ly/jquery.embedly-3.0.0.js
+    http://scripts.embed.ly/jquery.embedly-3.0.0.min.js
 
-The most current version of jQuery Preview will be available here::
-
-    http://scripts.embed.ly/jquery.embedly.js
-    http://scripts.embed.ly/jquery.embedly.min.js
-
-Examples
---------
-Examples can be found at - http://github.com/embedly/embedly-jquery/tree/master/examples/
 
 Licensing
 ---------
