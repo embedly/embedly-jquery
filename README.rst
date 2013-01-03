@@ -4,13 +4,16 @@ Embedly jQuery is a jQuery Library for interacting with the Embedly API.
 
 Basic Setup
 -----------
-Embedly jQuery requires jQuery 1.5 or greater as it uses promises. For older
-versions of jQuery see version 2.2.2.
+Embedly jQuery requires jQuery 1.5 or greater as it uses `Deferred Objects
+<http://api.jquery.com/category/deferred-object/>`_. For older versions of
+jQuery see version `2.2.2
+<https://github.com/embedly/embedly-jquery/tree/v2.2.0>`_. Add jQuery and
+Embedly jQuery to your document.
 ::
 
   <head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
-    <script src="http://scripts.embed.ly/j/3.0.0/jquery.embedly.min.js" type="text/javascript"></script>
+    <script src="http://scripts.embed.ly/jquery.embedly-3.0.0.min.js" type="text/javascript"></script>
   </head>
 
 
@@ -19,7 +22,7 @@ You can now use jQuery selectors to replace links with embedded content::
   $('#content a').embedly({key: 'Your Embedly Key'});
 
 
-or can now use the client directly::
+Or can now use the client directly::
 
   $.embedly.preview('http://embed.ly', {key: 'Your Embedly Key'}).progress(function(data){
     alert(data.title);
@@ -68,14 +71,18 @@ Use a CSS selector to replace every valid link with an embed on the page.
 
   # Replace with maxWidth option set to 600px and method option set
   # to 'after'
-  $('a').embedly({maxWidth:600,'method':'after'});
+  $('a').embedly({query: {maxwidth: 600}, 'method':'after'});
 
   # Replace only Hulu links
-  $('a').embedly({maxWidth:600,'urlRe': /http:\/\/(www\.hulu\.com\/watch.*)/i,'method':'after'});
+  $('a').embedly({
+    query: {maxwidth: 600},
+    urlRe: /http:\/\/(www\.hulu\.com\/watch.*)/i,
+    method:'after'
+  });
 
-  # Embedly now supports chaining, so you can modify your original jQuery set
+  # Embedly supports chaining, so you can modify your original jQuery set
   # after triggering Embedly
-  $('a').embedly({maxWidth:450}).css('backgroundColor','#dadada');
+  $('a').embedly().css('backgroundColor','#dadada');
 
 
 Client
@@ -85,8 +92,9 @@ would like even more control on how you use Embedly data, then use the Client
 directly.
 
 The client follows jQuery's Promise pattern. You should be familiar with the
-concept of Deferred objects before using the Client, but we will explain in a
-simple example here.
+concept of `Deferred Objects
+<http://api.jquery.com/category/deferred-object/>`_.
+before using the Client, but we will explain in a simple example here.
 ::
 
   var deferred = $.embedly.preview(['http://embed.ly', 'http://google.com'], {
@@ -112,15 +120,15 @@ simple example here.
   deferred.done(function(results){
     // This will execute immediately if the ajax call is complete
     console.log('done', results.length);
-  })
+  });
 
   deferred.progress(function(data){
     // If the call has been completed, the deferred object will only pass back
     // the last object that was sent to the notify function. You should
-    // register a progess function immediately after the embedly client call to
-    // catch all notify events.
+    // register a progress function immediately after the embedly client call
+    // to catch all notify events.
     alert('last object', data.url);
-  })
+  });
 
 You can also pass a single URL to the client, but the ``done`` method will
 always be passed a list of results.
@@ -140,13 +148,16 @@ Methods
 The client only has 3 methods
 
 ``oembed``
-  Corresponds to the Embedly's `oembed` API Endpoint.
+  Corresponds to Embedly's `oEmbed
+  <http://embed.ly/docs/endpoints/1/oembed>`_ API Endpoint.
 
 ``preview``
-  Corresponds to the Embedly's `preview` API Endpoint.
+  Corresponds to Embedly's `Preview
+  <http://embed.ly/docs/endpoints/1/preview>`_ API Endpoint.
 
 ``objectify``
-  Corresponds to the Embedly's `objectify` API Endpoint.
+  Corresponds to the Embedly's `Objectify
+  <http://embed.ly/docs/endpoints/2/objectify>`_ API Endpoint.
 
 Batching
 """"""""
@@ -243,8 +254,8 @@ Options
     the meta and API data Embedly has for a link. Advanced users.
 
   Developers intending to use Preview or Objectify will have to include their
-  own ``success`` callback function for handling the embeds. Our default
-  success callback is designed to work with ``oembed`` only.
+  own ``display`` callback function for handling the embeds. Our default
+  ``display`` callback is designed to work with ``oembed`` only.
 
 ``urlRe`` [`RegEx:`]
   A regular expression representing what links to show content for. Use our
@@ -260,9 +271,9 @@ Options
   you can do so with this argument.
 
 ``progress`` [`Function:null`]
-
   Added directly to the Deferred object and will be called when the API returns
-  JSON data for this URL. ``progress`` should accept a single data object.
+  JSON data for this URL. ``progress`` should accept a single data object and
+  does not contain any information about the element that is being operated on.
   ::
 
     $('a').embedly({progress:function(data){
@@ -270,7 +281,6 @@ Options
     });
 
 ``done`` [`Function:null`]
-
   Added directly to the Deferred object and will be called when every URL has
   been processed by the Embedly API. ``done`` should accept a list of data
   objects.
@@ -323,18 +333,33 @@ and still have access to the ``embedly`` data for customization.
 ::
 
   # version 1
-  $('a').embedly({maxWidth:500}).bind('displayed', function(e){
-    var oembed = $(this).data('oembed');
-    alert(oembed.title);
+  $('a').embedly().bind('displayed', function(e){
+    var data = $(this).data('embedly');
+    alert(data.title);
   });
 
   # version 2
-  $('a').embedly({maxWidth:500}).bind('displayed', function(e, data){
+  $('a').embedly().bind('displayed', function(e, data){
     alert(data.title);
   });
 
 The event handler gets the embedly object passed in as a parameter as well if
 you don't want to use jQuery.data(); The two are equivalent.
+
+It's possible to get yourself into a race condition using the ``embedly`` data
+where the using initiates an event and the data has yet to be returned. To get
+around this there is a ``loaded`` Deferred Object on the data that will resolve
+when everything is ready. Here is a simple example::
+
+  $('a').embedly().on('click', function(){
+    var embed = $(this).data('embedly');
+    // Attach a done event to the loaded object that will be called when
+    // everything is ready.
+    embed.loaded.done(function(data){
+      alert(data.url);
+    });
+  });
+
 
 CDN
 ---
