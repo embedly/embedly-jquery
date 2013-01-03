@@ -1,0 +1,404 @@
+<html><head><link rel="shortcut icon" href="http://embed.ly/static/favicon.ico"><script type="text/javascript" src="../libs/jquery/jquery.js"></script><script type="text/javascript" src="js/bootstrap.js"></script><script type="text/javascript" src="../src/embedly-jquery.js"></script><script type="text/javascript" src="js/prettify.js"></script><link rel="stylesheet" href="css/prettify.css"><link rel="stylesheet" href="css/bootstrap.css"><link rel="stylesheet" href="css/demo.css"><title>Embedly jQuery</title></head><body onload="prettyPrint()">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="index.html">Embedly jQuery</a>
+          <ul class="nav"><li><a href="inline.html">Inline</a></li>
+            <li><a href="modal.html">Modal</a></li>
+            <li><a href="tooltip.html">Tooltip</a></li>
+          </ul></div>
+      </div>
+    </div>
+    <div id="content" class="container">
+      <div class="row">
+        <div class="span12">
+        <h1>Embedly jQuery</h1>
+        <p>
+          Embed content from over 250 different sources with one line of Javascript.
+        </p>
+        <pre class="prettyprint linenums">
+$('a').embedly();</pre>
+        </div>
+      </div>
+      <div class="row" rel="placeholder">
+
+      <div class="section" id="basic-setup">
+<h2>Basic Setup</h2>
+<p>Embedly jQuery requires jQuery 1.5 or greater as it uses <a class="reference external" href="http://api.jquery.com/category/deferred-object/">Deferred Objects</a>. For older versions of
+jQuery see version <a class="reference external" href="https://github.com/embedly/embedly-jquery/tree/v2.2.0">2.2.2</a>. Add jQuery and
+Embedly jQuery to your document.</p>
+<pre class="prettyprint linenums">
+&lt;head&gt;
+  &lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"&gt;&lt;/script&gt;
+  &lt;script src="http://scripts.embed.ly/jquery.embedly-3.0.0.min.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;/head&gt;
+</pre>
+<p>You can now use jQuery selectors to replace links with embedded content:</p>
+<pre class="prettyprint linenums">
+$('#content a').embedly({key: 'Your Embedly Key'});
+</pre>
+<p>Or can now use the client directly:</p>
+<pre class="prettyprint linenums">
+$.embedly.preview('http://embed.ly', {key: 'Your Embedly Key'}).progress(function(data){
+  alert(data.title);
+});
+</pre>
+</div>
+<div class="section" id="key">
+<h2>Key</h2>
+<p>Embedly requires that you pass a key with every request. To signup for a key
+please visit <a class="reference external" href="http://embed.ly/signup">embed.ly/signup</a>. To avoid adding your
+key to every <tt class="docutils literal">$.embedly</tt> call you can add it to the <tt class="docutils literal">defaults</tt> like so:</p>
+<pre class="prettyprint linenums">
+$.embedly.defaults.key = 'Your Embedly Key';
+
+# Directly
+$.embedly.preview('http://embed.ly').progress(function(data){alert(data.title)});
+
+# CSS Selector
+$('a').embedly();
+</pre>
+<p>Otherwise you must add it to every request like so:</p>
+<pre class="prettyprint linenums">
+# Directly
+$.embedly.preview('http://embed.ly', {key:'Your Embedly Key'})
+  .progress(function(data){alert(data.title)});
+
+# CSS Selector
+$('a').embedly({key:'Your Embedly Key'});
+</pre>
+<p>For the rest of the documentation we will assume that you set up the defaults
+or passing the <tt class="docutils literal">key</tt> directly into the call.</p>
+</div>
+<div class="section" id="selector">
+<h2>Selector</h2>
+<p>Use a CSS selector to replace every valid link with an embed on the page.</p>
+<pre class="prettyprint linenums">
+$('a').embedly( options );
+
+# Replace all valid links
+$('a').embedly();
+
+# Replace a subset of links
+$('a.oembed').embedly();
+
+# Replace with maxWidth option set to 600px and method option set
+# to 'after'
+$('a').embedly({query: {maxwidth: 600}, 'method':'after'});
+
+# Replace only Hulu links
+$('a').embedly({
+  query: {maxwidth: 600},
+  urlRe: /http:\/\/(www\.hulu\.com\/watch.*)/i,
+  method:'after'
+});
+
+# Embedly supports chaining, so you can modify your original jQuery set
+# after triggering Embedly
+$('a').embedly().css('backgroundColor','#dadada');
+</pre>
+</div>
+<div class="section" id="client">
+<h2>Client</h2>
+<p>The Selector is excellent for inserting Embedly data into the DOM, but if you
+would like even more control on how you use Embedly data, then use the Client
+directly.</p>
+<p>The client follows jQuery's Promise pattern. You should be familiar with the
+concept of <a class="reference external" href="http://api.jquery.com/category/deferred-object/">Deferred Objects</a>.
+before using the Client, but we will explain in a simple example here.</p>
+<pre class="prettyprint linenums">
+var deferred = $.embedly.preview(['http://embed.ly', 'http://google.com'], {
+  key: 'internal',
+  query: {
+    words: 20,
+  }
+}).progress(function(data){
+  // Called after each URL has been returned from the Embedly server. Order
+  // is not preserved for this method, so for long lists where URLs need to
+  // be batched the data results will likely be out of order.
+  console.log(data.url, data.title);
+}).done(function(results){
+  // Called after the call has been completed with every data result in a
+  // list. Order is preserved in this method regardless of batching.
+  $.each(results, function(i, data){
+    console.log(data.original_url)
+  });
+});
+
+// Deferred objs retain information, so you can register callbacks even after
+// the ajax call was completed.
+deferred.done(function(results){
+  // This will execute immediately if the ajax call is complete
+  console.log('done', results.length);
+});
+
+deferred.progress(function(data){
+  // If the call has been completed, the deferred object will only pass back
+  // the last object that was sent to the notify function. You should
+  // register a progress function immediately after the embedly client call
+  // to catch all notify events.
+  alert('last object', data.url);
+});
+</pre>
+<p>You can also pass a single URL to the client, but the <tt class="docutils literal">done</tt> method will
+always be passed a list of results.</p>
+<pre class="prettyprint linenums">
+$.embedly.oembed('http://embed.ly').progress(function(data){
+  // Will only be called once in this case.
+  console.log(data.url, data.title);
+}).done(function(results){
+  // Even though there was only one url, this will still be a list of
+  // results.
+  var data = results[0];
+});
+</pre>
+</div>
+<div class="section" id="methods">
+<h2>Methods</h2>
+<p>The client only has 3 methods</p>
+<dl class="docutils"><dt><tt class="docutils literal">oembed</tt></dt>
+<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/endpoints/1/oembed">oEmbed</a> API Endpoint.</dd>
+<dt><tt class="docutils literal">preview</tt></dt>
+<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/endpoints/1/preview">Preview</a> API Endpoint.</dd>
+<dt><tt class="docutils literal">objectify</tt></dt>
+<dd>Corresponds to the Embedly's <a class="reference external" href="http://embed.ly/docs/endpoints/2/objectify">Objectify</a> API Endpoint.</dd>
+</dl></div>
+<div class="section" id="batching">
+<h2>Batching</h2>
+<p>Embedly's API only accepts a maximum of 20 URLs per API request, because of
+this the <tt class="docutils literal">ajax</tt> method automatically batches URLs into groups of 20. The
+<tt class="docutils literal">progress</tt> method will still return when the data of a URL is ready and the
+<tt class="docutils literal">done</tt> method will retain order. If you would like a smaller batch size you
+can specify <tt class="docutils literal">batch</tt> in the options like so:</p>
+<pre class="prettyprint linenums">
+$.embedly.oembed(['http://embed.ly', ....], {batch:10}).done(function(results){
+  console.log(results.length);
+});
+</pre>
+</div>
+<div class="section" id="data">
+<h2>Data</h2>
+<p>The data passed back by the client is a JSON Object of the data return by the
+Embedly API. For more information on responses see the Response documentation.</p>
+<p>The only difference is that the <tt class="docutils literal">oEmbed</tt> data object contains an
+<tt class="docutils literal">original_url</tt> attribute that is used for book keeping purposes.</p>
+</div>
+<div class="section" id="options">
+<h2>Options</h2>
+<dl class="docutils"><dt><tt class="docutils literal">key</tt> [<cite>string:''</cite>]</dt>
+<dd>You can <a class="reference external" href="http://embed.ly/signup">sign up</a> or <a class="reference external" href="http://app.embed.ly/login">log in</a> as an existing user to retrieve your Embedly
+key. A key will allow higher usage levels and extra features, see <a class="reference external" href="http://embed.ly/pricing">breakdown</a>.</dd>
+<dt><tt class="docutils literal">query</tt> [<cite>Object:default object</cite>]</dt>
+<dd><p class="first">A direct pass though to all the Query Arguments that the Embedly API accepts.
+These will be combined with the <tt class="docutils literal">key</tt>, <tt class="docutils literal">endpoint</tt> and the <tt class="docutils literal">urls</tt> to
+form the request to Embedly.:</p>
+<pre class="prettyprint linenums">
+query: {
+  maxwidth: 400,
+  maxheight: 400,
+  chars: 200,
+  autoplay: true
+  ...
+}
+</pre>
+<p class="last">For more information, read the <a class="reference external" href="http://embed.ly/docs/endpoints/arguments">Query Arguments</a> documentation.</p>
+</dd>
+</dl><p><tt class="docutils literal">display</tt> [<cite>Function:default function</cite>]</p>
+<blockquote>
+<p>This method will embed the content on the page. As a convenience Embedly has
+a simple display function built in if you are using the <tt class="docutils literal">oembed</tt> endpoint.
+It will create an image for <tt class="docutils literal">photo</tt> types, a simple title and description
+embed for <tt class="docutils literal">link</tt> types and directly embed the html for <tt class="docutils literal">rich</tt> and
+<tt class="docutils literal">video</tt> types.</p>
+<p>Generally you will want to overwrite this function for a more customized look
+and feel.</p>
+<p><tt class="docutils literal">display</tt> should accept a data object:</p>
+<pre class="prettyprint linenums">
+$('a').embedly({display:function(data){
+  $(this).text(data.title);
+});
+</pre>
+</blockquote>
+<dl class="docutils"><dt><tt class="docutils literal">method</tt> [<cite>String:'replace'</cite>]</dt>
+<dd><p class="first">A string value to tell Embedly how to place the content in your page when
+using the default display function.</p>
+<ul class="last simple"><li><cite>replace</cite> - replaces the link with the content</li>
+<li><cite>after</cite> - inserts the content after the link</li>
+<li><cite>afterParent</cite> - inserts the content after the parent element</li>
+<li><cite>replaceParent</cite> - replaces parent element with the embed content</li>
+</ul></dd>
+<dt><tt class="docutils literal">wrapElement</tt> [<cite>String:'div'</cite>]</dt>
+<dd>A string value representing the valid HTML element to wrap the content in.</dd>
+<dt><tt class="docutils literal">className</tt> [<cite>String:'embed'</cite>]</dt>
+<dd>A string value representing a CSS class you would like to assign to the
+wrapElement.</dd>
+<dt><tt class="docutils literal">addImageStyles</tt> [<cite>Boolean:true</cite>]</dt>
+<dd>A boolean value representing whether or not Embedly should use the style
+element to resize images based on the maxWidth and maxHeight parameters.</dd>
+<dt><tt class="docutils literal">endpoint</tt> [<cite>String:oembed</cite>]</dt>
+<dd><p class="first">A string value that maps to one of three Embedly endpoints. A <a class="reference external" href="http://embed.ly/pricing">paid plan</a> is required for Preview and Objectify.</p>
+<ul class="simple"><li><a class="reference external" href="http://embed.ly/docs/endpoints/1/oembed">oembed</a> - a standard in 3rd
+party embedding, contains a finite set of attributes.</li>
+<li><a class="reference external" href="http://embed.ly/docs/endpoints/1/preview">preview</a> - returns a larger
+set of attributes (multiple images, RSS content, and embeds in page) for
+customizing your embeds.</li>
+<li><a class="reference external" href="http://embed.ly/docs/endpoints/2/objectify">objectify</a> - returns all of
+the meta and API data Embedly has for a link. Advanced users.</li>
+</ul><p class="last">Developers intending to use Preview or Objectify will have to include their
+own <tt class="docutils literal">display</tt> callback function for handling the embeds. Our default
+<tt class="docutils literal">display</tt> callback is designed to work with <tt class="docutils literal">oembed</tt> only.</p>
+</dd>
+<dt><tt class="docutils literal">urlRe</tt> [<cite>RegEx:</cite>]</dt>
+<dd>A regular expression representing what links to show content for. Use our
+<a class="reference external" href="http://embed.ly/tools/generator">generator</a> to generate a regular
+expression for a specific set of sources.</dd>
+<dt><tt class="docutils literal">secure</tt> [<cite>Boolean:false</cite>]</dt>
+<dd>Set to true if you want your requests to be made to the HTTPS endpoint.</dd>
+<dt><tt class="docutils literal">batch</tt> [<cite>Integer:20</cite>]</dt>
+<dd>Embedly's API only accepts a maximum of 20 URLs per request, so the Client
+batches these up into groups of 20. If you would like to set a custom size,
+you can do so with this argument.</dd>
+<dt><tt class="docutils literal">progress</tt> [<cite>Function:null</cite>]</dt>
+<dd><p class="first">Added directly to the Deferred object and will be called when the API returns
+JSON data for this URL. <tt class="docutils literal">progress</tt> should accept a single data object and
+does not contain any information about the element that is being operated on.</p>
+<pre class="prettyprint linenums">
+$('a').embedly({progress:function(data){
+  console.log(data.type)
+});
+</pre>
+</dd>
+<dt><tt class="docutils literal">done</tt> [<cite>Function:null</cite>]</dt>
+<dd><p class="first">Added directly to the Deferred object and will be called when every URL has
+been processed by the Embedly API. <tt class="docutils literal">done</tt> should accept a list of data
+objects.</p>
+<pre class="prettyprint linenums">
+$('a').embedly({progress:function(data){
+  console.log(data.type)
+});
+</pre>
+</dd>
+</dl></div>
+<div class="section" id="errors-and-invalid-urls">
+<h2>Errors and Invalid URLs</h2>
+<p>It's more than likely with user generated content that there will be a number
+of invalid URLs passed to the client. If you also use a specific URLRe, you
+will receive even more invalid URLs. The Client and the Selector treat these
+the came and they are still passed to the <tt class="docutils literal">progress</tt>, <tt class="docutils literal">done</tt> and
+<tt class="docutils literal">display</tt> functions. It's very easy to handle these:</p>
+<pre class="prettyprint linenums">
+$.embedly.objectify('notaurl').progress(function(data){
+  if (data.invalid === true){
+    // The URL that you passed in was not a good one.
+    console.log(data.error, data.error_message);
+  } else if (data.type === 'error'){
+    // The API passed back an error.
+    console.log(data.type, data.error_message);
+  } else {
+    // Everything is good to go. Proceed Captain.
+  }
+})
+</pre>
+</div>
+<div class="section" id="data-custom-events">
+<h2>Data / Custom Events</h2>
+<p>Starting in revision 2.0.0 we have started writing the Embedly data to the DOM
+elements using jQuery.data(). You can read more about the data function <a class="reference external" href="http://api.jquery.com/jQuery.data/">here</a>, but basically saves the Embedly data on
+the element for retrieval later.  For example:</p>
+<pre class="prettyprint linenums">
+# $('a').embedly()
+# ... after the AJAX returns an oembed ...
+$('a').data('embedly')
+</pre>
+<p>This call returns the <tt class="docutils literal">embedly</tt> object for each a tag, so you can access the
+data later on. Because this data is not written to the DOM until the AJAX
+requests are complete we have added a custom event listener called
+<tt class="docutils literal">displayed.</tt> This event fires for each node when the oEmbed object is
+written to the node using jQuery.data(). We did this so that developers could
+continue to use our default callback function for writing embeds to the page
+and still have access to the <tt class="docutils literal">embedly</tt> data for customization.</p>
+<pre class="prettyprint linenums">
+# version 1
+$('a').embedly().bind('displayed', function(e){
+  var data = $(this).data('embedly');
+  alert(data.title);
+});
+
+# version 2
+$('a').embedly().bind('displayed', function(e, data){
+  alert(data.title);
+});
+</pre>
+<p>The event handler gets the embedly object passed in as a parameter as well if
+you don't want to use jQuery.data(); The two are equivalent.</p>
+<p>It's possible to get yourself into a race condition using the <tt class="docutils literal">embedly</tt> data
+where the using initiates an event and the data has yet to be returned. To get
+around this there is a <tt class="docutils literal">loaded</tt> Deferred Object on the data that will resolve
+when everything is ready. Here is a simple example:</p>
+<pre class="prettyprint linenums">
+$('a').embedly().on('click', function(){
+  var embed = $(this).data('embedly');
+  // Attach a done event to the loaded object that will be called when
+  // everything is ready.
+  embed.loaded.done(function(data){
+    alert(data.url);
+  });
+});
+</pre>
+</div>
+<div class="section" id="cdn">
+<h2>CDN</h2>
+<p>To get you going even faster, Embedly hosts all the files you need on
+scripts.embed.ly. The latest version is available here:</p>
+<pre class="prettyprint linenums">
+http://scripts.embed.ly/jquery.embedly-3.0.0.js
+http://scripts.embed.ly/jquery.embedly-3.0.0.min.js
+</pre>
+</div>
+<div class="section" id="licensing">
+<h2>Licensing</h2>
+<p>BSD License can be found at - <a class="reference external" href="http://github.com/embedly/embedly-jquery/tree/master/LICENSE/">http://github.com/embedly/embedly-jquery/tree/master/LICENSE/</a></p>
+</div>
+<div class="section" id="embedly-urls">
+<h2>Embedly URLs</h2>
+<ul class="simple"><li>Git location:       <a class="reference external" href="http://github.com/embedly/embedly-jquery/">http://github.com/embedly/embedly-jquery/</a></li>
+<li>Home Page:          <a class="reference external" href="http://embed.ly">http://embed.ly</a></li>
+<li>Support:            <a class="reference external" href="http://support.embed.ly">http://support.embed.ly</a></li>
+</ul></div>
+<div class="section" id="changelog">
+<h2>Changelog</h2>
+</div>
+<div class="section" id="id6">
+<h2>2.2.0</h2>
+<ul class="simple"><li>Fixing bug that was causing callbacks to be overwritten (#23)</li>
+</ul></div>
+<div class="section" id="id7">
+<h2>2.1.9</h2>
+<ul class="simple"><li>Updated Image styles to work on all images, including thumbnails</li>
+<li>hide empty descriptions</li>
+</ul></div>
+<div class="section" id="id8">
+<h2>2.1.8</h2>
+<ul class="simple"><li>Fixed how default values/settings are handled</li>
+</ul></div>
+<div class="section" id="id9">
+<h2>2.1.7</h2>
+<ul class="simple"><li>Added secure and frame as a query param</li>
+<li>Move qunit to lib</li>
+<li>Removed jQuery as we weren't using it.</li>
+</ul></div>
+<div class="section" id="id10">
+<h2>2.1.6</h2>
+<ul class="simple"><li>Updated the README.rst</li>
+<li>Added <tt class="docutils literal">$.embedly.defaults</tt></li>
+<li>Added <tt class="docutils literal">char</tt> setting and <tt class="docutils literal">description</tt> class to the embed. Thanks <a class="reference external" href="https://github.com/bluedaniel">Daniel
+Levitt</a></li>
+<li>Added <tt class="docutils literal">word</tt> setting</li>
+</ul></div>
+<div class="section" id="id11">
+<h2>2.1.5</h2>
+<ul class="simple"><li>added secure flag for https requests</li>
+</ul></div>
+</div>
+    </div>
+  </body></html>

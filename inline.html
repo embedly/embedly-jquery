@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="shortcut icon" href="http://embed.ly/static/favicon.ico">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/embedly-jquery.js"></script>
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <link rel="stylesheet" href="css/prettify.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/demo.css" />
+    <title>Embedly jQuery</title>
+  </head>
+  <body onload="prettyPrint()">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="index.html">Embedly jQuery</a>
+          <ul class="nav">
+            <li class="active"><a href="inline.html">Inline</a></li>
+            <li><a href="modal.html">Modal</a></li>
+            <li><a href="tooltip.html">Tooltip</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="content" class="container">
+      <div class="row intro">
+        <div class="span12">
+          <h1>Inline</h1>
+          <p>
+            The simplest version of using Embedly jQuery. We can have you up and
+            running with inline Embeds in a few lines of code.
+          </p>
+        </div>
+      </div>
+      <div class="row example example-1">
+        <div class="span12">
+          <h2>Example 1: Replace</h2>
+          <p>
+            It's hard to show inline because it just looks like it was always meant to be. So for the
+            first example we will just show and inline image.
+          </p>
+          <div class="example-inline example-center">
+            <p>
+              On a cold snowy walk in the woods the dog threw on her boots and went for a walk.
+            </p>
+            <p>
+            <a href="http://instagram.com/p/TwWnNSIXRo/">http://instagram.com/p/TwWnNSIXRo/</a>
+            </p>
+            <p>
+              We found her miles later and captured the beast for the photo.
+            </p>
+          </div>
+          <pre class="prettyprint linenums">
+&lt;p&gt;
+  On a cold snowy walk in the woods the dog threw on her boots and went for a walk.&lt;/p&gt;
+&lt;p&gt;
+  &lt;a href="http://instagram.com/p/TwWnNSIXRo/"&gt;http://instagram.com/p/TwWnNSIXRo/&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+  We found her miles later and captured the beast for the photo.
+&lt;/p&gt;
+&lt;script type="text/javascript"&gt;
+  $('.example-1 .example-inline a').embedly({
+    key:'4d1f889c20ed11e1abb14040d3dc5c07',
+    query: {
+      maxwidth:530,
+    }
+  });
+&lt;/script&gt;
+          </pre>
+        </div>
+      </div>
+      <div class="row example example-2">
+        <div class="span12">
+          <h2>Example 2: Click to Replace</h2>
+          <p>
+            To slow it down and show you what actually happened, here is the same HTML.
+            Click on the button to see the image be replaced inline.
+          </p>
+          <div class="example-inline example-center">
+            <p>
+              On a cold snowy walk in the woods the dog threw on her boots and went for a walk.
+            </p>
+            <p>
+            <a href="http://instagram.com/p/TwWnNSIXRo/">http://instagram.com/p/TwWnNSIXRo/</a>
+            </p>
+            <p>
+              We found her miles later and captured the beast for the photo.
+            </p>
+            <button class="btn btn-primary"> Click to Replace</button>
+          </div>
+          <pre class="prettyprint linenums">
+$('.example-2 button').on('click', function(){
+  var $button = $(this);
+  $('.example-2 .example-inline a').embedly({
+    done: function(){
+      $button.hide();
+    }
+  });
+});
+          </pre>
+        </div>
+      </div>
+
+      <div class="row example example-3">
+        <div class="span12">
+          <h2>Example 3: Autoplay Videos</h2>
+          <p>
+            In order to increase page load times, it's generally a good idea to only load
+            a video when a user asks to play it. Instead of directly inserting the iframe or
+            SWF object, we insert the image and when the user clicks on it we replace it with
+            the video that autoplays.
+          </p>
+          <p>
+            In order to accomplish this we use the data on the a with the thumbnail we get
+            back from the oEmbed response.
+          </p>
+          <div class="example-inline example-center">
+            <p>
+              <a class="play" href="http://www.youtube.com/watch?v=vsmUpYIA99o">Watch</a>
+            </p>
+          </div>
+          <pre class="prettyprint linenums">
+.play {
+  position: relative;
+  display: block;
+}
+.play span {
+  display: block;
+  width: 77px;
+  height: 77px;
+  background-image: url(../img/play-button.png);
+  position: absolute;
+}
+          </pre>
+          <pre class="prettyprint linenums">
+$('.example-3 .example-inline a').embedly({
+  query: {
+    maxwidth:500,
+    autoplay:true
+  },
+  display: function(elem, data){
+    //Adds the image to the a tag and then sets up the sizing.
+    $(elem).html('&lt;img src="'+data.thumbnail_url+'"/&gt;&lt;span&gt;&lt;/span&gt;')
+      .width(data.thumbnail_width)
+      .height(data.thumbnail_height)
+      .find('span').css('top', data.thumbnail_height/2-36)
+      .css('left', data.thumbnail_width/2 - 36);
+  }
+}).on('click', function(){
+  // Handles the click event and replaces the link with the video.
+  var data = $(this).data('embedly');
+  $(this).replaceWith(data.html);
+  return false;
+});
+          </pre>
+        </div>
+      </div>
+    </div> <!-- Container-->
+
+    <script type="text/javascript">
+      // Set up defaults.
+      $.embedly.defaults = {
+        key:'4d1f889c20ed11e1abb14040d3dc5c07',
+        query: {
+          maxwidth:530,
+        }
+      }
+      $('.example-1 .example-inline a').embedly();
+
+      $('.example-2 button').on('click', function(){
+        var $button = $(this);
+        $('.example-2 .example-inline a').embedly({
+          done: function(){
+            $button.hide();
+          }
+        });
+      });
+
+      $('.example-3 .example-inline a').embedly({
+        query: {
+          maxwidth:500,
+          autoplay:true
+        },
+        display: function(data){
+          $(this).html('<img src="'+data.thumbnail_url+'"/><span></span>')
+            .width(data.thumbnail_width)
+            .height(data.thumbnail_height)
+            .find('span').css('top', data.thumbnail_height/2-36)
+            .css('left', data.thumbnail_width/2 - 36);
+        }
+      }).on('click', function(){
+        console.log('click')
+        var data = $(this).data('embedly');
+        $(this).replaceWith(data.html);
+        return false;
+      });
+    </script>
+  </body>
+</html>

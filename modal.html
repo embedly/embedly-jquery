@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="shortcut icon" href="http://embed.ly/static/favicon.ico">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/embedly-jquery.js"></script>
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <link rel="stylesheet" href="css/prettify.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/demo.css" />
+    <title>Embedly jQuery</title>
+  </head>
+  <body onload="prettyPrint()">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="index.html">Embedly jQuery</a>
+          <ul class="nav">
+            <li><a href="inline.html">Inline</a></li>
+            <li class="active"><a href="modal.html">Modal</a></li>
+            <li><a href="tooltip.html">Tooltip</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="content" class="container">
+
+      <div class="row intro">
+        <div class="span12">
+          <h1>Modals</h1>
+          <p>
+            Modal's are a really easy way to show embeds when you don't have the
+            real estate on the page to display them inline.
+          </p>
+          <p>
+            These are two demos on how to use Embedly to display videos and photo's
+            inline.
+          </p>
+        </div>
+      </div>
+      <div class="row example example-1">
+        <div class="span12">
+          <h2>Example 1: On Demand</h2>
+          <p>
+            When a user clicks a link, open the video in a modal and call Embedly.
+            This method reduces the number of call to the Embedly API, but will have
+            a slight increase in loading time.
+          </p>
+          <div class="example-inline example-center">
+            <a class="btn btn-primary" href="http://vimeo.com/55945051">Click to Watch in a Modal</a>
+          </div>
+          <code>
+            <pre class="prettyprint linenums">
+// set up the defaults.
+$.embedly.defaults = {
+  key:'4d1f889c20ed11e1abb14040d3dc5c07',
+  query: {
+    maxwidth:530,
+  },
+  display: $.noop
+}
+
+$('.example-1 a').on('click', function(){
+  var url = $(this).attr('href');
+
+  // Start the modal and on hide, clear the html out. This removes the embed.
+  // It's important to do so as if a user starts playing a video, then closes
+  // the modal the video will still be playing and the user will hear the sound.
+  $('#video-modal').modal().on('hide', function(){
+    $('#video-modal .modal-body').html('');
+  })
+
+  // Call embedly and when the url has been resolved fill the modal.
+  $.embedly.oembed(url).progress(function(data){
+      $('#video-modal .modal-header h3').html(data.title);
+      $('#video-modal .modal-body').html(data.html);
+    });
+
+  return false;
+});
+            </pre>
+          </code>
+        </div>
+      </div>
+      <div class="row example example-2">
+        <div class="span12">
+          <h2>Example 1: Pre Load Demand</h2>
+          <p>
+            When the page is loaded, all links are first sent to Embedly and preloaded
+            into the data element of the url. When at user clicks on the link, the data
+            is pulled from the element and immediately displayed. This takes advantage of
+            the move things when no one is looking principle.
+          </p>
+          <div class="example-inline example-center">
+            <a class="btn btn-primary" href="http://vimeo.com/55945051">Click to Watch in a Modal</a>
+          </div>
+          <pre class="prettyprint linenums">
+// Set up defaults.
+$.embedly.defaults = {
+  key:'4d1f889c20ed11e1abb14040d3dc5c07',
+  query: {
+    maxwidth:530,
+  },
+  display: $.noop
+}
+
+$('.example-2 a').embedly().on('click', function(){
+  // Start the modal and on hide, clear the html out. This removes the embed.
+  // It's important to do so as if a user starts playing a video, then closes
+  // the modal the video will still be playing and the user will hear the sound.
+  $('#video-modal').modal().on('hide', function(){
+    $('#video-modal .modal-body').html('');
+  })
+
+  // Get the Embedly data.
+  var data = $(this).data('embedly');
+
+  // There is a race condition here where the data may not be ready by the
+  // time that the user clicks the link. The loaded attribute on the embedly
+  // obj lets you make sure everything is there. `done` will fire immediately
+  // if the data has already been loaded.
+  data.loaded.done(function(){
+    $('#video-modal .modal-header h3').html(data.title);
+    $('#video-modal .modal-body').html(data.html);
+  });
+
+  return false;
+});
+          </pre>
+        </div>
+      </div>
+      <div id="video-modal" class="modal hide " tabindex="-1" role="dialog">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+          <h3></h3>
+        </div>
+        <div class="modal-body">
+          <p></p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+      </div>
+    </div>
+    <script>
+    $(document).ready(function(){
+      $.embedly.defaults = {
+        key:'4d1f889c20ed11e1abb14040d3dc5c07',
+        query: {
+          maxwidth:530,
+        },
+        display: $.noop
+      }
+
+      $('.example-1 a').on('click', function(){
+        var url = $(this).attr('href');
+
+        // Start the modal and on hide, clear the html out. This removes the embed.
+        // It's important to do so as if a user starts playing a video, then closes
+        // the modal the video will still be playing and the user will hear the sound.
+        $('#video-modal').modal().on('hide', function(){
+          $('#video-modal .modal-body').html('');
+        })
+
+        // Call Embedly
+        $.embedly.oembed(url).progress(function(data){
+            // Fill the modal header
+            $('#video-modal .modal-header h3').html(data.title);
+
+            // Fill the modal value.
+            $('#video-modal .modal-body').html(data.html);
+          });
+
+        return false;
+      });
+
+      $('.example-2 a').embedly().on('click', function(){
+        // Start the modal and on hide, clear the html out. This removes the embed.
+        // It's important to do so as if a user starts playing a video, then closes
+        // the modal the video will still be playing and the user will hear the sound.
+        $('#video-modal').modal().on('hide', function(){
+          $('#video-modal .modal-body').html('');
+        })
+
+        // Get the Embedly data.
+        var data = $(this).data('embedly');
+
+        // There is a race condition here where the data may not be ready by the
+        // time that the user clicks the link. The loaded attribute on the embedly
+        // obj lets you make sure everything is there. `done` will fire immediately
+        // if the data has already been loaded.
+        data.loaded.done(function(){
+          $('#video-modal .modal-header h3').html(data.title);
+          $('#video-modal .modal-body').html(data.html);
+        });
+
+        return false;
+      });
+    });
+    </script>
+  </body>
+</html>

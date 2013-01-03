@@ -1,0 +1,64 @@
+
+#content {
+  margin-top:40px;
+}
+
+.example-inline {
+  position: relative;
+  margin: 15px 0;
+  padding: 39px 19px 14px;
+  background-color: white;
+  border: 1px solid #DDD;
+  &::after{
+    content: "Example";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: whiteSmoke;
+    border: 1px solid #DDD;
+    color: #9DA0A4;
+  }
+}
+.example-center {
+  text-align:center;
+}
+.example-paragraph {
+  p {
+   margin: 0 80px;
+  }
+}
+
+.tooltip {
+  .malware {
+    background-color: red;
+    padding: 2px;
+    color: black;
+    font-weight: bold;
+  }
+}
+
+.play {
+  position: relative;
+  display: block;
+  margin:0 auto;
+  span {
+    display: block;
+    width: 77px;
+    height: 77px;
+    background-image: url(../img/play-button.png);
+    position: absolute;
+  }
+}
+
+pre ol {
+  margin: 0 0 0 40px;
+  border-left: 1px solid #DDD;
+
+  li {
+    padding-left: 10px;
+    color: #BEBEC5;
+  }
+}
