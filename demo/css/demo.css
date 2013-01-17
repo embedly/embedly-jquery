@@ -1,12 +1,21 @@
 #content {
   margin-top: 40px; }
 
+.hero-unit .unstyled li {
+  float: left;
+  margin: 10px; }
+  .hero-unit .unstyled li:first-child {
+    margin-left: 0; }
+.hero-unit .btn-primary {
+  float: right;
+  margin-top: 10px; }
+
 .example-inline {
   position: relative;
   margin: 15px 0;
   padding: 39px 19px 14px;
   background-color: white;
-  border: 1px solid #DDD; }
+  border: 1px solid #dddddd; }
   .example-inline::after {
     content: "Example";
     position: absolute;
@@ -16,7 +25,7 @@
     font-size: 12px;
     font-weight: bold;
     background-color: whiteSmoke;
-    border: 1px solid #DDD;
+    border: 1px solid #dddddd;
     color: #9DA0A4; }
 
 .example-center {
@@ -44,7 +53,7 @@
 
 pre ol {
   margin: 0 0 0 40px;
-  border-left: 1px solid #DDD; }
+  border-left: 1px solid #dddddd; }
   pre ol li {
     padding-left: 10px;
     color: #BEBEC5; }

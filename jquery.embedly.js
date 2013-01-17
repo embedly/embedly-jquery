@@ -1,254 +1,393 @@
-/*
- * Embedly JQuery v2.2.0
- * ==============
- * This library allows you to easily embed objects on any page.
- *
- * Requirements:
- * -------------
- * jquery-1.3 or higher
- *
- * Usage:
- * ------
- * There are two ways to interact with this lib. One exposes a simple method to call embedly directly
- *
- * >>> $.embedly('http://www.youtube.com/watch?v=LfamTmY5REw', {}, function(oembed){ alert(oembed.title);});
- *
- * The oembed is either a json object or null
- *
- * You can also reference it this way, which will try and replace every link on the page with an embed
- *
- * Documentation is availiable at http://github.com/embedly/embedly-jquery
- *
- * $('a').embedly();
- *
- * The Options Are as Follows
- *
- * endpoint:         'oembed',         // default endpoint is oembed (preview and objectify available too)
- * chars:            null,             // Default number of characters in description
- * words:            null,             // Default number of words in description
- * maxWidth:         null,             // force a maxWidth on all returned media
- * maxHeight:        null,             // force a maxHeight on all returned media
- * secure:           false,            // use https endpoint vs http
- * frame:            false,            // serves all embeds within an iframe to avoid XSS issues
- * wmode:            'opaque',         // for flash elements set a wmode
- * autoplay:         null,             // tell videos to autoplay
- * width:            null,             // force a width on all video/rich media
- * method:           'replace',        // embed handling option for standard callback
- * addImageStyles:   true,             // add style="" attribute to images for maxWidth and maxHeight
- * wrapElement:      'div',            // standard wrapper around all returned embeds
- * className:        'embed',          // class on the wrapper element
- * urlRe:            null,             // custom regex function
- * key:              null,             // an embed.ly key
- * elems:            [],               // array to hold nodes
- * success:          null,             // default callback
- * error:            null              // error-handling function
- *
- * http://api.embed.ly/tools/generator - generate your own regex for only sources you want
- *
- */
+/*! Embedly jQuery - v3.0.0 - 2013-01-17
+* https://github.com/embedly/embedly-jquery
+* Copyright (c) 2013 Sean Creeley; Licensed BSD */
 
- ;(function($){
-   window.embedlyURLre = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+(function($) {
 
-   $.embedly = $.embedly || {};
-   if ( $.embedly.version ) { return; }
+  /*
+   *  Util Functions
+   */
 
-   $.extend({
-     embedly: function(urls, options, callback){
-       var elems = [];
-       var path = "http://api.embed.ly/";
+  // Defaults for Embedly.
+  var defaults = {
+    key:              null,
+    endpoint:         'oembed',         // default endpoint is oembed (preview and objectify available too)
+    secure:           null,            // use https endpoint vs http
+    query:            {},
+    method:           'replace',        // embed handling option for standard callback
+    addImageStyles:   true,             // add style="" attribute to images for query.maxwidth and query.maxhidth
+    wrapElement:      'div',            // standard wrapper around all returned embeds
+    className:        'embed',          // class on the wrapper element
+    batch:            20                // Default Batch Size.
+  };
 
-       var settings;
-       options = options ? options : {};
-       settings = $.extend({}, $.embedly.defaults, options);
-       if (!settings.urlRe) {settings.urlRe = window.embedlyURLre; }
-       if (typeof urls === "string"){ urls = new Array(urls); }
-       if (typeof callback !== "undefined"){ settings.success = callback; }
-       if (settings.secure){ path = 'https://api.embed.ly/';}
-       if (!settings.success) {
-         settings.success = function(oembed, dict){
-           var _a, elem = $(dict.node);
-           if (! (oembed) ) { return null; }
-           if ((_a = settings.method) === 'replace') { return elem.replaceWith(oembed.code); }
-           else if (_a === 'after') { return elem.after(oembed.code); }
-           else if (_a === 'afterParent') { return elem.parent().after(oembed.code); }
-           else if (_a === 'replaceParent') { return elem.parent().replaceWith(oembed.code); }
-         };
+  var urlRe = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+
+  function none(obj){
+    return obj === null || obj === undefined;
+  }
+  // Split a list into a bunch of batchs.
+  function batch(list, split){
+    var batches = [], current = [];
+    $.each(list, function(i, obj){
+      current.push(obj);
+      if (batch.length === split){
+        batches.push(current);
+        current = [];
+      }
+    });
+    if (current.length !== 0){
+      batches.push(current);
+    }
+    return batches;
+  }
+  // Make an argument a list
+  function listify(obj){
+    if (none(obj)){
+      return [];
+    } else if (!$.isArray(obj)){
+      return [obj];
+    }
+    return obj;
+  }
+
+  // From: http://bit.ly/T9SjVv
+  function zip(arrays) {
+    return arrays[0].map(function(_,i){
+      return arrays.map(function(array){return array[i];});
+    });
+  }
+
+  /* Keeper
+   *
+   * alittle wrapper around Deferred that lets us keep track of
+   * all the callbacks that we have.
+   */
+  var Keeper = function (len, each, after) {
+    this.init(len, each, after);
+  };
+  Keeper.prototype = {
+
+    init: function(urls){
+      this.urls = urls;
+      this.count = 0;
+      this.results = {};
+      this._deferred = $.Deferred();
+    },
+    // Only 2 methods we really care about.
+    notify : function(result) {
+      // Store the result.
+      this.results[result.original_url] = result;
+      // Increase the count.
+      this.count++;
+      // Notify the success functions
+      this._deferred.notify.apply(this._deferred, [result]);
+      // If all the callbacks have completed, do your thing.
+      if (this.count === this.urls.length){
+        // This sorts the results in the manner in which they were added.
+        var self = this;
+        var results = this.urls.map(function(url){ return self.results[url];});
+        this._deferred.resolve(results);
+      }
+      return this;
+    },
+    state: function() {
+      return this._deferred.state.apply(this._deferred, arguments);
+    }
+  };
+  window.Keeper = Keeper;
+
+  // direct API for dealing with the
+  var API = function () {};
+  API.prototype = {
+    /*
+      For dealing directly with Embedly's API.
+
+      options: {
+        key: 'Your API key'
+        secure: false,
+        query: {
+          maxwidth: 500,
+          colors: true,
+        }
+      }
+    */
+    defaults: {},
+
+    log: function(level, message){
+      if (!none(window.console) && !none(window.console[level])){
+        window.console[level].apply(window.console, [message]);
+      }
+    },
+    // Based on the method and options, build the url,
+    build: function(method, urls, options){
+      // Technically, not great.
+      options = none(options) ? {}: options;
+      // Base method.
+
+      var secure = options.secure;
+      if (none(secure)){
+        // If the secure param was not see, use the protocol instead.
+        secure = window.location.protocol === 'https:'? true:false;
+      }
+
+      var base = (secure ? 'https': 'http') +
+        '://api.embed.ly/' + (method === 'objectify' ? '2/' : '1/') + method;
+
+      // Base Query;
+      var query = none(options.query) ? {} : options.query;
+      query.key = options.key;
+      base += '?'+$.param(query);
+
+      // Add the urls the way we like.
+      base += '&urls='+urls.map(encodeURIComponent).join(',');
+
+      return base;
+    },
+    // Batch a bunch of URLS up for processing. Will split longer lists out
+    // into many batches and return the callback on each and after on done.
+    ajax: function(method, urls, options){
+
+      // Use the defaults.
+      options = $.extend({}, defaults, $.embedly.defaults, typeof options === 'object' && options);
+
+      if (none(options.key)){
+        this.log('error', 'Embedly jQuery requires an API Key. Please sign up for one at http://embed.ly');
+        return null;
+      }
+
+      // Everything is dealt with in lists.
+      urls = listify(urls);
+
+      // add a keeper that holds everything till we are good to go.
+      var keeper = new Keeper(urls);
+
+      var valid_urls = [], rejects = [];
+      // Debunk the invalid urls right now.
+      $.each(urls, function(i, url){
+        if (urlRe.test(url)){
+          valid_urls.push(url);
+        } else {
+          // Notify the keeper that we have a bad url.
+          rejects.push({
+            url: url,
+            original_url: url,
+            error: true,
+            invalid: true,
+            error_message: 'Invalid url "'+ url+'"'
+          });
+        }
+      });
+
+      // Put everything into batches, even if these is only one.
+      var batches = batch(valid_urls, options.batch), self = this;
+
+      // Actually make those calls.
+      $.each(batches, function(i, batch){
+        $.ajax({
+          url: self.build(method, batch, options),
+          dataType: 'jsonp',
+          success: function(data){
+            // We zip together the urls and the data so we have the original_url
+            $.each(zip([batch, data]), function(i, obj){
+              var result = obj[1];
+              result.original_url = obj[0];
+              result.invalid = false;
+              keeper.notify(result);
+            });
+          }
+        });
+      });
+
+      if (rejects.length){
+        // set a short timeout so we can set up progress and done, otherwise
+        // the progress notifier will not get all the events.
+        setTimeout(function(){
+          $.each(rejects, function(i, reject){
+            keeper.notify(reject);
+          });
+        }, 1);
+      }
+
+      return keeper._deferred;
+    },
+
+    // Wrappers around ajax.
+    oembed: function(urls, options){
+      return this.ajax('oembed', urls, options);
+    },
+    preview: function(urls, options){
+      return this.ajax('preview', urls, options);
+    },
+    objectify: function(urls, options){
+      return this.ajax('objectify', urls, options);
+    }
+  };
+
+  var Embedly = function (element, url, options) {
+    this.init(element, url, options);
+  };
+
+  Embedly.prototype = {
+    init: function(elem, original_url, options){
+      this.elem = elem;
+      this.$elem = $(elem);
+      this.original_url = original_url;
+      this.options = options;
+      this.loaded = $.Deferred();
+
+      // Sets up some triggers.
+      var self = this;
+      this.loaded.done(function(){
+        self.$elem.trigger('loaded', [self]);
+      });
+
+      // So you can listen when the tag has been initialized;
+      this.$elem.trigger('initialized', [this]);
+    },
+    progress: function(obj){
+      $.extend(this, obj);
+
+      // if there is a custom display method, use it.
+      if (this.options.display){
+        this.options.display.apply(this.elem, [this, this.elem]);
+      }
+      // We only have a simple case for oEmbed. Everything else should be a custom
+      // success method.
+      else if(this.options.endpoint === 'oembed'){
+        this.display();
+      }
+
+      // Notifies all listeners that the data has been loaded.
+      this.loaded.resolve(this);
+    },
+    imageStyle: function(){
+      var style = [], units;
+      if (this.options.addImageStyles) {
+        if (this.options.query.maxwidth) {
+          units = isNaN(parseInt(this.options.query.maxwidth, 10)) ? '' : 'px';
+            style.push("max-width: " + (this.options.query.maxwidth)+units);
+        }
+        if (this.options.query.maxheight) {
+          units = isNaN(parseInt(this.options.query.maxheight,10)) ? '' : 'px';
+            style.push("max-height: " + (this.options.query.maxheight)+units);
+          }
        }
-       if (!settings.error) {
-         settings.error = function(node, dict){
-           // we don't by default handle error cases
-           // node is the jQuery representation of the <a> tag
-           // dict contains error information
-         };
-       }
-       var urlValid = function(url){
-         return settings.urlRe.test(url);
-       };
+       return style.join(';');
+    },
 
-       var getParams = function(urls){
-         var _p = "urls=" + urls;
-         if (settings.maxWidth) {_p += '&maxwidth=' + settings.maxWidth;}
-         else if (typeof dimensions !== "undefined") { _p += '&maxwidth=' + dimensions.width;}
-         if (settings.maxHeight) {_p += '&maxheight=' +settings.maxHeight;}
-         if (settings.chars) {_p += '&chars=' + settings.chars;}
-         if (settings.words) {_p += '&words=' + settings.words;}
-         if (settings.secure) {_p += '&secure=true';}
-         if (settings.frame) {_p += '&frame=true';}
-         _p += '&wmode=' + settings.wmode;
-         if (typeof settings.key === "string"){ _p += "&key=" + settings.key;}
-         if (typeof settings.autoplay === "string" || typeof settings.autoplay === "boolean"){ _p += "&autoplay=" + settings.autoplay;}
-         if (settings.width){_p += "&width=" + settings.width;}
-         return _p;
-       };
-       var getUrl = function(){
-         if (typeof settings.key === "string"){
-           if (settings.endpoint.search(/objectify/i) >= 0){
-             return path + '2/objectify';
-           }
-           else if (settings.endpoint.search(/preview/i) >= 0){
-             return path + '1/preview';
-           }
-         }
-         return path + "1/oembed";
-       };
+    display: function(){
+      // Image Style.
+      this.style = this.imageStyle();
 
-       var createImageStyle = function() {
-           var style = [];
-           if (settings.addImageStyles) {
-               if (settings.maxWidth) {
-                 units = isNaN(parseInt(settings.maxWidth, 10)) ? '' : 'px';
-                   style.push("max-width: " + (settings.maxWidth)+units);
-               }
-               if (settings.maxHeight) {
-                 units = isNaN(parseInt(settings.maxHeight,10)) ? '' : 'px';
-                   style.push("max-height: " + (settings.maxHeight)+units);
-               }
-           }
-           return style.join(';');
-       }
+      var html;
+      if (this.type === 'photo'){
+        html = "<a href='" + this.original_url + "' target='_blank'>";
+        html += "<img style='" + this.style + "' src='" + this.url + "' alt='" + this.title + "' /></a>";
+      } else if (this.type === 'video' || this.type === 'rich'){
+        html = this.html;
+      } else {
+        this.title = this.title || this.url;
+        html = this.thumbnail_url ? "<img src='" + this.thumbnail_url + "' class='thumb' style='" + this.style + "'/>" : "";
+        html += "<a href='" + this.original_url + "'>" + this.title + "</a>";
+        html += this.provider_name ? "<a href='" + this.provider_url + "' class='provider'>" + this.provider_name + "</a>" : "";
+        html += this.description ? '<div class="description">' + this.description + '</div>' : '';
+      }
 
-       var processEmbed = function(oembed, dict) {
-           // bypass any embed processing for preview, objectify endpoints
-           // for advanced users only
-           if(settings.endpoint !== 'oembed'){
-             return settings.success(oembed, dict);
-           }
+      if (this.options.wrapElement && this.options.wrapElement === 'div' && $.browser.msie && $.browser.version < 9){
+        this.options.wrapElement = 'span';
+      }
+      if (this.options.wrapElement) {
+        html = '<' + this.options.wrapElement+ ' class="' + this.options.className + '">' + html + '</' + this.options.wrapElement + '>';
+      }
 
-           var _a, code, style, title, units, thumb, provider, description;
-           if ((_a = oembed.type) === 'photo') {
-               title = oembed.title || '';
-               code = "<a href='" + dict.url + "' target='_blank'><img style='" + createImageStyle() + "' src='" + oembed.url + "' alt='" + title + "' /></a>";
-           } else if (_a === 'video') {
-               code = oembed.html;
-           } else if (_a === 'rich') {
-               code = oembed.html;
-           } else {
-               title = oembed.title || dict.url;
-               thumb = oembed.thumbnail_url ? "<img src='" + oembed.thumbnail_url + "' class='thumb' style='" + createImageStyle() + "'/>" : "";
-               description = oembed.description ? '<div class="description">' + oembed.description + '</div>' : '';
-               provider = oembed.provider_name ? "<a href='" + oembed.provider_url + "' class='provider'>" + oembed.provider_name + "</a>" : "";
-               code = thumb + "<a href='" + dict.url + "'>" + title + "</a>";
-               code += provider;
-               code += description;
-           }
-           if (settings.wrapElement && settings.wrapElement === 'div' && $.browser.msie && $.browser.version < 9){
-               settings.wrapElement = 'span';
-           }
-           if (settings.wrapElement) {
-               code = '<' + settings.wrapElement+ ' class="' + settings.className + '">' + code + '</' + settings.wrapElement + '>';
-           }
-           oembed.code = code;
-           // for DOM elements we add the oembed object as a data field to that element and trigger a custom event called oembed
-           // with the custom event, developers can do any number of custom interactions with the data that is returned.
-           if (typeof dict.node !== "undefined") { $(dict.node).data('oembed', oembed).trigger('embedly-oembed', [oembed]);  }
-           return settings.success(oembed, dict);
-       };
+      this.code = html;
+      // Yay.
+      if (this.options.method === 'replace'){
+        this.$elem.replaceWith(this.code);
+      } else if (this.options.method === 'after'){
+        this.$elem.after(this.code);
+      } else if (this.options.method === 'afterParent'){
+        this.$elem.parent().after(this.code);
+      } else if (this.options.method === 'replaceParent'){
+        this.$elem.parent().replaceWith(this.code);
+      }
+      // for DOM elements we add the oembed object as a data field to that element and trigger a custom event called oembed
+      // with the custom event, developers can do any number of custom interactions with the data that is returned.
+      this.$elem.trigger('displayed', [this]);
+    }
+  };
 
-       var processBatch = function(batch){
-         var data, embed, urls, dimensions, node;
-         urls = $.map(batch,
-         function(e, i) {
-             if (i === 0) {
-                 if ( e.node !== null){
-                   node = $(e.node);
-                   dimensions = {
-                     "width": node.parent().width(),
-                     "height": node.parent().height()
-                   };
-                 }
-             }
-             return encodeURIComponent(e.url);
-         }).join(',');
-         $.ajax({
-             url: getUrl(),
-             dataType: 'jsonp',
-             data: getParams(urls),
-             success: function(data) {
-                 return $.each(data,
-                 function(index, elem) {
-                     return elem.type !== 'error' ? processEmbed(elem, batch[index]) : settings.error(batch[index].node, elem);
-                 });
-             }
-         });
-       };
-       $.each(urls, function(i, v){
-         var node = typeof settings.elems !== "undefined" ? settings.elems[i] : null;
-         if(typeof node !== "undefined" && !urlValid(v)){
-           $(node).data('oembed', false);
-         }
-         var err = {url: v, error_code:400, error_message:'HTTP 400: Bad Request', type:'error'};
-         return (v && urlValid(v)) ? elems.push({'url':v, 'node':node }) : settings.error(node, err);
-       });
-       var _a = [];
-       var _b = elems.length;
-       for (var i = 0; (0 <= _b ? i < _b: i > _b); i += 20) {
-           _a = _a.concat(processBatch(elems.slice(i, i + 20)));
-       }
-       if(settings.elems){
-         return settings.elems;
-       } else {
-         return this;
-       }
-     }
-   });
+  // Sets up a generic API for use.
+  $.embedly = new API();
 
-   // Versions
-   $.embedly.version = "2.2.0";
+  $.fn.embedly = function ( options ) {
+    if (options === undefined || typeof options === 'object') {
 
-   // Once the function is we can add defaults as an attribute
-   $.embedly.defaults = {
-       endpoint:         'oembed',         // default endpoint is oembed (preview and objectify available too)
-       secure:           false,            // use https endpoint vs http
-       frame:            false,            // serves all embeds within an iframe to avoid XSS issues
-       wmode:            'opaque',         // for flash elements set a wmode
-       method:           'replace',        // embed handling option for standard callback
-       addImageStyles:   true,             // add style="" attribute to images for maxWidth and maxHeight
-       wrapElement:      'div',            // standard wrapper around all returned embeds
-       className:        'embed',          // class on the wrapper element
-       elems:            []
-    };
+      // Use the defaults
+      options = $.extend({}, defaults, $.embedly.defaults, typeof options === 'object' && options);
 
-   $.fn.embedly = function(options, callback){
-     var settings = typeof options !== "undefined" ? options : {};
-     // callback is a legacy option, we should be moving towards including a success method in the options
-     if (typeof callback !== "undefined") {options.success = callback; }
-     //settings.elems = this;
-     var urls = new Array();
-     var nodes = new Array();
-     this.each(function(){
-         if (typeof $(this).attr('href') !== "undefined"){
-           urls.push($(this).attr('href'));
-           nodes.push($(this));
-         } else {
-           $(this).find('a').each(function(){
-             urls.push($(this).attr('href'));
-             nodes.push($(this));
-           });
-         }
-         settings.elems = nodes;
-     });
-     var elems = $.embedly(urls, settings);
-     return this;
-   };
- })(jQuery);
+      // Kill these early.
+      if (none(options.key)){
+        $.embedly.log('error', 'Embedly jQuery requires an API Key. Please sign up for one at http://embed.ly');
+        return this.each($.noop);
+      }
+      // Keep track of the nodes we are working on so we can add them to the
+      // progress events.
+      var nodes = {};
+
+      // Create the node.
+      var create = function (elem){
+        if (!$.data($(elem), 'embedly')) {
+          var url = $(elem).attr('href');
+
+          var node = new Embedly(elem, url, options);
+          $.data(elem, 'embedly', node);
+
+          if (nodes.hasOwnProperty(url)){
+            nodes[url].push(node);
+          } else {
+            nodes[url] = [node];
+          }
+        }
+      };
+
+      // Find everything with a URL on it.
+      var elems = this.each(function () {
+        if ( !none($(this).attr('href')) ){
+          create(this);
+        } else {
+          $(this).find('a').each(function(){
+            if ( ! none($(this).attr('href')) ){
+              create(this);
+            }
+          });
+        }
+      });
+
+      // set up the api call.
+      var deferred = $.embedly.ajax(options.endpoint,
+        $.map(nodes, function(value, key) {return key;}),
+        options)
+        .progress(function(obj){
+          $.each(nodes[obj.original_url], function(i, node){
+            node.progress(obj);
+          });
+        });
+
+      if (options.progress){
+        deferred.progress(options.progress);
+      }
+      if (options.done){
+        deferred.done(options.done);
+      }
+      return elems;
+    }
+  };
+
+  // Custom selector.
+  $.expr[':'].embedly = function(elem) {
+    return ! none($(elem).data('embedly'));
+  };
+
+}(jQuery));

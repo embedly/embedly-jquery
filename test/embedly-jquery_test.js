@@ -30,7 +30,7 @@
 
   test('build url', 2, function() {
     equal(
-      $.embedly.build('oembed', ['http://embed.ly', 'http://google.com'], {key:'4d1f889c20ed11e1abb14040d3dc5c07'}),
+      $.embedly.build('oembed', ['http://embed.ly', 'http://google.com'], {key: '4d1f889c20ed11e1abb14040d3dc5c07'}),
       "http://api.embed.ly/1/oembed?key=4d1f889c20ed11e1abb14040d3dc5c07&urls=http%3A%2F%2Fembed.ly,http%3A%2F%2Fgoogle.com");
 
     equal(
@@ -39,7 +39,8 @@
   });
 
   asyncTest('invalid url', 6, function() {
-    $.embedly.oembed(['http', 'embedly'], {key:'4d1f889c20ed11e1abb14040d3dc5c07'})
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $.embedly.oembed(['http', 'embedly'])
       .progress(function(obj){
         equal(obj.error, true);
       })
@@ -65,8 +66,8 @@
   });
 
   asyncTest('basic', 3, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
     $('#basic').embedly({
-      key:'4d1f889c20ed11e1abb14040d3dc5c07',
       progress: function(obj){
         equal(obj.type, 'photo');
       },
@@ -77,31 +78,81 @@
       }});
   });
 
+  asyncTest('photo', 4, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $('#photo').embedly({
+      addImageStyles: true,
+      method: 'after',
+      progress: function(obj){
+        equal(obj.type, 'photo');
+      },
+      done: function(objs){
+        equal(objs.length, 1);
+        equal($('#photo > a ').length, 1);
+        equal($('#photo div.embed a img').length, 1);
+        start();
+      }});
+  });
+
+  asyncTest('video', 3, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $('#video').embedly({
+      className: 'video',
+      progress: function(obj){
+        equal(obj.type, 'video');
+      },
+      done: function(objs){
+        equal(objs.length, 1);
+        equal($('#video div.video iframe').length, 1);
+        start();
+      }});
+  });
+
+  asyncTest('rich', 3, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $('#rich').embedly({
+      className: 'rich',
+      wrapElement: 'span',
+      progress: function(obj){
+        equal(obj.type, 'rich');
+      },
+      done: function(objs){
+        equal(objs.length, 1);
+        equal($('#rich span.rich iframe').length, 1);
+        start();
+      }});
+  });
+
+  asyncTest('preview', 3, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $.embedly.preview('http://embed.ly').
+      progress(function(obj){
+        equal(obj.type, 'html');
+        equal(obj.safe, true);
+      }).
+      done(function(results){
+        equal(results.length, 1);
+        start();
+      });
+  });
+
+  asyncTest('objectify', 3, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $.embedly.objectify('http://embed.ly').
+      progress(function(obj){
+        equal(obj.type, 'html');
+        equal(obj.open_graph.site_name, 'Embedly');
+      }).
+      done(function(results){
+        equal(results.length, 1);
+        start();
+      });
+  });
 
   test('is chainable', 1, function() {
     // Not a bad test to run on collection methods.
-    strictEqual(this.elems.awesome(), this.elems, 'should be chaninable');
+    strictEqual(this.elems.embedly(), this.elems, 'should be chaninable');
   });
 
-  test('is awesome', 1, function() {
-    strictEqual(this.elems.awesome().text(), 'awesomeawesomeawesome', 'should be thoroughly awesome');
-  });
-
-  module('jQuery.awesome');
-
-  test('is awesome', 1, function() {
-    strictEqual($.awesome(), 'awesome', 'should be thoroughly awesome');
-  });
-
-  module(':awesome selector', {
-    setup: function() {
-      this.elems = $('#qunit-fixture').children();
-    }
-  });
-
-  test('is awesome', 1, function() {
-    // Use deepEqual & .get() when comparing jQuery objects.
-    deepEqual(this.elems.filter(':awesome').get(), this.elems.last().get(), 'knows awesome when it sees it');
-  });
-
+  module('jQuery.embedly');
 }(jQuery));

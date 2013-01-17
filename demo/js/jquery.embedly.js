@@ -1,10 +1,6 @@
-/*
- * embedly-jquery
- * https://github.com/embedly/embedly-jquery
- *
- * Copyright (c) 2012 Sean Creeley
- * Licensed under the BSD license.
- */
+/*! Embedly jQuery - v3.0.0 - 2013-01-17
+* https://github.com/embedly/embedly-jquery
+* Copyright (c) 2013 Sean Creeley; Licensed BSD */
 
 (function($) {
 

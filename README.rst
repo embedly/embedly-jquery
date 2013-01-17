@@ -262,8 +262,11 @@ Options
   `generator <http://embed.ly/tools/generator>`_ to generate a regular
   expression for a specific set of sources.
 
-``secure`` [`Boolean:false`]
-  Set to true if you want your requests to be made to the HTTPS endpoint.
+``secure`` [`Boolean:null`]
+  By default Embedly jQuery will use ``window.location.protocol`` to figure out
+  whether your request needs to be made to the HTTPS endpoint or the HTTP. You
+  can override this by explicitly setting the secure parameter to ``true`` for
+  ``https`` or ``false`` for HTTP.
 
 ``batch`` [`Integer:20`]
   Embedly's API only accepts a maximum of 20 URLs per request, so the Client
@@ -383,6 +386,11 @@ Embedly URLs
 
 Changelog
 ---------
+
+3.0.0
+"""""
+* Complete rewrite of the existing plugin to be easier to use.
+* Removed $.browser dependency. (#30)
 
 2.2.0
 """""

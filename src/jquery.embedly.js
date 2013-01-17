@@ -16,10 +16,10 @@
   var defaults = {
     key:              null,
     endpoint:         'oembed',         // default endpoint is oembed (preview and objectify available too)
-    secure:           false,            // use https endpoint vs http
+    secure:           null,            // use https endpoint vs http
     query:            {},
     method:           'replace',        // embed handling option for standard callback
-    addImageStyles:   true,             // add style="" attribute to images for maxWidth and maxHeight
+    addImageStyles:   true,             // add style="" attribute to images for query.maxwidth and query.maxhidth
     wrapElement:      'div',            // standard wrapper around all returned embeds
     className:        'embed',          // class on the wrapper element
     batch:            20                // Default Batch Size.
@@ -57,9 +57,9 @@
 
   // From: http://bit.ly/T9SjVv
   function zip(arrays) {
-      return arrays[0].map(function(_,i){
-          return arrays.map(function(array){return array[i];});
-      });
+    return arrays[0].map(function(_,i){
+      return arrays.map(function(array){return array[i];});
+    });
   }
 
   /* Keeper
@@ -128,7 +128,14 @@
       // Technically, not great.
       options = none(options) ? {}: options;
       // Base method.
-      var base = (options.secure ? 'https': 'http') +
+
+      var secure = options.secure;
+      if (none(secure)){
+        // If the secure param was not see, use the protocol instead.
+        secure = window.location.protocol === 'https:'? true:false;
+      }
+
+      var base = (secure ? 'https': 'http') +
         '://api.embed.ly/' + (method === 'objectify' ? '2/' : '1/') + method;
 
       // Base Query;
@@ -299,7 +306,6 @@
       }
 
       this.code = html;
-
       // Yay.
       if (this.options.method === 'replace'){
         this.$elem.replaceWith(this.code);
@@ -359,7 +365,6 @@
             if ( ! none($(this).attr('href')) ){
               create(this);
             }
-
           });
         }
       });
