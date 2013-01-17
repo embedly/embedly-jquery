@@ -3,6 +3,22 @@
   margin-top:40px;
 }
 
+.hero-unit {
+  .unstyled {
+    li {
+      float: left;
+      margin: 10px;
+      &:first-child{
+        margin-left:0;
+      }
+    }
+  }
+  .btn-primary {
+    float: right;
+    margin-top: 10px;
+  }
+}
+
 .example-inline {
   position: relative;
   margin: 15px 0;
