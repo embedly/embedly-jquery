@@ -298,9 +298,6 @@
         html += this.description ? '<div class="description">' + this.description + '</div>' : '';
       }
 
-      if (this.options.wrapElement && this.options.wrapElement === 'div' && $.browser.msie && $.browser.version < 9){
-        this.options.wrapElement = 'span';
-      }
       if (this.options.wrapElement) {
         html = '<' + this.options.wrapElement+ ' class="' + this.options.className + '">' + html + '</' + this.options.wrapElement + '>';
       }
