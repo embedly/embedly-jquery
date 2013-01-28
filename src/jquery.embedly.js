@@ -35,7 +35,7 @@
     var batches = [], current = [];
     $.each(list, function(i, obj){
       current.push(obj);
-      if (batch.length === split){
+      if (current.length === split){
         batches.push(current);
         current = [];
       }

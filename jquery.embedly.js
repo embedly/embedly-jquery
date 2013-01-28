@@ -1,4 +1,4 @@
-/*! Embedly jQuery - v3.0.0 - 2013-01-22
+/*! Embedly jQuery - v3.0.0 - 2013-01-28
 * https://github.com/embedly/embedly-jquery
 * Copyright (c) 2013 Sean Creeley; Licensed BSD */
 
@@ -31,7 +31,7 @@
     var batches = [], current = [];
     $.each(list, function(i, obj){
       current.push(obj);
-      if (batch.length === split){
+      if (current.length === split){
         batches.push(current);
         current = [];
       }

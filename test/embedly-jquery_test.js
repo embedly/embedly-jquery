@@ -149,6 +149,25 @@
       });
   });
 
+  asyncTest('batch', 61, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+
+    var urls = [], i=0;
+    while(i < 30){
+      urls.push('http://embed.ly/?'+i);
+      i++;
+    }
+    $.embedly.objectify(urls).
+      progress(function(obj){
+        equal(obj.type, 'html');
+        equal(obj.open_graph.site_name, 'Embedly');
+      }).
+      done(function(results){
+        equal(results.length, 30);
+        start();
+      });
+  });
+
   test('is chainable', 1, function() {
     // Not a bad test to run on collection methods.
     strictEqual(this.elems.embedly(), this.elems, 'should be chaninable');
