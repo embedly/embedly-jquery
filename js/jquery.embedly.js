@@ -1,7 +1,8 @@
-/*! Embedly jQuery - v3.0.1 - 2013-01-28
-* https://github.com/embedly/embedly-jquery
-* Copyright (c) 2013 Sean Creeley; Licensed BSD */
-
+/*! Embedly jQuery - v3.0.2 - 2013-02-28
+ * https://github.com/embedly/embedly-jquery
+ * Copyright (c) 2013 Sean Creeley
+ * Licensed BSD
+ */ 
 (function($) {
 
   /*
@@ -18,7 +19,8 @@
     addImageStyles:   true,             // add style="" attribute to images for query.maxwidth and query.maxhidth
     wrapElement:      'div',            // standard wrapper around all returned embeds
     className:        'embed',          // class on the wrapper element
-    batch:            20                // Default Batch Size.
+    batch:            20,                // Default Batch Size.
+    urlRe:            null
   };
 
   var urlRe = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
@@ -162,10 +164,20 @@
       // add a keeper that holds everything till we are good to go.
       var keeper = new Keeper(urls);
 
-      var valid_urls = [], rejects = [];
+      var valid_urls = [], rejects = [], valid;
       // Debunk the invalid urls right now.
       $.each(urls, function(i, url){
+        valid = false;
+        // Make sure it's a URL
         if (urlRe.test(url)){
+          valid = true;
+          // If the urlRe has been defined make sure it works.
+          if (options.urlRe !== null && options.urlRe.test && !options.urlRe.test(url)){
+            valid = false;
+          }
+        }
+        // deal with the valid urls
+        if(valid === true){
           valid_urls.push(url);
         } else {
           // Notify the keeper that we have a bad url.
@@ -174,7 +186,8 @@
             original_url: url,
             error: true,
             invalid: true,
-            error_message: 'Invalid url "'+ url+'"'
+            type: 'error',
+            error_message: 'Invalid URL "'+ url+'"'
           });
         }
       });
@@ -277,6 +290,11 @@
     },
 
     display: function(){
+      // Ignore errors
+      if (this.type === 'error'){
+        return false;
+      }
+
       // Image Style.
       this.style = this.imageStyle();
 
