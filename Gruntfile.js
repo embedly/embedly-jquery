@@ -29,7 +29,7 @@ module.exports = function(grunt) {
     uglify: {
       dist: {
         options: {
-          banner: '<banner:meta.banner>'
+          banner: '<%= meta.banner %>'
         },
         files: {
           'dist/<%= pkg.name %>.min.js': ['dist/<%= pkg.name %>.js']
