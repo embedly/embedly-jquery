@@ -1,6 +1,7 @@
 /*global QUnit:false, module:false, test:false, asyncTest:false, expect:false*/
 /*global start:false, stop:false ok:false, equal:false, notEqual:false, deepEqual:false*/
 /*global notDeepEqual:false, strictEqual:false, notStrictEqual:false, raises:false*/
+/*globals jQuery:true*/
 (function($) {
 
   /*
@@ -167,6 +168,42 @@
         start();
       });
   });
+
+  asyncTest('urlRe client', 4, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $.embedly.defaults.urlRe = /http:\/\/embed\.ly.*/gi;
+
+    var urls = ['http://google.com', 'http://embed.ly'];
+
+    $.embedly.objectify(urls, {}).
+      done(function(results){
+        equal(results.length, 2);
+        equal(results[0].type, 'error');
+        equal(results[0].error_message.indexOf('Invalid URL'), 0);
+        equal(results[1].type, 'html');
+        //set it back.
+        $.embedly.defaults.urlRe = null;
+        start();
+      });
+  });
+
+  asyncTest('urlRe selector', 3, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+
+    $('#urlRe').embedly({
+      className: 'link',
+      wrapElement: 'span',
+      urlRe: /http:\/\/embed\.ly.*/gi,
+      done: function(objs){
+        equal(objs.length, 2);
+        equal($('#urlRe span.link').length, 1);
+        equal($('#urlRe span.link a.provider').attr('href'), 'http://embed.ly');
+        start();
+      }});
+
+  });
+
+
 
   test('is chainable', 1, function() {
     // Not a bad test to run on collection methods.

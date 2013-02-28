@@ -13,7 +13,7 @@ Embedly jQuery to your document.
 
   <head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
-    <script src="http://scripts.embed.ly/jquery.embedly-3.0.1.min.js" type="text/javascript"></script>
+    <script src="http://scripts.embed.ly/jquery.embedly-3.0.2.min.js" type="text/javascript"></script>
   </head>
 
 
@@ -369,8 +369,8 @@ CDN
 To get you going even faster, Embedly hosts all the files you need on
 scripts.embed.ly. The latest version is available here::
 
-    http://scripts.embed.ly/jquery.embedly-3.0.1.js
-    http://scripts.embed.ly/jquery.embedly-3.0.1.min.js
+    http://scripts.embed.ly/jquery.embedly-3.0.2.js
+    http://scripts.embed.ly/jquery.embedly-3.0.2.min.js
 
 
 Licensing
@@ -386,6 +386,10 @@ Embedly URLs
 
 Changelog
 ---------
+
+3.0.2
+"""""
+* Implemented the urlRe back into the options.
 
 3.0.1
 """""
