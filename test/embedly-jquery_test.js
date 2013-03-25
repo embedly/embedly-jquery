@@ -39,6 +39,28 @@
       "https://api.embed.ly/2/objectify?maxwidth=500&key=4d1f889c20ed11e1abb14040d3dc5c07&urls=http%3A%2F%2Fembed.ly");
   });
 
+
+  test('zip', 8, function(){
+    // Just copying the function in here instead of making it a global elsewhere.
+    function zip(arrays) {
+      return $.map(arrays[0], function(_,i){
+        return [$.map(arrays, function(array){return array[i];})];
+      });
+    }
+    var zipped = zip([[1,2], [3,4]]);
+    equal(zipped[0][0], 1);
+    equal(zipped[0][1], 3);
+    equal(zipped[1][0], 2);
+    equal(zipped[1][1], 4);
+
+    zipped = zip([[5,6], [7,8,9]]);
+    equal(zipped[0][0], 5);
+    equal(zipped[0][1], 7);
+    equal(zipped[1][0], 6);
+    equal(zipped[1][1], 8);
+  });
+
+
   asyncTest('invalid url', 6, function() {
     $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
     $.embedly.oembed(['http', 'embedly'])

@@ -51,8 +51,8 @@
 
   // From: http://bit.ly/T9SjVv
   function zip(arrays) {
-    return arrays[0].map(function(_,i){
-      return arrays.map(function(array){return array[i];});
+    return $.map(arrays[0], function(_,i){
+      return [$.map(arrays, function(array){return array[i];})];
     });
   }
 
