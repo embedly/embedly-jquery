@@ -191,6 +191,18 @@
       });
   });
 
+  asyncTest('extract', 2, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $.embedly.extract('http://embed.ly').
+      progress(function(obj){
+        equal(obj.type, 'html');
+      }).
+      done(function(results){
+        equal(results.length, 1);
+        start();
+      });
+  });
+
   asyncTest('urlRe client', 4, function() {
     $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
     $.embedly.defaults.urlRe = /http:\/\/embed\.ly.*/gi;

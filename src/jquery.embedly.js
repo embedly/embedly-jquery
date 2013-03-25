@@ -84,7 +84,7 @@
       if (this.count === this.urls.length){
         // This sorts the results in the manner in which they were added.
         var self = this;
-        var results = this.urls.map(function(url){ return self.results[url];});
+        var results = $.map(this.urls, function(url){ return self.results[url];});
         this._deferred.resolve(results);
       }
       return this;
@@ -138,7 +138,7 @@
       base += '?'+$.param(query);
 
       // Add the urls the way we like.
-      base += '&urls='+urls.map(encodeURIComponent).join(',');
+      base += '&urls='+ $.map(urls, encodeURIComponent).join(',');
 
       return base;
     },
@@ -230,6 +230,9 @@
     },
     objectify: function(urls, options){
       return this.ajax('objectify', urls, options);
+    },
+    extract: function(urls, options){
+      return this.ajax('extract', urls, options);
     }
   };
 
