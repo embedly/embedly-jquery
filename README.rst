@@ -202,7 +202,7 @@ Options
     }
 
   For more information, read the `Query Arguments
-  <http://embed.ly/docs/endpoints/arguments>`_ documentation.
+  <http://embed.ly/docs/embed/api/arguments>`_ documentation.
 
 ``display`` [`Function:default function`]
 
