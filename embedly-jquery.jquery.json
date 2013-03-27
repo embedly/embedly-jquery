@@ -2,7 +2,7 @@
   "name": "jquery.embedly",
   "title": "Embedly jQuery",
   "description": "This library allows you to easily embed objects on any page.",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "homepage": "https://github.com/embedly/embedly-jquery",
   "author": {
     "name": "Sean Creeley",

@@ -1,4 +1,4 @@
-/*! Embedly jQuery - v3.0.3 - 2013-03-25
+/*! Embedly jQuery - v3.0.5 - 2013-03-27
  * https://github.com/embedly/embedly-jquery
  * Copyright (c) 2013 Sean Creeley
  * Licensed BSD
