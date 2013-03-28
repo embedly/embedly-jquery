@@ -213,7 +213,7 @@ query: {
   ...
 }
 </pre>
-<p class="last">For more information, read the <a class="reference external" href="http://embed.ly/docs/endpoints/arguments">Query Arguments</a> documentation.</p>
+<p class="last">For more information, read the <a class="reference external" href="http://embed.ly/docs/embed/api/arguments">Query Arguments</a> documentation.</p>
 </dd>
 </dl><p><tt class="docutils literal">display</tt> [<cite>Function:default function</cite>]</p>
 <blockquote>
@@ -364,7 +364,7 @@ $('a').embedly().on('click', function(){
 <div class="section" id="cdn">
 <h2>CDN</h2>
 <p>To get you going even faster, Embedly hosts all the files you need on
-cdn.embed.ly. The latest version is available here:</p>
+cdn.embed.ly. Also available over HTTPS. The latest version is available here:</p>
 <pre class="prettyprint linenums">
 http://cdn.embed.ly/jquery.embedly-3.0.5.js
 http://cdn.embed.ly/jquery.embedly-3.0.5.min.js
@@ -385,45 +385,49 @@ http://cdn.embed.ly/jquery.embedly-3.0.5.min.js
 </div>
 <div class="section" id="id6">
 <h2>3.0.5</h2>
-<ul class="simple"><li>Add extract endpoint.</li>
+<ul class="simple"><li>Fixes bad deployment.</li>
 </ul></div>
 <div class="section" id="id7">
+<h2>3.0.4</h2>
+<ul class="simple"><li>Add extract endpoint.</li>
+</ul></div>
+<div class="section" id="id8">
 <h2>3.0.3</h2>
 <ul class="simple"><li>Use $.map instead of array.map for IE support</li>
 </ul></div>
-<div class="section" id="id8">
+<div class="section" id="id9">
 <h2>3.0.2</h2>
 <ul class="simple"><li>Implemented the urlRe back into the options.</li>
 </ul></div>
-<div class="section" id="id9">
+<div class="section" id="id10">
 <h2>3.0.1</h2>
 <ul class="simple"><li>Fixed a bug in bad batching.</li>
 </ul></div>
-<div class="section" id="id10">
+<div class="section" id="id11">
 <h2>3.0.0</h2>
 <ul class="simple"><li>Complete rewrite of the existing plugin to be easier to use.</li>
 <li>Removed $.browser dependency. (#30)</li>
 </ul></div>
-<div class="section" id="id11">
+<div class="section" id="id12">
 <h2>2.2.0</h2>
 <ul class="simple"><li>Fixing bug that was causing callbacks to be overwritten (#23)</li>
 </ul></div>
-<div class="section" id="id12">
+<div class="section" id="id13">
 <h2>2.1.9</h2>
 <ul class="simple"><li>Updated Image styles to work on all images, including thumbnails</li>
 <li>hide empty descriptions</li>
 </ul></div>
-<div class="section" id="id13">
+<div class="section" id="id14">
 <h2>2.1.8</h2>
 <ul class="simple"><li>Fixed how default values/settings are handled</li>
 </ul></div>
-<div class="section" id="id14">
+<div class="section" id="id15">
 <h2>2.1.7</h2>
 <ul class="simple"><li>Added secure and frame as a query param</li>
 <li>Move qunit to lib</li>
 <li>Removed jQuery as we weren't using it.</li>
 </ul></div>
-<div class="section" id="id15">
+<div class="section" id="id16">
 <h2>2.1.6</h2>
 <ul class="simple"><li>Updated the README.rst</li>
 <li>Added <tt class="docutils literal">$.embedly.defaults</tt></li>
@@ -431,7 +435,7 @@ http://cdn.embed.ly/jquery.embedly-3.0.5.min.js
 Levitt</a></li>
 <li>Added <tt class="docutils literal">word</tt> setting</li>
 </ul></div>
-<div class="section" id="id16">
+<div class="section" id="id17">
 <h2>2.1.5</h2>
 <ul class="simple"><li>added secure flag for https requests</li>
 </ul></div>
