@@ -13,7 +13,7 @@ Embedly jQuery to your document.
 
   <head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
-    <script src="http://scripts.embed.ly/jquery.embedly-3.0.5.min.js" type="text/javascript"></script>
+    <script src="http://cdn.embed.ly/jquery.embedly-3.0.5.min.js" type="text/javascript"></script>
   </head>
 
 
@@ -367,7 +367,7 @@ when everything is ready. Here is a simple example::
 CDN
 ---
 To get you going even faster, Embedly hosts all the files you need on
-scripts.embed.ly. The latest version is available here::
+cdn.embed.ly. Also available over HTTPS. The latest version is available here::
 
     http://cdn.embed.ly/jquery.embedly-3.0.5.js
     http://cdn.embed.ly/jquery.embedly-3.0.5.min.js
