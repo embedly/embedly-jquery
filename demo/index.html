@@ -51,7 +51,7 @@ $('#content a').embedly({key: 'Your Embedly Key'});
 </pre>
 <p>Or can now use the client directly:</p>
 <pre class="prettyprint linenums">
-$.embedly.preview('http://embed.ly', {key: 'Your Embedly Key'}).progress(function(data){
+$.embedly.extract('http://embed.ly', {key: 'Your Embedly Key'}).progress(function(data){
   alert(data.title);
 });
 </pre>
@@ -59,13 +59,13 @@ $.embedly.preview('http://embed.ly', {key: 'Your Embedly Key'}).progress(functio
 <div class="section" id="key">
 <h2>Key</h2>
 <p>Embedly requires that you pass a key with every request. To signup for a key
-please visit <a class="reference external" href="http://embed.ly/signup">embed.ly/signup</a>. To avoid adding your
+please visit <a class="reference external" href="http://app.embed.ly/signup">app.embed.ly/signup</a>. To avoid adding your
 key to every <tt class="docutils literal">$.embedly</tt> call you can add it to the <tt class="docutils literal">defaults</tt> like so:</p>
 <pre class="prettyprint linenums">
 $.embedly.defaults.key = 'Your Embedly Key';
 
 # Directly
-$.embedly.preview('http://embed.ly').progress(function(data){alert(data.title)});
+$.embedly.extract('http://embed.ly').progress(function(data){alert(data.title)});
 
 # CSS Selector
 $('a').embedly();
@@ -73,7 +73,7 @@ $('a').embedly();
 <p>Otherwise you must add it to every request like so:</p>
 <pre class="prettyprint linenums">
 # Directly
-$.embedly.preview('http://embed.ly', {key:'Your Embedly Key'})
+$.embedly.extract('http://embed.ly', {key:'Your Embedly Key'})
   .progress(function(data){alert(data.title)});
 
 # CSS Selector
@@ -119,8 +119,8 @@ directly.</p>
 concept of <a class="reference external" href="http://api.jquery.com/category/deferred-object/">Deferred Objects</a>.
 before using the Client, but we will explain in a simple example here.</p>
 <pre class="prettyprint linenums">
-var deferred = $.embedly.preview(['http://embed.ly', 'http://google.com'], {
-  key: 'internal',
+var deferred = $.embedly.extract(['http://embed.ly', 'http://google.com'], {
+  key: 'xxxxxx',
   query: {
     words: 20,
   }
@@ -167,13 +167,19 @@ $.embedly.oembed('http://embed.ly').progress(function(data){
 </div>
 <div class="section" id="methods">
 <h2>Methods</h2>
-<p>The client only has 3 methods</p>
+<p>The client only has 4 methods</p>
 <dl class="docutils"><dt><tt class="docutils literal">oembed</tt></dt>
-<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/endpoints/1/oembed">oEmbed</a> API Endpoint.</dd>
+<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/endpoints/1/oembed">oEmbed</a> API Endpoint.
+Available with <a class="reference external" href="http://embed.ly/embed">Embed product</a>.</dd>
+<dt><tt class="docutils literal">extract</tt></dt>
+<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/extract/api/endpoints/1/extract">Extract</a> API Endpoint.
+Available with <a class="reference external" href="http://embed.ly/extract">Extract product</a>.</dd>
 <dt><tt class="docutils literal">preview</tt></dt>
-<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/endpoints/1/preview">Preview</a> API Endpoint.</dd>
+<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/endpoints/1/preview">Preview</a> API Endpoint.
+Available with <a class="reference external" href="http://embed.ly/docs/endpoints">Legacy plans</a>.</dd>
 <dt><tt class="docutils literal">objectify</tt></dt>
-<dd>Corresponds to the Embedly's <a class="reference external" href="http://embed.ly/docs/endpoints/2/objectify">Objectify</a> API Endpoint.</dd>
+<dd>Corresponds to the Embedly's <a class="reference external" href="http://embed.ly/docs/endpoints/2/objectify">Objectify</a> API Endpoint.
+Available with <a class="reference external" href="http://embed.ly/docs/endpoints">Legacy plans</a>.</dd>
 </dl></div>
 <div class="section" id="batching">
 <h2>Batching</h2>
@@ -198,8 +204,8 @@ Embedly API. For more information on responses see the Response documentation.</
 <div class="section" id="options">
 <h2>Options</h2>
 <dl class="docutils"><dt><tt class="docutils literal">key</tt> [<cite>string:''</cite>]</dt>
-<dd>You can <a class="reference external" href="http://embed.ly/signup">sign up</a> or <a class="reference external" href="http://app.embed.ly/login">log in</a> as an existing user to retrieve your Embedly
-key. A key will allow higher usage levels and extra features, see <a class="reference external" href="http://embed.ly/pricing">breakdown</a>.</dd>
+<dd>You can <a class="reference external" href="http://app.embed.ly/signup">sign up</a> or <a class="reference external" href="http://app.embed.ly/login">log in</a> as an existing user to retrieve your Embedly
+key. A key will allow higher usage levels and extra features, see <a class="reference external" href="http://embed.ly/products">products</a>.</dd>
 <dt><tt class="docutils literal">query</tt> [<cite>Object:default object</cite>]</dt>
 <dd><p class="first">A direct pass though to all the Query Arguments that the Embedly API accepts.
 These will be combined with the <tt class="docutils literal">key</tt>, <tt class="docutils literal">endpoint</tt> and the <tt class="docutils literal">urls</tt> to
@@ -248,17 +254,23 @@ wrapElement.</dd>
 <dd>A boolean value representing whether or not Embedly should use the style
 element to resize images based on the maxWidth and maxHeight parameters.</dd>
 <dt><tt class="docutils literal">endpoint</tt> [<cite>String:oembed</cite>]</dt>
-<dd><p class="first">A string value that maps to one of three Embedly endpoints. A <a class="reference external" href="http://embed.ly/pricing">paid plan</a> is required for Preview and Objectify.</p>
+<dd><p class="first">A string value that maps to our Embedly endpoints. The Preview and
+Objectify endpoints are only available for
+<a class="reference external" href="http://embed.ly/docs/endpoints">Legacy plans</a>.</p>
 <ul class="simple"><li><a class="reference external" href="http://embed.ly/docs/endpoints/1/oembed">oembed</a> - a standard in 3rd
 party embedding, contains a finite set of attributes.</li>
+<li><a class="reference external" href="http://embed.ly/docs/extract/api/endpoints/1/extract">extract</a> - returns
+a wide variety of attributes (article text, images, dominant colors,
+keywords, related links, and embeds in page) for creating an experience
+with your links.</li>
 <li><a class="reference external" href="http://embed.ly/docs/endpoints/1/preview">preview</a> - returns a larger
 set of attributes (multiple images, RSS content, and embeds in page) for
 customizing your embeds.</li>
 <li><a class="reference external" href="http://embed.ly/docs/endpoints/2/objectify">objectify</a> - returns all of
 the meta and API data Embedly has for a link. Advanced users.</li>
-</ul><p class="last">Developers intending to use Preview or Objectify will have to include their
-own <tt class="docutils literal">display</tt> callback function for handling the embeds. Our default
-<tt class="docutils literal">display</tt> callback is designed to work with <tt class="docutils literal">oembed</tt> only.</p>
+</ul><p class="last">Developers intending to use Extract, Preview, or Objectify will have to
+include their own <tt class="docutils literal">display</tt> callback function for handling the embeds.
+Our default <tt class="docutils literal">display</tt> callback is designed to work with <tt class="docutils literal">oembed</tt> only.</p>
 </dd>
 <dt><tt class="docutils literal">urlRe</tt> [<cite>RegEx:</cite>]</dt>
 <dd>A regular expression representing what links to show content for. Use our
@@ -383,51 +395,51 @@ http://cdn.embed.ly/jquery.embedly-3.0.5.min.js
 <div class="section" id="changelog">
 <h2>Changelog</h2>
 </div>
-<div class="section" id="id6">
+<div class="section" id="id9">
 <h2>3.0.5</h2>
 <ul class="simple"><li>Fixes bad deployment.</li>
 </ul></div>
-<div class="section" id="id7">
+<div class="section" id="id10">
 <h2>3.0.4</h2>
 <ul class="simple"><li>Add extract endpoint.</li>
 </ul></div>
-<div class="section" id="id8">
+<div class="section" id="id11">
 <h2>3.0.3</h2>
 <ul class="simple"><li>Use $.map instead of array.map for IE support</li>
 </ul></div>
-<div class="section" id="id9">
+<div class="section" id="id12">
 <h2>3.0.2</h2>
 <ul class="simple"><li>Implemented the urlRe back into the options.</li>
 </ul></div>
-<div class="section" id="id10">
+<div class="section" id="id13">
 <h2>3.0.1</h2>
 <ul class="simple"><li>Fixed a bug in bad batching.</li>
 </ul></div>
-<div class="section" id="id11">
+<div class="section" id="id14">
 <h2>3.0.0</h2>
 <ul class="simple"><li>Complete rewrite of the existing plugin to be easier to use.</li>
 <li>Removed $.browser dependency. (#30)</li>
 </ul></div>
-<div class="section" id="id12">
+<div class="section" id="id15">
 <h2>2.2.0</h2>
 <ul class="simple"><li>Fixing bug that was causing callbacks to be overwritten (#23)</li>
 </ul></div>
-<div class="section" id="id13">
+<div class="section" id="id16">
 <h2>2.1.9</h2>
 <ul class="simple"><li>Updated Image styles to work on all images, including thumbnails</li>
 <li>hide empty descriptions</li>
 </ul></div>
-<div class="section" id="id14">
+<div class="section" id="id17">
 <h2>2.1.8</h2>
 <ul class="simple"><li>Fixed how default values/settings are handled</li>
 </ul></div>
-<div class="section" id="id15">
+<div class="section" id="id18">
 <h2>2.1.7</h2>
 <ul class="simple"><li>Added secure and frame as a query param</li>
 <li>Move qunit to lib</li>
 <li>Removed jQuery as we weren't using it.</li>
 </ul></div>
-<div class="section" id="id16">
+<div class="section" id="id19">
 <h2>2.1.6</h2>
 <ul class="simple"><li>Updated the README.rst</li>
 <li>Added <tt class="docutils literal">$.embedly.defaults</tt></li>
@@ -435,7 +447,7 @@ http://cdn.embed.ly/jquery.embedly-3.0.5.min.js
 Levitt</a></li>
 <li>Added <tt class="docutils literal">word</tt> setting</li>
 </ul></div>
-<div class="section" id="id17">
+<div class="section" id="id20">
 <h2>2.1.5</h2>
 <ul class="simple"><li>added secure flag for https requests</li>
 </ul></div>

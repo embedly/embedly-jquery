@@ -24,7 +24,7 @@ You can now use jQuery selectors to replace links with embedded content::
 
 Or can now use the client directly::
 
-  $.embedly.preview('http://embed.ly', {key: 'Your Embedly Key'}).progress(function(data){
+  $.embedly.extract('http://embed.ly', {key: 'Your Embedly Key'}).progress(function(data){
     alert(data.title);
   });
 
@@ -32,13 +32,13 @@ Or can now use the client directly::
 Key
 ---
 Embedly requires that you pass a key with every request. To signup for a key
-please visit `embed.ly/signup <http://embed.ly/signup>`_. To avoid adding your
+please visit `app.embed.ly/signup <http://app.embed.ly/signup>`_. To avoid adding your
 key to every ``$.embedly`` call you can add it to the ``defaults`` like so::
 
   $.embedly.defaults.key = 'Your Embedly Key';
 
   # Directly
-  $.embedly.preview('http://embed.ly').progress(function(data){alert(data.title)});
+  $.embedly.extract('http://embed.ly').progress(function(data){alert(data.title)});
 
   # CSS Selector
   $('a').embedly();
@@ -46,7 +46,7 @@ key to every ``$.embedly`` call you can add it to the ``defaults`` like so::
 Otherwise you must add it to every request like so::
 
   # Directly
-  $.embedly.preview('http://embed.ly', {key:'Your Embedly Key'})
+  $.embedly.extract('http://embed.ly', {key:'Your Embedly Key'})
     .progress(function(data){alert(data.title)});
 
   # CSS Selector
@@ -97,8 +97,8 @@ concept of `Deferred Objects
 before using the Client, but we will explain in a simple example here.
 ::
 
-  var deferred = $.embedly.preview(['http://embed.ly', 'http://google.com'], {
-    key: 'internal',
+  var deferred = $.embedly.extract(['http://embed.ly', 'http://google.com'], {
+    key: 'xxxxxx',
     query: {
       words: 20,
     }
@@ -145,19 +145,27 @@ always be passed a list of results.
 
 Methods
 """""""
-The client only has 3 methods
+The client only has 4 methods
 
 ``oembed``
   Corresponds to Embedly's `oEmbed
   <http://embed.ly/docs/endpoints/1/oembed>`_ API Endpoint.
+  Available with `Embed product <http://embed.ly/embed>`_.
+
+``extract``
+  Corresponds to Embedly's `Extract
+  <http://embed.ly/docs/extract/api/endpoints/1/extract>`_ API Endpoint.
+  Available with `Extract product <http://embed.ly/extract>`_.
 
 ``preview``
   Corresponds to Embedly's `Preview
   <http://embed.ly/docs/endpoints/1/preview>`_ API Endpoint.
+  Available with `Legacy plans <http://embed.ly/docs/endpoints>`_.
 
 ``objectify``
   Corresponds to the Embedly's `Objectify
   <http://embed.ly/docs/endpoints/2/objectify>`_ API Endpoint.
+  Available with `Legacy plans <http://embed.ly/docs/endpoints>`_.
 
 Batching
 """"""""
@@ -183,10 +191,10 @@ The only difference is that the ``oEmbed`` data object contains an
 Options
 -------
 ``key`` [`string:''`]
-  You can `sign up <http://embed.ly/signup>`_ or `log in
+  You can `sign up <http://app.embed.ly/signup>`_ or `log in
   <http://app.embed.ly/login>`_ as an existing user to retrieve your Embedly
-  key. A key will allow higher usage levels and extra features, see `breakdown
-  <http://embed.ly/pricing>`_.
+  key. A key will allow higher usage levels and extra features, see `products
+  <http://embed.ly/products>`_.
 
 ``query`` [`Object:default object`]
   A direct pass though to all the Query Arguments that the Embedly API accepts.
@@ -242,20 +250,25 @@ Options
   element to resize images based on the maxWidth and maxHeight parameters.
 
 ``endpoint`` [`String:oembed`]
-  A string value that maps to one of three Embedly endpoints. A `paid plan
-  <http://embed.ly/pricing>`_ is required for Preview and Objectify.
+  A string value that maps to our Embedly endpoints. The Preview and
+  Objectify endpoints are only available for
+  `Legacy plans <http://embed.ly/docs/endpoints>`_.
 
   * `oembed <http://embed.ly/docs/endpoints/1/oembed>`_ - a standard in 3rd
     party embedding, contains a finite set of attributes.
+  * `extract <http://embed.ly/docs/extract/api/endpoints/1/extract>`_ - returns
+    a wide variety of attributes (article text, images, dominant colors,
+    keywords, related links, and embeds in page) for creating an experience
+    with your links.
   * `preview <http://embed.ly/docs/endpoints/1/preview>`_ - returns a larger
     set of attributes (multiple images, RSS content, and embeds in page) for
     customizing your embeds.
   * `objectify <http://embed.ly/docs/endpoints/2/objectify>`_ - returns all of
     the meta and API data Embedly has for a link. Advanced users.
 
-  Developers intending to use Preview or Objectify will have to include their
-  own ``display`` callback function for handling the embeds. Our default
-  ``display`` callback is designed to work with ``oembed`` only.
+  Developers intending to use Extract, Preview, or Objectify will have to
+  include their own ``display`` callback function for handling the embeds.
+  Our default ``display`` callback is designed to work with ``oembed`` only.
 
 ``urlRe`` [`RegEx:`]
   A regular expression representing what links to show content for. Use our
