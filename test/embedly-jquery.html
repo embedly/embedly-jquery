@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../libs/qunit/qunit.css" media="screen">
   <script src="../libs/qunit/qunit.js"></script>
   <!-- Load local lib and tests. -->
-  <script src="../src/jquery.embedly.js"></script>
+  <script src="../dist/jquery.embedly.js"></script>
   <script src="embedly-jquery_test.js"></script>
   <!-- Removing access to jQuery and $. But it'll still be available as _$, if
        you REALLY want to mess around with jQuery in the console. REMEMBER WE
@@ -39,7 +39,12 @@
       <li><a href="http://embed.ly">Link</a></li>
       <li><a href="http://apple.com">Rich</a></li>
     </div>
-
+    <div id="crop">
+      <img data-src="http://embed.ly/static/images/logos/logo_color.png"></img>
+    </div>
+    <div id="fill">
+      <img data-src="http://embed.ly/static/images/logos/logo_color.png"></img>
+    </div>
   </div>
 </body>
 </html>

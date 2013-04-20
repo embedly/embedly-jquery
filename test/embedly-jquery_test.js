@@ -237,11 +237,43 @@
 
   });
 
-
-
   test('is chainable', 1, function() {
     // Not a bad test to run on collection methods.
     strictEqual(this.elems.embedly(), this.elems, 'should be chaninable');
+  });
+
+  /** 
+  Start of Embedly Display Tests (Image Proxy and API)
+  **/
+
+  test('build image url', 2, function() {
+    equal(
+      $.embedlyDisplay.build('display', 'http://embed.ly/static/images/logos/logo_color.png', {key: '4d1f889c20ed11e1abb14040d3dc5c07'}),
+      "http://i.embed.ly/1/display?key=4d1f889c20ed11e1abb14040d3dc5c07&url=http%3A%2F%2Fembed.ly%2Fstatic%2Fimages%2Flogos%2Flogo_color.png");
+
+    equal(
+      $.embedlyDisplay.build('resize', ['http://embed.ly/static/images/logos/logo_color.png'], {key:'4d1f889c20ed11e1abb14040d3dc5c07', secure:true, query: {grow: true, width:500}}),
+      "https://i.embed.ly/1/display/resize?grow=true&width=500&key=4d1f889c20ed11e1abb14040d3dc5c07&url=http%3A%2F%2Fembed.ly%2Fstatic%2Fimages%2Flogos%2Flogo_color.png");
+  });
+
+  test('crop image', 1, function() {
+    $.embedlyDisplay.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $.embedlyDisplay.defaults.endpoint = 'crop';
+    $('#crop').embedlyDisplay({'query': {'width': 100, 'height': 50}});
+    //check img src was set to crop
+    equal($('#crop img').attr('src'),
+    "http://i.embed.ly/1/display/crop?width=100&height=50&key=4d1f889c20ed11e1abb14040d3dc5c07&url=http%3A%2F%2Fembed.ly%2Fstatic%2Fimages%2Flogos%2Flogo_color.png");
+
+  });
+
+  test('fill image', 1, function() {
+    $.embedlyDisplay.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+    $.embedlyDisplay.defaults.endpoint = 'fill';
+    $('#crop').embedlyDisplay({'query': {'width': 100, 'height': 50, 'color': 'fff'}});
+    //check img src was set to crop
+    equal($('#crop img').attr('src'),
+    "http://i.embed.ly/1/display/fill?width=100&height=50&color=fff&key=4d1f889c20ed11e1abb14040d3dc5c07&url=http%3A%2F%2Fembed.ly%2Fstatic%2Fimages%2Flogos%2Flogo_color.png");
+
   });
 
   module('jQuery.embedly');

@@ -22,7 +22,12 @@ module.exports = function(grunt) {
         banner: '<%= meta.banner %>'
       },
       dist: {
-        src: ['src/<%= pkg.name %>.js'],
+        //src: ['src/<%= pkg.name %>.js'],
+        src: [
+          'src/intro.js',
+          'src/jquery.embedly.js',
+          'src/display.js',
+          'src/outro.js'],
         dest: 'dist/<%= pkg.name %>.js'
       }
     },
@@ -56,7 +61,7 @@ module.exports = function(grunt) {
       globals: {
         jQuery: true
       },
-      all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js']
+      all: ['Gruntfile.js', 'src/jquery.embedly.js', 'src/display.js', 'test/**/*.js']
     }
   });
 
