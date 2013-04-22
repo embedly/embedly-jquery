@@ -24,10 +24,8 @@ module.exports = function(grunt) {
       dist: {
         //src: ['src/<%= pkg.name %>.js'],
         src: [
-          'src/intro.js',
-          'src/jquery.embedly.js',
-          'src/display.js',
-          'src/outro.js'],
+          'src/jquery.embedly.js'
+        ],
         dest: 'dist/<%= pkg.name %>.js'
       }
     },
@@ -61,7 +59,7 @@ module.exports = function(grunt) {
       globals: {
         jQuery: true
       },
-      all: ['Gruntfile.js', 'src/jquery.embedly.js', 'src/display.js', 'test/**/*.js']
+      all: ['Gruntfile.js', 'src/jquery.embedly.js', 'test/**/*.js']
     }
   });
 
