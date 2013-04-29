@@ -6,6 +6,7 @@
           <ul class="nav"><li><a href="inline.html">Inline</a></li>
             <li><a href="modal.html">Modal</a></li>
             <li><a href="tooltip.html">Tooltip</a></li>
+            <li><a href="display.html">Image Resizing</a></li>
           </ul></div>
       </div>
     </div>
@@ -21,11 +22,14 @@
     $('a').embedly();</pre>
 
             <p>
-              Embedly jQuery allows to interact with the Embedly API to add rich URL previews to any site. To get an idea of how it works you can check out the following demos.
+              Embedly jQuery allows to interact with the Embedly API to add rich URL previews to any site. To get an idea of how it works you can check out the following demos. <strong>New:
+              Check out our image resizing and proxying.</strong>
             </p>
+            
             <ul class="unstyled"><li><a class="btn btn-large" href="inline.html">Inline</a></li>
               <li><a class="btn btn-large" href="modal.html">Modal</a></li>
               <li><a class="btn btn-large" href="tooltip.html">Tooltip</a></li>
+              <li><a class="btn btn-large" href="display.html">Image Resizing</a></li>
             </ul><a class="btn btn-primary btn-large" href="http://github.com/embedly/embedly-jquery">Code</a>
             <div class="clearfix"></div>
           </div>
@@ -373,6 +377,90 @@ $('a').embedly().on('click', function(){
 });
 </pre>
 </div>
+<div class="section" id="image-proxy-and-resizing">
+<h2>Image Proxy and Resizing</h2>
+<p><a class="reference external" href="http://embed.ly/display">Embedly Display</a>  gives you access to
+an image proxy and resizing endpoints that allow you to scale images
+to any size. You can use <cite>$.embedly.defaults</cite> to set keys or query
+resize parameters:</p>
+<pre class="prettyprint linenums">
+$.embedly.defaults.key = 'Your Embedly Key';
+$.embedly.defaults.query = {width: 300};
+</pre>
+<p>You can use selectors to resize or proxy images:</p>
+<pre class="prettyprint linenums">
+$('img').display('resize', {query: {width: 300}});
+</pre>
+<p>Or generate image urls with the client:</p>
+<pre class="prettyprint linenums">
+$.embedly.display.resize('http://embed.ly/static/images/logo.png', {width: 300});
+</pre>
+</div>
+<div class="section" id="image-methods">
+<h2>Image Methods</h2>
+<p>The Image Display client has 4 methods that each take
+2 parameters: url, options. Each method returns an image
+url that can be added to the DOM.</p>
+<dl class="docutils"><dt><tt class="docutils literal">display</tt></dt>
+<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/display/api/endpoints/1/display">Display</a> API Endpoint
+used to simply proxy an image. Add <cite>secure</cite> to proxy through HTTPS.</dd>
+<dt><tt class="docutils literal">resize</tt></dt>
+<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/display/api/endpoints/1/resize">Resize</a> API Endpoint
+used to resize an image by scaling it to a specific width or height
+preserving aspect ratio.
+Required query parameters: width or height. Optional: grow.</dd>
+<dt><tt class="docutils literal">crop</tt></dt>
+<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/display/api/endpoints/1/crop">Crop</a> API Endpoint used
+to crop an image to a specific width and height.
+Required query parameters: width, height.</dd>
+<dt><tt class="docutils literal">fill</tt></dt>
+<dd>Corresponds to Embedly's <a class="reference external" href="http://embed.ly/docs/display/api/endpoints/1/resize">Fill</a> API Endpoint used
+to fit an image to a specific canvas size filled with a specific color.
+Required query parameters: width, height, color.</dd>
+</dl></div>
+<div class="section" id="display-method-parameters">
+<h2>Display Method Parameters</h2>
+<dl class="docutils"><dt><tt class="docutils literal">endpoint</tt> [<cite>string:'display'</cite>]</dt>
+<dd>The image methods: display, resize, crop or fill. (required)</dd>
+<dt><tt class="docutils literal">options</tt> [<cite>Object:default object</cite>]</dt>
+<dd><p class="first">A direct pass though to all the Query Arguments that the Embedly Display
+endpoints accept. These will be combined with the <tt class="docutils literal">key</tt> and  <tt class="docutils literal">url</tt> to
+form the request to Embedly. See Query section below. arguments.:</p>
+<pre class="prettyprint linenums">
+options: {
+  key: 'your Embedly key',
+  query: {
+    width: 400,
+    height: 400,
+    color: #fff,
+    ...
+  }
+}
+</pre>
+<p class="last">Required query arguments vary between endpoints, you can consult the <a class="reference external" href="http://embed.ly/docs/display/api#endpoints">Display
+endpoints documentation</a>.</p>
+</dd>
+</dl></div>
+<div class="section" id="image-query-parameters">
+<h2>Image Query Parameters</h2>
+<p>These are the query arguments that can be passed via the
+options. These arguments should be added to the
+<cite>options.query</cite>:</p>
+<dl class="docutils"><dt><tt class="docutils literal">width</tt> [<cite>integer:null</cite>]</dt>
+<dd>The width you would like to scale the image.</dd>
+<dt><tt class="docutils literal">height</tt> [<cite>integer:null</cite>]</dt>
+<dd>The height you would like to scale the image.</dd>
+<dt><tt class="docutils literal">color</tt> [<cite>string:null</cite>]</dt>
+<dd>The color to fill the image with 3 or 6 hexadecimal
+characters. (fff, 4f2a55)</dd>
+<dt><tt class="docutils literal">grow</tt> [<cite>Boolean:false</cite>]</dt>
+<dd>By default the API will not increase the size of images.
+Set to <tt class="docutils literal">true</tt> to allow images to be increased in size.</dd>
+<dt><tt class="docutils literal">errorurl</tt> [<cite>string:null</cite>]</dt>
+<dd>The fall back image url that will be used if the original
+image is invalid or cannot be processed. Ensure this image
+exists.</dd>
+</dl></div>
 <div class="section" id="cdn">
 <h2>CDN</h2>
 <p>To get you going even faster, Embedly hosts all the files you need on

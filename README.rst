@@ -377,6 +377,103 @@ when everything is ready. Here is a simple example::
   });
 
 
+Image Proxy and Resizing
+------------------------
+
+`Embedly Display <http://embed.ly/display>`_  gives you access to
+an image proxy and resizing endpoints that allow you to scale images
+to any size. You can use `$.embedly.defaults` to set keys or query
+resize parameters::
+
+  $.embedly.defaults.key = 'Your Embedly Key';
+  $.embedly.defaults.query = {width: 300};
+
+You can use selectors to resize or proxy images::
+
+  $('img').display('resize', {query: {width: 300}});
+
+Or generate image urls with the client::
+
+  $.embedly.display.resize('http://embed.ly/static/images/logo.png', {width: 300});
+
+Image Methods
+"""""""""""""
+The Image Display client has 4 methods that each take
+2 parameters: url, options. Each method returns an image
+url that can be added to the DOM.
+
+``display``
+  Corresponds to Embedly's `Display
+  <http://embed.ly/docs/display/api/endpoints/1/display>`_ API Endpoint
+  used to simply proxy an image. Add `secure` to proxy through HTTPS.
+
+``resize``
+  Corresponds to Embedly's `Resize
+  <http://embed.ly/docs/display/api/endpoints/1/resize>`_ API Endpoint
+  used to resize an image by scaling it to a specific width or height
+  preserving aspect ratio.
+  Required query parameters: width or height. Optional: grow.
+
+``crop``
+  Corresponds to Embedly's `Crop
+  <http://embed.ly/docs/display/api/endpoints/1/crop>`_ API Endpoint used
+  to crop an image to a specific width and height.
+  Required query parameters: width, height.
+
+``fill``
+  Corresponds to Embedly's `Fill
+  <http://embed.ly/docs/display/api/endpoints/1/resize>`_ API Endpoint used
+  to fit an image to a specific canvas size filled with a specific color.
+  Required query parameters: width, height, color.
+
+Display Method Parameters
+-------------------------
+``endpoint`` [`string:'display'`]
+  The image methods: display, resize, crop or fill. (required)
+
+``options`` [`Object:default object`]
+  A direct pass though to all the Query Arguments that the Embedly Display
+  endpoints accept. These will be combined with the ``key`` and  ``url`` to
+  form the request to Embedly. See Query section below. arguments.::
+
+    options: {
+      key: 'your Embedly key',
+      query: {
+        width: 400,
+        height: 400,
+        color: #fff,
+        ...
+      }
+    }
+
+  Required query arguments vary between endpoints, you can consult the `Display
+  endpoints documentation <http://embed.ly/docs/display/api#endpoints>`_.
+
+Image Query Parameters
+----------------------
+These are the query arguments that can be passed via the
+options. These arguments should be added to the 
+`options.query`:
+
+``width`` [`integer:null`]
+  The width you would like to scale the image.
+
+``height`` [`integer:null`]
+  The height you would like to scale the image.
+
+``color`` [`string:null`]
+  The color to fill the image with 3 or 6 hexadecimal
+  characters. (fff, 4f2a55)
+
+``grow`` [`Boolean:false`]
+  By default the API will not increase the size of images.
+  Set to ``true`` to allow images to be increased in size.
+
+``errorurl`` [`string:null`]
+  The fall back image url that will be used if the original
+  image is invalid or cannot be processed. Ensure this image
+  exists.
+
 CDN
 ---
 To get you going even faster, Embedly hosts all the files you need on

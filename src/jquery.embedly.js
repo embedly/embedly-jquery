@@ -247,7 +247,7 @@
 
       var secure = options.secure;
       if (none(secure)){
-        // If the secure param was not see, use the protocol instead.
+        // If the secure param was not seen, use the protocol instead.
         secure = window.location.protocol === 'https:'? true:false;
       }
 
@@ -452,7 +452,13 @@
 
   // Use with selector to find img tags with data-src attribute
   // e.g. <img data-src="http://embed.ly/static/images/logo.png"></img>
-  $.fn.display = function (endpoint, options ) {
+  $.fn.display = function (endpoint, options) {
+    
+    // default to display
+    if (none(endpoint)) {
+      endpoint = 'display';
+    }
+
     if (options === undefined || typeof options === 'object') {
 
       // Use the defaults
@@ -460,7 +466,7 @@
 
       // Key Check.
       if (none(options.key)){
-        $.embedlyDisplay.log('error', 'Embedly jQuery requires an API Key. Please sign up for one at http://embed.ly/display');
+        $.embedly.log('error', 'Embedly jQuery requires an API Key. Please sign up for one at http://embed.ly/display');
         return this.each($.noop);
       }
 
@@ -493,7 +499,7 @@
         return true;
       };
 
-      // Find every image tag with a data-src attribute
+      // Find every image or a tag with a data-src attribute
       var elems = this.each(function () {
         if ( doCreate(this) ){
           create(this);
