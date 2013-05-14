@@ -388,13 +388,15 @@ resize parameters::
   $.embedly.defaults.key = 'Your Embedly Key';
   $.embedly.defaults.query = {width: 300};
 
-You can use selectors to resize or proxy images::
+You can use selectors to resize or proxy images, we will look for all images with the data-src attribute::
+  
+  e.g. <img data-src="http://embed.ly/static/images/logos/logo_color.png"></img>
 
   $('img').display('resize', {query: {width: 300}});
 
 Or generate image urls with the client::
 
-  $.embedly.display.resize('http://embed.ly/static/images/logo.png', {width: 300});
+  $.embedly.display.resize('http://embed.ly/static/images/logos/logo_color.png', {width: 300});
 
 Image Methods
 """""""""""""

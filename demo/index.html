@@ -387,13 +387,15 @@ resize parameters:</p>
 $.embedly.defaults.key = 'Your Embedly Key';
 $.embedly.defaults.query = {width: 300};
 </pre>
-<p>You can use selectors to resize or proxy images:</p>
+<p>You can use selectors to resize or proxy images, we will look for all images with the data-src attribute:</p>
 <pre class="prettyprint linenums">
+e.g. &lt;img data-src="http://embed.ly/static/images/logos/logo_color.png"&gt;&lt;/img&gt;
+
 $('img').display('resize', {query: {width: 300}});
 </pre>
 <p>Or generate image urls with the client:</p>
 <pre class="prettyprint linenums">
-$.embedly.display.resize('http://embed.ly/static/images/logo.png', {width: 300});
+$.embedly.display.resize('http://embed.ly/static/images/logos/logo_color.png', {width: 300});
 </pre>
 </div>
 <div class="section" id="image-methods">
