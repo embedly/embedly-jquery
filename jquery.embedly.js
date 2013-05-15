@@ -1,5 +1,8 @@
-/*globals jQuery:true*/
-
+/*! Embedly jQuery - v3.1.0 - 2013-05-15
+ * https://github.com/embedly/embedly-jquery
+ * Copyright (c) 2013 Sean Creeley
+ * Licensed BSD
+ */ 
 (function($) {
 
   /*
