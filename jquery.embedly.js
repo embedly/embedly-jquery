@@ -1,8 +1,5 @@
-/*! Embedly jQuery - v3.0.5 - 2013-03-27
- * https://github.com/embedly/embedly-jquery
- * Copyright (c) 2013 Sean Creeley
- * Licensed BSD
- */ 
+/*globals jQuery:true*/
+
 (function($) {
 
   /*
@@ -25,11 +22,11 @@
 
   var urlRe = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 
-  function none(obj){
+  var none = function(obj){
     return obj === null || obj === undefined;
-  }
+  };
   // Split a list into a bunch of batchs.
-  function batch(list, split){
+  var batch = function(list, split){
     var batches = [], current = [];
     $.each(list, function(i, obj){
       current.push(obj);
@@ -42,23 +39,23 @@
       batches.push(current);
     }
     return batches;
-  }
+  };
   // Make an argument a list
-  function listify(obj){
+  var listify = function(obj){
     if (none(obj)){
       return [];
     } else if (!$.isArray(obj)){
       return [obj];
     }
     return obj;
-  }
+  };
 
   // From: http://bit.ly/T9SjVv
-  function zip(arrays) {
+  var zip = function(arrays) {
     return $.map(arrays[0], function(_,i){
       return [$.map(arrays, function(array){return array[i];})];
     });
-  }
+  };
 
   /* Keeper
    *
@@ -240,6 +237,48 @@
     }
   };
 
+  // direct API dealing directly with Embedly's Display API.
+  var ImageAPI = function () {};
+  ImageAPI.prototype = {
+
+    // Based on the method and options, build the image url,
+    build: function(method, url, options){
+      options = none(options) ? {}: options;
+
+      var secure = options.secure;
+      if (none(secure)){
+        // If the secure param was not seen, use the protocol instead.
+        secure = window.location.protocol === 'https:'? true:false;
+      }
+
+      var base = (secure ? 'https': 'http') +
+        '://i.embed.ly/' + (method === 'display' ? '1/' : '1/display/') + method;
+
+      // Base Query
+      var query = none(options.query) ? {} : options.query;
+      query.key = options.key;
+      base += '?'+$.param(query);
+
+      // Add the image url
+      base += '&url='+ encodeURIComponent(url);
+
+      return base;
+    },
+    // Wrappers around build image url function.
+    display: function(url, options){
+      return this.build('display', url, options);
+    },
+    resize: function(url, options){
+      return this.build('resize', url, options);
+    },
+    fill: function(url, options){
+      return this.build('fill', url, options);
+    },
+    crop: function(url, options){
+      return this.build('crop', url, options);
+    }
+  };
+
   var Embedly = function (element, url, options) {
     this.init(element, url, options);
   };
@@ -339,6 +378,9 @@
   // Sets up a generic API for use.
   $.embedly = new API();
 
+  // Add display to it.
+  $.embedly.display = new ImageAPI();
+
   $.fn.embedly = function ( options ) {
     if (options === undefined || typeof options === 'object') {
 
@@ -408,4 +450,75 @@
     return ! none($(elem).data('embedly'));
   };
 
-}(jQuery));
+  // Use with selector to find img tags with data-src attribute
+  // e.g. <img data-src="http://embed.ly/static/images/logo.png"></img>
+  $.fn.display = function (endpoint, options) {
+    
+    // default to display
+    if (none(endpoint)) {
+      endpoint = 'display';
+    }
+
+    if (options === undefined || typeof options === 'object') {
+
+      // Use the defaults
+      options = $.extend({}, defaults, $.embedly.defaults, typeof options === 'object' && options);
+
+      // Key Check.
+      if (none(options.key)){
+        $.embedly.log('error', 'Embedly jQuery requires an API Key. Please sign up for one at http://embed.ly/display');
+        return this.each($.noop);
+      }
+
+      // Create the node for all elements
+      var create = function (elem){
+        var $elem = $(elem);
+        if (!$elem.data('display')) {
+          var url = $elem.data('src') || $elem.attr('href');
+
+          var data = {
+            original_url : url,
+            url : $.embedly.display.build(endpoint, url, options)
+          };
+
+          $elem.data('display', data);
+          $elem.trigger('initialized', [elem]);
+
+          var html = "<img src='" + data.url + "' />";
+          if ($elem.is('a')){
+            $elem.append(html);
+          }else {
+            $elem.replaceWith(html);
+          }
+        }
+      };
+      var doCreate = function(elem){
+        if (none($(elem).data('src')) && none($(elem).attr('href'))){
+          return false;
+        }
+        return true;
+      };
+
+      // Find every image or a tag with a data-src attribute
+      var elems = this.each(function () {
+        if ( doCreate(this) ){
+          create(this);
+        } else {
+          $(this).find('img,a').each(function(){
+            if ( doCreate(this) ){
+              create(this);
+            }
+          });
+        }
+      });
+
+      return elems;
+    }
+  };
+
+  // Custom selector.
+  $.expr[':'].display = function(elem) {
+    return ! none($(elem).data('display'));
+  };
+
+}(jQuery, window));
