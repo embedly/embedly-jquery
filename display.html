@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="shortcut icon" href="http://embed.ly/static/favicon.ico">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/jquery.embedly.js"></script>
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <link rel="stylesheet" href="css/prettify.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/demo.css" />
+    <title>Embedly jQuery</title>
+  </head>
+  <body onload="prettyPrint()">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="index.html">Embedly jQuery</a>
+          <ul class="nav">
+            <li><a href="inline.html">Inline</a></li>
+            <li><a href="modal.html">Modal</a></li>
+            <li><a href="tooltip.html">Tooltip</a></li>
+            <li class="active"><a href="display.html">Image Resizing</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="content" class="container">
+      <div class="row intro">
+        <div class="span12">
+          <h1>Display, Resize, Crop, Fill</h1>
+          <p>
+            Easily use Embedly Display to proxy, resize, crop, fill any photo on your site to meet your
+            screen size or design needs.
+          </p>
+        </div>
+      </div>
+      <div class="row example example-1">
+        <div class="span12">
+          <h2>Example 1: Display/Proxy Image</h2>
+          <p>
+            Lets take a look at the original image proxied through our Display endpoint. This is the simplest endpoint,
+            also available with SSL support.
+          </p>
+          <div class="example-inline example-center">
+            <p>
+              Throw on your cap and gown its graduation time!
+            </p>
+            <p>
+            <img data-src="http://images.ak.instagram.com/media/2011/06/05/1fdb445e224d459f97ff128b663045f9_7.jpg" />
+            </p>
+            <p>
+              I really should have shaved before.
+            </p>
+          </div>
+          <pre class="prettyprint linenums">
+&lt;p&gt;
+  Throw on your cap and gown its graduation time!!&lt;/p&gt;
+&lt;p&gt;
+  &lt;img data-src="http://images.ak.instagram.com/media/2011/06/05/1fdb445e224d459f97ff128b663045f9_7.jpg"/&gt;
+&lt;/p&gt;
+&lt;p&gt;
+  I really should have shaved before.
+&lt;/p&gt;
+&lt;script type="text/javascript"&gt;
+  $.embedly.defaults.key = 'Your Embedly Key';
+  $('.example-1 .example-inline img').display();
+&lt;/script&gt;
+          </pre>
+        </div>
+      </div>
+
+
+      <div class="row example example-2">
+        <div class="span12">
+          <h2>Example 2: Crop</h2>
+          <p>
+            Lets crop the image to 100x100 on load. Cropping this image will maintain the aspect ratio
+            and center it.
+          </p>
+          <div class="example-inline example-center">
+            <p>
+              Throw on your cap and gown its graduation time!
+            </p>
+            <p>
+            <img data-src="http://images.ak.instagram.com/media/2011/06/05/1fdb445e224d459f97ff128b663045f9_7.jpg" />
+            </p>
+            <p>
+              I really should have shaved before.
+            </p>
+          </div>
+          <pre class="prettyprint linenums">
+&lt;p&gt;
+  Throw on your cap and gown its graduation time!!&lt;/p&gt;
+&lt;p&gt;
+  &lt;img data-src="http://images.ak.instagram.com/media/2011/06/05/1fdb445e224d459f97ff128b663045f9_7.jpg"/&gt;
+&lt;/p&gt;
+&lt;p&gt;
+  I really should have shaved before.
+&lt;/p&gt;
+&lt;script type="text/javascript"&gt;
+  $.embedly.defaults.key = 'Your Embedly Key';
+  $('.example-2 .example-inline img').display('crop', {
+    query: {
+     width:100,
+     height:100,
+     grow:true
+    }
+  });
+&lt;/script&gt;
+          </pre>
+        </div>
+      </div>
+      <div class="row example example-3">
+        <div class="span12">
+          <h2>Example 3: Click to Resize</h2>
+          <p>
+            Lets show the original photo and click to resize to a width of 300px. This endpoint will automatically
+            scale the image to maintain quality.
+          </p>
+          <div class="example-inline example-center">
+            <p>
+              Throw on your cap and gown its graduation time!
+            </p>
+            <p>
+            <img src="http://images.ak.instagram.com/media/2011/06/05/1fdb445e224d459f97ff128b663045f9_7.jpg" data-src="http://images.ak.instagram.com/media/2011/06/05/1fdb445e224d459f97ff128b663045f9_7.jpg" />
+            </p>
+            <p>
+              I really should have shaved before.
+            </p>
+            <button class="btn btn-primary"> Click to Resize</button>
+          </div>
+          <pre class="prettyprint linenums">
+$.embedly.defaults.key = 'Your Embedly Key';
+$('.example-3 button').on('click', function(){
+  var $button = $(this);
+  $('.example-2 .example-inline img').display('resize', {
+    query: {
+     width:300,
+     grow:true }
+  });
+});
+          </pre>
+        </div>
+      </div>
+  a<div class="row example example-4">
+        <div class="span12">
+          <h2>Example 4: Click to Fill</h2>
+          <p>
+            Lets show the original photo and click resize image and center on a blue canvas.
+          </p>
+          <div class="example-inline example-center">
+            <p>
+              Throw on your cap and gown its graduation time!
+            </p>
+            <p>
+            <img src="http://images.ak.instagram.com/media/2011/06/05/1fdb445e224d459f97ff128b663045f9_7.jpg" data-src="http://images.ak.instagram.com/media/2011/06/05/1fdb445e224d459f97ff128b663045f9_7.jpg" />
+            </p>
+            <p>
+              I really should have shaved before.
+            </p>
+            <button class="btn btn-primary"> Click to Fill</button>
+          </div>
+          <pre class="prettyprint linenums">
+$.embedly.defaults.key 'Your Embedly Key';
+$('.example-4 button').on('click', function(){
+  var $button = $(this);
+  $('.example-3 .example-inline img').display('fill', {
+    query: {
+     width:400,
+     height:300,
+     color: '2BA6CB',
+     grow:true }
+  });
+});
+          </pre>
+        </div>
+      </div>
+    </div> <!-- Container-->
+
+    <script type="text/javascript">
+      // Set up defaults.
+      $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+
+      // display
+      $('.example-1 .example-inline img').display();
+
+      // crop
+      $('.example-2 .example-inline img').display('crop', {
+        query: {
+         width:100,
+         height:100,
+         grow:true }
+      });
+
+      // resize on button click
+      $('.example-3 button').on('click', function(){
+        var $button = $(this);
+        $('.example-3 .example-inline img').display('resize', {
+          query: {
+           width:300,
+           grow:true }
+        });
+      });
+
+    // fill with blue on button click
+    $('.example-4 button').on('click', function(){
+      var $button = $(this);
+      $('.example-4 .example-inline img').display('fill', {
+        query: {
+         width:400,
+         height:300,
+         color: '2BA6CB',
+         grow:true }
+      });
+    });
+    </script>
+  </body>
+</html>
