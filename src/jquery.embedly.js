@@ -243,7 +243,7 @@
 
     // Based on the method and options, build the image url,
     build: function(method, url, options){
-      options = none(options) ? {}: options;
+      options  = $.extend({}, $.embedly.defaults, typeof options === 'object' && options);
 
       var secure = options.secure;
       if (none(secure)){
@@ -453,7 +453,7 @@
   // Use with selector to find img tags with data-src attribute
   // e.g. <img data-src="http://embed.ly/static/images/logo.png"></img>
   $.fn.display = function (endpoint, options) {
-    
+
     // default to display
     if (none(endpoint)) {
       endpoint = 'display';

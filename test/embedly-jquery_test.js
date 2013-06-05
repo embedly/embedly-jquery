@@ -247,8 +247,10 @@
   **/
 
   test('build image url', 2, function() {
+    $.embedly.defaults.key = '4d1f889c20ed11e1abb14040d3dc5c07';
+
     equal(
-      $.embedly.display.build('display', 'http://embed.ly/static/images/logos/logo_color.png', {key: '4d1f889c20ed11e1abb14040d3dc5c07'}),
+      $.embedly.display.build('display', 'http://embed.ly/static/images/logos/logo_color.png'),
       "http://i.embed.ly/1/display?key=4d1f889c20ed11e1abb14040d3dc5c07&url=http%3A%2F%2Fembed.ly%2Fstatic%2Fimages%2Flogos%2Flogo_color.png");
 
     equal(
