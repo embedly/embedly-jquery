@@ -1,4 +1,4 @@
-/*! Embedly jQuery - v3.1.0 - 2013-05-15
+/*! Embedly jQuery - v3.0.5 - 2013-04-26
  * https://github.com/embedly/embedly-jquery
  * Copyright (c) 2013 Sean Creeley
  * Licensed BSD
@@ -250,7 +250,7 @@
 
       var secure = options.secure;
       if (none(secure)){
-        // If the secure param was not seen, use the protocol instead.
+        // If the secure param was not see, use the protocol instead.
         secure = window.location.protocol === 'https:'? true:false;
       }
 
