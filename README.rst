@@ -302,7 +302,7 @@ Options
   objects.
   ::
 
-    $('a').embedly({progress:function(data){
+    $('a').embedly({done:function(data){
       console.log(data.type)
     });
 
