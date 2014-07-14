@@ -396,7 +396,7 @@ You can use selectors to resize or proxy images, we will look for all images wit
 
 Or generate image urls with the client::
 
-  $.embedly.display.resize('http://embed.ly/static/images/logos/logo_color.png', {width: 300});
+  $.embedly.display.resize('http://embed.ly/static/images/logos/logo_color.png', {query: {width: 300}});
 
 Image Methods
 """""""""""""
