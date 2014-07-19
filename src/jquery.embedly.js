@@ -198,6 +198,8 @@
         $.ajax({
           url: self.build(method, batch, options),
           dataType: 'jsonp',
+          jsonpCallback: 'embedlyDataCall',
+          cache: true,
           success: function(data){
             // We zip together the urls and the data so we have the original_url
             $.each(zip([batch, data]), function(i, obj){
