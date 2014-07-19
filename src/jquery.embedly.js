@@ -8,6 +8,7 @@
 
   // Defaults for Embedly.
   var defaults = {
+    domain:           'api.embed.ly',
     key:              null,
     endpoint:         'oembed',         // default endpoint is oembed (preview and objectify available too)
     secure:           null,            // use https endpoint vs http
@@ -131,7 +132,7 @@
       }
 
       var base = (secure ? 'https': 'http') +
-        '://api.embed.ly/' + (method === 'objectify' ? '2/' : '1/') + method;
+        '://' + options.domain + '/' + (method === 'objectify' ? '2/' : '1/') + method;
 
       // Base Query;
       var query = none(options.query) ? {} : options.query;
