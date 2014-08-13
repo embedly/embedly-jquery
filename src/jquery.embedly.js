@@ -192,13 +192,10 @@
 
       // Put everything into batches, even if these is only one.
       var batches = batch(valid_urls, options.batch), self = this;
-
       // Actually make those calls.
-      $.each(batches, function(i, batch){
+      $.each(batches, function(i, batch) {
         $.ajax({
           url: self.build(method, batch, options),
-          dataType: 'jsonp',
-          jsonpCallback: 'embedlyDataCall',
           cache: true,
           success: function(data){
             // We zip together the urls and the data so we have the original_url
