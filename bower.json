@@ -1,0 +1,12 @@
+{
+  "name": "jquery-embedly",
+  "version": "3.1.1",
+  "homepage": "https://embed.ly/",
+  "authors": [
+    "Art Gibson <art@embed.ly>",
+    "Sean Creeley <sean@embed.ly>"
+  ],
+  "description": "jQuery Library for interacting with the Embedly API.",
+  "license": "BSD",
+  "main": "jquery.embedly.js"
+}
