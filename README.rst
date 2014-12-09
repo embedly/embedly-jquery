@@ -481,8 +481,8 @@ CDN
 To get you going even faster, Embedly hosts all the files you need on
 cdn.embed.ly. Also available over HTTPS. The latest version is available here::
 
-    http://cdn.embed.ly/jquery.embedly-3.1.1.js
-    http://cdn.embed.ly/jquery.embedly-3.1.1.min.js
+    http://cdn.embed.ly/jquery.embedly-3.1.2.js
+    http://cdn.embed.ly/jquery.embedly-3.1.2.min.js
 
 
 Licensing
@@ -498,6 +498,10 @@ Embedly URLs
 
 Changelog
 ---------
+
+3.1.2
+"""""
+* Bower configuration.
 
 3.1.1
 """""
