@@ -5,17 +5,18 @@ Embedly jQuery is a jQuery Library for interacting with the Embedly API.
 Basic Setup
 -----------
 Embedly jQuery requires jQuery 1.5 or greater as it uses `Deferred Objects
-<http://api.jquery.com/category/deferred-object/>`_. For older versions of
-jQuery see version `2.2.2
-<https://github.com/embedly/embedly-jquery/tree/v2.2.0>`_. Add jQuery and
+<http://api.jquery.com/category/deferred-object/>`_. Add jQuery and
 Embedly jQuery to your document.
 ::
 
   <head>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
-    <script src="http://cdn.embed.ly/jquery.embedly-3.1.1.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js" type="text/javascript"></script>
+    <script src="http://cdn.embed.ly/jquery.embedly-3.1.2.min.js" type="text/javascript"></script>
   </head>
 
+Or with Bower::
+
+  bower install embedly-jquery
 
 You can now use jQuery selectors to replace links with embedded content::
 
@@ -142,6 +143,18 @@ always be passed a list of results.
     // results.
     var data = results[0];
   });
+
+The client also support chaining:
+
+  $.embedly.oembed(['http://embed.ly', 'http://apple.com'])
+    .then(function(data){
+      // Return only the titles.
+      return data.map(function(d){return d.title;});
+    }).then(function(titles){
+      // yay titles
+      console.log(titles)
+    });
+
 
 Methods
 """""""
@@ -389,7 +402,7 @@ resize parameters::
   $.embedly.defaults.query = {width: 300};
 
 You can use selectors to resize or proxy images, we will look for all images with the data-src attribute::
-  
+
   e.g. <img data-src="http://embed.ly/static/images/logos/logo_color.png"></img>
 
   $('img').display('resize', {query: {width: 300}});
@@ -454,7 +467,7 @@ Display Method Parameters
 Image Query Parameters
 ----------------------
 These are the query arguments that can be passed via the
-options. These arguments should be added to the 
+options. These arguments should be added to the
 `options.query`:
 
 ``width`` [`integer:null`]
