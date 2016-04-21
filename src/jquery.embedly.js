@@ -348,7 +348,7 @@
         html = this.html;
       } else {
         this.title = this.title || this.url;
-        html = this.thumbnail_url ? "<img src='" + this.thumbnail_url + "' class='thumb' style='" + this.style + "'/>" : "";
+        html = this.thumbnail_url ? "<div class='thumb-wrapper'><img src='" + this.thumbnail_url + "' class='thumb' style='" + this.style + "'/></div>" : "";
         html += "<a href='" + this.original_url + "'>" + this.title + "</a>";
         html += this.provider_name ? "<a href='" + this.provider_url + "' class='provider'>" + this.provider_name + "</a>" : "";
         html += this.description ? '<div class="description">' + this.description + '</div>' : '';
