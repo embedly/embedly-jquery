@@ -446,7 +446,8 @@
   };
 
   // Custom selector.
-  $.expr[':'].embedly = function(elem) {
+  // jQuery < 1.12 uses an old name for this feature, while jQuery 3 deprecated the old aliases in favor of pseudos
+  ($.expr.pseudos || $.expr[':']).embedly = function(elem) {
     return ! none($(elem).data('embedly'));
   };
 
