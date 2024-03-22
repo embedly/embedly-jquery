@@ -11,6 +11,7 @@
 
   // Defaults for Embedly.
   var defaults = {
+    domain:           'api.embed.ly',
     key:              null,
     endpoint:         'oembed',         // default endpoint is oembed (preview and objectify available too)
     secure:           null,            // use https endpoint vs http
@@ -134,7 +135,7 @@
       }
 
       var base = (secure ? 'https': 'http') +
-        '://api.embed.ly/' + (method === 'objectify' ? '2/' : '1/') + method;
+        '://' + options.domain + '/' + (method === 'objectify' ? '2/' : '1/') + method;
 
       // Base Query;
       var query = none(options.query) ? {} : options.query;
@@ -194,12 +195,11 @@
 
       // Put everything into batches, even if these is only one.
       var batches = batch(valid_urls, options.batch), self = this;
-
       // Actually make those calls.
-      $.each(batches, function(i, batch){
+      $.each(batches, function(i, batch) {
         $.ajax({
           url: self.build(method, batch, options),
-          dataType: 'jsonp',
+          cache: true,
           success: function(data){
             // We zip together the urls and the data so we have the original_url
             $.each(zip([batch, data]), function(i, obj){
